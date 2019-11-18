@@ -7,5 +7,5 @@ public class PathManager {
     public static PathManager getInstance() {
         return instance;
     }
-    public String getConeDataFile(){return "src\\main\\resources\\ConeData.txt";}
+    public String getConeDataFile(){return "data\\ConeData.txt";}
 }
