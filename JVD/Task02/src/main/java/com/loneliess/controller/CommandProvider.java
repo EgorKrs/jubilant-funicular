@@ -43,4 +43,7 @@ public class CommandProvider {
         }
         return command;
     }
+    public Command getCommand(CommandName commandName){
+        return repository.get(commandName);
+    }
 }

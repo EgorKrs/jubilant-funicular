@@ -1,5 +1,7 @@
 package com.loneliess;
 
+import com.loneliess.controller.Command;
+import com.loneliess.controller.CommandName;
 import com.loneliess.controller.ControllerException;
 import com.loneliess.entity.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,7 +18,7 @@ public class UniqueID {
         try {
             if (id.get() == 0) {
                 if (ConeMap.getInstance().getData().size() == 0) {
-                    id.set((Integer) CommandProvider.getCommandProvider().getCommand("LOAD_CONE_MAP").execute(new Object()));
+                    id.set((Integer) CommandProvider.getCommandProvider().getCommand(CommandName.LOAD_CONE_MAP).execute(new Object()));
                 } else {
                     id.set((Integer) (ConeMap.getInstance().getData().keySet().toArray())[ConeMap.getInstance().getData().keySet().toArray().length - 1]);
                 }
