@@ -16,6 +16,10 @@ public class Cone {
     @Positive(message = "Высота конуса должна быть положительна. ")
     private double h;
 
+    private double surfaceArea;
+    private double sideSurfaceArea;
+    private double volume;
+
     private Point coordinateTheCenterOfCircle;
     private Point coordinateBorderLineCircle;
 

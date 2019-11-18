@@ -7,11 +7,7 @@ import com.loneliess.entity.Point;
 import com.loneliess.repository.RepositoryException;
 import com.loneliess.repository.RepositoryFactory;
 import com.loneliess.resource_provider.LogManager;
-import com.loneliess.resource_provider.PathManager;
 import org.apache.logging.log4j.Level;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 public class ConeLogic {
     private static final ConeLogic instance = new ConeLogic();
@@ -79,24 +75,41 @@ public class ConeLogic {
         }
         else return false;
     }
-    public boolean updateCone(int id,double l, double r,  double h,
-                              double x1,double y1,double z1,double x2,double y2,double z2){
-        Cone newCone=new Cone(id, l,  r,   h, x1, y1, z1, x2, y2, z2);
-        if(ServiceFactory.getInstance().getServiceValidation().validate(newCone).size()==0){
-            ConeMap.getInstance().getData().replace(id,newCone);
+    public boolean addCone(Cone cone){
+        if(ServiceFactory.getInstance().getServiceValidation().validate(cone).size()==0){
+            ConeMap.getInstance().getData().put(cone.getId(),cone);
             return true;
         }
         else return false;
     }
-    public boolean deleteCone(int id){
-        return ConeMap.getInstance().getData().remove(id) != null;
+    public boolean updateCone(Cone cone) throws ServiceException {
+        if(ServiceFactory.getInstance().getServiceValidation().validate(cone).size()==0){
+            try {
+                return RepositoryFactory.getInstance().getRepositoryCone().update(cone);
+            } catch (RepositoryException e) {
+                LogManager.getInstance().getLogger().catching(Level.ERROR,e);
+                throw new ServiceException(e,"Ошибка обговления в updateCone(Cone cone) "+e);
+            }
+        }
+        else return false;
+    }
+    public boolean deleteCone(Cone cone) throws ServiceException {
+        if (ConeMap.getInstance().getData().containsKey(cone.getId())){
+            try {
+                return RepositoryFactory.getInstance().getRepositoryCone().delete(cone);
+            } catch (RepositoryException e) {
+                LogManager.getInstance().getLogger().catching(Level.ERROR,e);
+                throw new ServiceException(e,"Ошибка обговления в  deleteCone(Cone cone) "+e);
+            }
+        }
+        else return false;
     }
 
     public boolean saveConeMap() throws ServiceException {
         try {
-            return RepositoryFactory.getInstance().getRepositoryCone().Save(ConeMap.getInstance().getData());
+            return RepositoryFactory.getInstance().getRepositoryCone().save(ConeMap.getInstance().getData());
         } catch (RepositoryException e) {
-            LogManager.getInstance().getConeLogger().catching(Level.ERROR,e);
+            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
             throw new ServiceException(e,"Ошибка сохранения данных в saveConeMap() "+e);
         }
     }

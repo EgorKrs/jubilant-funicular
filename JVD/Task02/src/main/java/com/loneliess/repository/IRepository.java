@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 public interface IRepository<Type,Collection> {
     Collection getMap() throws RepositoryException;
-    boolean AddNode(Type ob) throws RepositoryException;
-    boolean Save(Collection ob) throws RepositoryException;
+    boolean addNode(Type ob) throws RepositoryException;
+    boolean save(Collection ob) throws RepositoryException;
+    boolean delete(Type ob) throws RepositoryException;
+    boolean update(Type ob) throws RepositoryException;
 }

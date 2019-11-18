@@ -18,6 +18,8 @@ public class CommandProvider {
         repository.put(CommandName.CALCULATE_SIDE_SURFACE_AREA,new CalculateSideSurfaceArea());
         repository.put(CommandName.CALCULATE_VOLUME_RATIO,new CalculateVolumeRatio());
         repository.put(CommandName.IS_LIES_ON_THE_PLANE_CONE,new IsLiesOnThePlaneCone());
+        repository.put(CommandName.DELETE_CONE,new DeleteCone());
+        repository.put(CommandName.UPDATE_CONE,new UpdateCone());
 
     }
     public Map<CommandName, Command> getRepository() {

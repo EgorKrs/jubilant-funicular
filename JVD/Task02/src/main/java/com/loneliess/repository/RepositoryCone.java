@@ -1,6 +1,7 @@
 package com.loneliess.repository;
 
 import com.loneliess.entity.Cone;
+import com.loneliess.entity.ConeMap;
 import com.loneliess.resource_provider.LogManager;
 import com.loneliess.resource_provider.PathManager;
 import com.loneliess.servise.ConeLogic;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
+
     @Override
     public HashMap<Integer, Cone> getMap() throws RepositoryException {
         HashMap<Integer,Cone> data=new HashMap<>();
@@ -31,22 +33,25 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
                        }
                    }
                    catch (NumberFormatException ex){
-                       LogManager.getInstance().getConeLogger().catching(Level.INFO,ex);
+                       LogManager.getInstance().getLogger().catching(Level.INFO,ex);
                    }
+               }
+               else{
+                   LogManager.getInstance().getLogger().error("силишком большая строка");
                }
             }
         } catch (RepositoryException e) {
-            LogManager.getInstance().getConeLogger().catching(Level.ERROR,e);
+            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getExceptionMessage());
         } catch (IOException e) {
-            LogManager.getInstance().getConeLogger().catching(Level.ERROR,e);
+            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getMessage());
         }
         return data;
     }
 
     @Override
-    public boolean AddNode(Cone ob) throws RepositoryException {
+    public boolean addNode(Cone ob) throws RepositoryException {
         try (BufferedWriter writer=DataAccess.getInstance().getAppendWriteConnectionToFile(PathManager.getInstance().getConeDataFile())){
             writer.write(ConeLogic.getInstance().splitToCoordinate(ob));
             return true;
@@ -59,19 +64,31 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
 
 
     @Override
-    public boolean Save( HashMap<Integer,Cone> ob) throws RepositoryException {
-        try (BufferedWriter writer=DataAccess.getInstance().getAppendWriteConnectionToFile(PathManager.getInstance().getConeDataFile())){
+    public boolean save(HashMap<Integer,Cone> ob) throws RepositoryException {
+        try (BufferedWriter writer=DataAccess.getInstance().getWriteConnectionToFile(PathManager.getInstance().getConeDataFile())){
             for (Cone cone :
                     ob.values()) {
-                writer.write(ConeLogic.getInstance().splitToCoordinate(cone));
+                writer.write(ConeLogic.getInstance().splitToCoordinate(cone)+"\n");
             }
             return true;
         } catch (RepositoryException e) {
-            LogManager.getInstance().getConeLogger().catching(Level.ERROR,e);
+            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getExceptionMessage());
         } catch (IOException e) {
-            LogManager.getInstance().getConeLogger().catching(Level.ERROR,e);
+            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getMessage());
         }
+    }
+
+    @Override
+    public boolean delete(Cone ob) throws RepositoryException {
+        ConeMap.getInstance().getData().remove(ob.getId());
+        return save(ConeMap.getInstance().getData());
+    }
+
+    @Override
+    public boolean update(Cone ob) throws RepositoryException {
+        ConeMap.getInstance().getData().replace(ob.getId(),ob);
+        return save(ConeMap.getInstance().getData());
     }
 }
