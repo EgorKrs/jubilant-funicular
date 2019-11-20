@@ -1,7 +1,6 @@
 package com.loneliess.repository;
 
 import com.loneliess.entity.Cone;
-import com.loneliess.entity.ConeMap;
 import com.loneliess.resource_provider.LogManager;
 import com.loneliess.resource_provider.PathManager;
 import com.loneliess.servise.ConeLogic;
@@ -14,7 +13,16 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
-
+    private HashMap<Integer,Cone> data=new HashMap<>();
+    public Cone getData(Integer key){
+        return data.get(key);
+    }
+    public  HashMap<Integer, Cone> getData() {
+        return data;
+    }
+    public  void setData(HashMap<Integer, Cone>cones){
+        data.putAll(cones);
+    }
     @Override
     public HashMap<Integer, Cone> getMap() throws RepositoryException {
         HashMap<Integer,Cone> data=new HashMap<>();
@@ -82,13 +90,13 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
 
     @Override
     public boolean delete(Cone ob) throws RepositoryException {
-        ConeMap.getInstance().getData().remove(ob.getId());
-        return save(ConeMap.getInstance().getData());
+        RepositoryFactory.getInstance().getRepositoryCone().getData().remove(ob.getId());
+        return save(RepositoryFactory.getInstance().getRepositoryCone().getMap());
     }
 
     @Override
     public boolean update(Cone ob) throws RepositoryException {
-        ConeMap.getInstance().getData().replace(ob.getId(),ob);
-        return save(ConeMap.getInstance().getData());
+        RepositoryFactory.getInstance().getRepositoryCone().getData().replace(ob.getId(),ob);
+        return save(RepositoryFactory.getInstance().getRepositoryCone().getMap());
     }
 }

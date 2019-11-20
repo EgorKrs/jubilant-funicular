@@ -2,7 +2,6 @@ package com.loneliess.servise;
 
 import com.loneliess.UniqueID;
 import com.loneliess.entity.Cone;
-import com.loneliess.entity.ConeMap;
 import com.loneliess.entity.Point;
 import com.loneliess.repository.RepositoryException;
 import com.loneliess.repository.RepositoryFactory;
@@ -70,14 +69,14 @@ public class ConeLogic {
                            double x1,double y1,double z1,double x2,double y2,double z2){
         Cone cone=new Cone(UniqueID.getInstance().getId(),l,  r,   h, x1, y1, z1, x2, y2, z2);
         if(ServiceFactory.getInstance().getServiceValidation().validate(cone).size()==0){
-            ConeMap.getInstance().getData().put(cone.getId(),cone);
+            RepositoryFactory.getInstance().getRepositoryCone().getData().put(cone.getId(),cone);
             return true;
         }
         else return false;
     }
     public boolean addCone(Cone cone){
         if(ServiceFactory.getInstance().getServiceValidation().validate(cone).size()==0){
-            ConeMap.getInstance().getData().put(cone.getId(),cone);
+            RepositoryFactory.getInstance().getRepositoryCone().getData().put(cone.getId(),cone);
             return true;
         }
         else return false;
@@ -94,7 +93,7 @@ public class ConeLogic {
         else return false;
     }
     public boolean deleteCone(Cone cone) throws ServiceException {
-        if (ConeMap.getInstance().getData().containsKey(cone.getId())){
+        if (RepositoryFactory.getInstance().getRepositoryCone().getData().containsKey(cone.getId())){
             try {
                 return RepositoryFactory.getInstance().getRepositoryCone().delete(cone);
             } catch (RepositoryException e) {
@@ -107,7 +106,7 @@ public class ConeLogic {
 
     public boolean saveConeMap() throws ServiceException {
         try {
-            return RepositoryFactory.getInstance().getRepositoryCone().save(ConeMap.getInstance().getData());
+            return RepositoryFactory.getInstance().getRepositoryCone().save(RepositoryFactory.getInstance().getRepositoryCone().getData());
         } catch (RepositoryException e) {
             LogManager.getInstance().getLogger().catching(Level.ERROR,e);
             throw new ServiceException(e,"Ошибка сохранения данных в saveConeMap() "+e);
