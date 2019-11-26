@@ -51,7 +51,7 @@ public class ConeMapTest {
             CommandProvider.getCommandProvider().getCommand(CommandName.LOAD_CONE_MAP).execute(new Object());
         ConeWrapper cone=new ConeWrapper(9999,5, 5,   5, 5, 5, 5, 2, 2, 2);
         ServiceFactory.getInstance().getConeLogic().addCone(cone);
-        CommandProvider.getCommandProvider().getCommand(CommandName.DELETE_CONE).execute(cone);
+        CommandProvider.getCommandProvider().getCommand(CommandName.DELETE_CONE).execute(cone.getCone());
         Assert.assertFalse(RepositoryFactory.getInstance().getRepositoryCone().getData().containsKey(9999));
     }
     @Test public void updateCone() throws ControllerException {

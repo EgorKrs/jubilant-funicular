@@ -1,5 +1,7 @@
 package com.loneliess.entity;
 
+import com.loneliess.subscriber.ConeRegistrar;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.concurrent.SubmissionPublisher;

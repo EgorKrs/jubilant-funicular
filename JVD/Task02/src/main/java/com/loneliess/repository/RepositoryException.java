@@ -1,6 +1,6 @@
 package com.loneliess.repository;
 
-public class RepositoryException extends Throwable{
+public class RepositoryException extends RuntimeException{
     private String exceptionMessage;
 
     public RepositoryException(String message, Throwable cause, String exceptionMessage) {

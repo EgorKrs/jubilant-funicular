@@ -47,21 +47,5 @@ public class ConeLogicTest {
         Assert.assertFalse(ServiceFactory.getInstance().getConeLogic().isEquals(cone, newCone));
     }
 
-    @Test
-    public void wrapperTest() {
-        ConeWrapper cone = new ConeWrapper();
-        double q=cone.getSubscriber().getSideSurfaceArea();
-        double w=cone.getSubscriber().getSurfaceArea();
-        double c=cone.getSubscriber().getVolume();
-        cone.addCone(cone.getCone());
-        cone.updateCone(new Cone(9999, 2, 5, 3, 4, 5, 4, 2, 2, 5));
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Assert.assertNotEquals(q, cone.getSubscriber().getSideSurfaceArea());
-        Assert.assertNotEquals(w, cone.getSubscriber().getSurfaceArea());
-        Assert.assertNotEquals(c, cone.getSubscriber().getVolume());
-    }
+
 }

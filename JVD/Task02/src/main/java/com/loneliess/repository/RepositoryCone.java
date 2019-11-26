@@ -23,10 +23,12 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
     public  void setData(HashMap<Integer, Cone>cones){
         data.putAll(cones);
     }
+    private String dataFile=PathManager.getInstance().getConeDataFile();
+    private DataAccess dataAccess=DataAccess.getInstance();
     @Override
     public HashMap<Integer, Cone> getMap() throws RepositoryException {
         HashMap<Integer,Cone> data=new HashMap<>();
-        try (BufferedReader reader= DataAccess.getInstance().getReadConnectionToFile(PathManager.getInstance().getConeDataFile())){
+        try (BufferedReader reader= dataAccess.getReadConnectionToFile(dataFile)){
             String line;
             while ((line=reader.readLine())!=null){
                 String[] arg =line.split(" ");
@@ -60,7 +62,7 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
 
     @Override
     public boolean addNode(Cone ob) throws RepositoryException {
-        try (BufferedWriter writer=DataAccess.getInstance().getAppendWriteConnectionToFile(PathManager.getInstance().getConeDataFile())){
+        try (BufferedWriter writer=dataAccess.getAppendWriteConnectionToFile(dataFile)){
             writer.write(ConeLogic.getInstance().splitToCoordinate(ob));
             return true;
         } catch (RepositoryException e) {
@@ -73,7 +75,7 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
 
     @Override
     public boolean save(HashMap<Integer,Cone> ob) throws RepositoryException {
-        try (BufferedWriter writer=DataAccess.getInstance().getWriteConnectionToFile(PathManager.getInstance().getConeDataFile())){
+        try (BufferedWriter writer=dataAccess.getWriteConnectionToFile(dataFile)){
             for (Cone cone :
                     ob.values()) {
                 writer.write(ConeLogic.getInstance().splitToCoordinate(cone)+"\n");

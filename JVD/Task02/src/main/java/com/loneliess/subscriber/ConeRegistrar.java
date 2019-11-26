@@ -1,15 +1,17 @@
-package com.loneliess.entity;
+package com.loneliess.subscriber;
 
 import com.loneliess.controller.CommandName;
 import com.loneliess.controller.CommandProvider;
 import com.loneliess.controller.ControllerException;
+import com.loneliess.entity.Cone;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Flow;
 
 public class ConeRegistrar <T> implements Flow.Subscriber<T>{
+    private Logger logger= LogManager.getLogger();
     private Flow.Subscription subscription;
     private int id;
     private double surfaceArea;
@@ -61,18 +63,19 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
     @Override
     public void onNext(T item) {
         setAll((Cone)item);
-        System.out.println("Got : " + item);
+        logger.info("ConeRegistrar calculate value for "+item);
         subscription.request(1);
     }
 
     @Override
     public void onError(Throwable throwable) {
+        logger.catching(throwable);
         throwable.printStackTrace();
     }
 
     @Override
     public void onComplete() {
-        System.out.println("Done");
+        logger.info("ConeRegistrar was updated");
     }
     private void setAll(Cone cone){
         this.id=cone.getId();
