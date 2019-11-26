@@ -2,6 +2,7 @@ import com.loneliess.controller.CommandName;
 import com.loneliess.controller.CommandProvider;
 import com.loneliess.controller.ControllerException;
 import com.loneliess.entity.Cone;
+import com.loneliess.entity.ConeWrapper;
 import com.loneliess.repository.RepositoryFactory;
 import com.loneliess.servise.ServiceFactory;
 import org.junit.Assert;
@@ -48,7 +49,7 @@ public class ConeMapTest {
     public void deleteConeTest() throws ControllerException {
         if (RepositoryFactory.getInstance().getRepositoryCone().getData().size() == 0)
             CommandProvider.getCommandProvider().getCommand(CommandName.LOAD_CONE_MAP).execute(new Object());
-        Cone cone=new Cone(9999,5, 5,   5, 5, 5, 5, 2, 2, 2);
+        ConeWrapper cone=new ConeWrapper(9999,5, 5,   5, 5, 5, 5, 2, 2, 2);
         ServiceFactory.getInstance().getConeLogic().addCone(cone);
         CommandProvider.getCommandProvider().getCommand(CommandName.DELETE_CONE).execute(cone);
         Assert.assertFalse(RepositoryFactory.getInstance().getRepositoryCone().getData().containsKey(9999));
@@ -56,10 +57,11 @@ public class ConeMapTest {
     @Test public void updateCone() throws ControllerException {
         if (RepositoryFactory.getInstance().getRepositoryCone().getData().size() == 0)
             CommandProvider.getCommandProvider().getCommand(CommandName.LOAD_CONE_MAP).execute(new Object());
-        Cone oldCone=new Cone(9999,5, 5,   5, 5, 5, 5, 2, 2, 2);
+        ConeWrapper oldCone=new ConeWrapper(9999,5, 5,   5, 5, 5, 5, 2, 2, 2);
         ServiceFactory.getInstance().getConeLogic().addCone(oldCone);
-        Cone newCone=new Cone(9999,3, 5,   2, 5, 5, 4, 2, 2, 5);
+        ConeWrapper newCone=new ConeWrapper(9999,3, 5,   2, 5, 5, 4, 2, 2, 5);
         CommandProvider.getCommandProvider().getCommand(CommandName.UPDATE_CONE).execute(newCone);
         Assert.assertNotEquals(RepositoryFactory.getInstance().getRepositoryCone().getData().get(9999),oldCone);
     }
+
 }

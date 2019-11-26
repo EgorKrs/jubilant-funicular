@@ -1,5 +1,5 @@
 package com.loneliess.controller;
 
-public interface Command <Type,ReturnType> {
-    ReturnType execute(Type request) throws ControllerException;
+public interface Command <T, R> {
+    R execute(T request) throws ControllerException;
 }
