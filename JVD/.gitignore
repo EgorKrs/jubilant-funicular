@@ -20,7 +20,7 @@
 *.rar
 
 hs_err_pid*
-target
+target/
 out/
 productoin/
 .idea
