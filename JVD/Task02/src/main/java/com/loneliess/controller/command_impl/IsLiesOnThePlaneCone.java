@@ -5,9 +5,9 @@ import com.loneliess.controller.ControllerException;
 import com.loneliess.entity.Cone;
 import com.loneliess.servise.ServiceFactory;
 
-public class IsLiesOnThePlaneCone implements Command<Cone,Boolean> {
+public class IsLiesOnThePlaneCone implements Command<Cone,Boolean>,ConeCommand {
     @Override
     public Boolean execute(Cone request) throws ControllerException {
-        return ServiceFactory.getInstance().getConeLogic().isLiesOnThePlane(request);
+        return service.isLiesOnThePlane(request);
     }
 }

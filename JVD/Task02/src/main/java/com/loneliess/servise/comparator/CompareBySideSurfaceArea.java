@@ -1,6 +1,6 @@
 package com.loneliess.servise.comparator;
 
-import com.loneliess.entity.ConeWrapper;
+import com.loneliess.servise.ConeWrapper;
 
 import java.util.Comparator;
 

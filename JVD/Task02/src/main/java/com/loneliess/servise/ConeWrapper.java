@@ -1,5 +1,8 @@
-package com.loneliess.entity;
+package com.loneliess.servise;
 
+import com.loneliess.entity.Cone;
+import com.loneliess.repository.RepositoryConeRegistrar;
+import com.loneliess.repository.RepositoryFactory;
 import com.loneliess.subscriber.ConeRegistrar;
 
 import javax.validation.constraints.NotNull;

@@ -1,69 +1,74 @@
 package com.loneliess.repository;
 
+import com.loneliess.Parser;
 import com.loneliess.entity.Cone;
-import com.loneliess.resource_provider.LogManager;
 import com.loneliess.resource_provider.PathManager;
-import com.loneliess.servise.ConeLogic;
-import com.loneliess.servise.ServiceFactory;
+import com.loneliess.servise.ConeService;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 
-public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
+public class RepositoryCone implements IRepository<Cone>{
+    private Logger logger= LogManager.getLogger();
     private HashMap<Integer,Cone> data=new HashMap<>();
+    private DataAccess dataAccess=DataAccess.getInstance();
+    private Parser parser=new Parser();
+
     public Cone getData(Integer key){
         return data.get(key);
     }
-    public  HashMap<Integer, Cone> getData() {
-        return data;
+    private String dataFile=PathManager.getConeDataFile();
+
+    public boolean isContain(Cone cone){
+        return data.containsValue(cone);
     }
-    public  void setData(HashMap<Integer, Cone>cones){
-        data.putAll(cones);
+
+
+    public  boolean AddALL(Collection<Cone> cones){
+        int counter=0;
+        for (Cone cone :
+                cones) {
+            data.put(cone.getId(),cone);
+            counter++;
+        }
+        return counter==cones.size();
     }
-    private String dataFile=PathManager.getInstance().getConeDataFile();
-    private DataAccess dataAccess=DataAccess.getInstance();
-    @Override
-    public HashMap<Integer, Cone> getMap() throws RepositoryException {
+
+    public Collection<Cone> getData() {
+        return data.values();
+    }
+
+    public HashMap<Integer, Cone> loadAllCones() throws RepositoryException {
         HashMap<Integer,Cone> data=new HashMap<>();
+        Cone cone;
         try (BufferedReader reader= dataAccess.getReadConnectionToFile(dataFile)){
             String line;
             while ((line=reader.readLine())!=null){
-                String[] arg =line.split(" ");
-                Cone cone;
-               if(arg.length<=10){
-                   try {
-                       cone = new Cone(Integer.parseInt(arg[0]), Double.parseDouble(arg[1]), Double.parseDouble(arg[2])
-                               , Double.parseDouble(arg[3]), Double.parseDouble(arg[4]), Double.parseDouble(arg[5]), Double.parseDouble(arg[6]),
-                               Double.parseDouble(arg[7]), Double.parseDouble(arg[8]), Double.parseDouble(arg[9]));
-                       if (ServiceFactory.getInstance().getServiceValidation().validate(cone).size() == 0) {
-                           data.put(cone.getId(), cone);
-                       }
-                   }
-                   catch (NumberFormatException ex){
-                       LogManager.getInstance().getLogger().catching(Level.INFO,ex);
-                   }
-               }
-               else{
-                   LogManager.getInstance().getLogger().error("силишком большая строка");
-               }
+                cone=parser.parse(line);
+                if(cone!=null){
+                    data.put(cone.getId(),cone);
+                }
             }
         } catch (RepositoryException e) {
-            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
+            logger.catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getExceptionMessage());
         } catch (IOException e) {
-            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
+            logger.catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getMessage());
         }
         return data;
     }
 
     @Override
-    public boolean addNode(Cone ob) throws RepositoryException {
+    public boolean add(Cone ob) throws RepositoryException {
         try (BufferedWriter writer=dataAccess.getAppendWriteConnectionToFile(dataFile)){
-            writer.write(ConeLogic.getInstance().splitToCoordinate(ob));
+            writer.write(ConeService.getInstance().splitToCoordinate(ob));
             return true;
         } catch (RepositoryException e) {
             throw new RepositoryException(e,e.getExceptionMessage());
@@ -74,31 +79,31 @@ public class RepositoryCone implements IRepository<Cone, HashMap<Integer,Cone>>{
 
 
     @Override
-    public boolean save(HashMap<Integer,Cone> ob) throws RepositoryException {
+    public boolean addAll(Collection<Cone> ob) throws RepositoryException {
         try (BufferedWriter writer=dataAccess.getWriteConnectionToFile(dataFile)){
             for (Cone cone :
-                    ob.values()) {
-                writer.write(ConeLogic.getInstance().splitToCoordinate(cone)+"\n");
+                    ob) {
+                writer.write(ConeService.getInstance().splitToCoordinate(cone)+"\n");
             }
             return true;
         } catch (RepositoryException e) {
-            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
+            logger.catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getExceptionMessage());
         } catch (IOException e) {
-            LogManager.getInstance().getLogger().catching(Level.ERROR,e);
+            logger.catching(Level.ERROR,e);
             throw new RepositoryException(e,e.getMessage());
         }
     }
 
     @Override
     public boolean delete(Cone ob) throws RepositoryException {
-        RepositoryFactory.getInstance().getRepositoryCone().getData().remove(ob.getId());
-        return save(RepositoryFactory.getInstance().getRepositoryCone().getMap());
+        data.remove(ob.getId());
+        return addAll(loadAllCones().values());
     }
 
     @Override
     public boolean update(Cone ob) throws RepositoryException {
-        RepositoryFactory.getInstance().getRepositoryCone().getData().replace(ob.getId(),ob);
-        return save(RepositoryFactory.getInstance().getRepositoryCone().getMap());
+        data.replace(ob.getId(),ob);
+        return addAll(loadAllCones().values());
     }
 }

@@ -1,9 +1,13 @@
 package com.loneliess.subscriber;
 
+import com.loneliess.controller.Command;
 import com.loneliess.controller.CommandName;
 import com.loneliess.controller.CommandProvider;
 import com.loneliess.controller.ControllerException;
 import com.loneliess.entity.Cone;
+import com.loneliess.repository.RepositoryConeRegistrar;
+import com.loneliess.repository.RepositoryFactory;
+import com.loneliess.servise.ServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,12 +15,13 @@ import java.util.Objects;
 import java.util.concurrent.Flow;
 
 public class ConeRegistrar <T> implements Flow.Subscriber<T>{
-    private Logger logger= LogManager.getLogger();
+    private static final Logger logger= LogManager.getLogger();
     private Flow.Subscription subscription;
     private int id;
     private double surfaceArea;
     private double sideSurfaceArea;
     private double volume;
+    private CommandProvider provider=CommandProvider.getCommandProvider();
 
     public double getSurfaceArea() {
         return surfaceArea;
@@ -24,7 +29,7 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
 
     public void setSurfaceArea(Cone cone)  {
         try {
-            this.surfaceArea = (double) CommandProvider.getCommandProvider().getCommand(CommandName.CALCULATE_SIDE_SURFACE_AREA).execute(cone);
+            this.surfaceArea = (double) provider.getCommand(CommandName.CALCULATE_SIDE_SURFACE_AREA).execute(cone);
         } catch (ControllerException e) {
             this.surfaceArea=0;
         }
@@ -36,7 +41,7 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
 
     public void setSideSurfaceArea(Cone cone)  {
         try {
-            this.sideSurfaceArea = (double)CommandProvider.getCommandProvider().getCommand(CommandName.CALCULATE_SIDE_SURFACE_AREA).execute(cone);
+            this.sideSurfaceArea = (double)provider.getCommand(CommandName.CALCULATE_SIDE_SURFACE_AREA).execute(cone);
         } catch (ControllerException e) {
             this.sideSurfaceArea=0;
         }
@@ -48,18 +53,10 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
 
     public void setVolume(Cone cone)  {
         try {
-            this.volume = (double)CommandProvider.getCommandProvider().getCommand(CommandName.CALCULATE_VOLUME_OF_CONE).execute(cone);
+            this.volume = (double)provider.getCommand(CommandName.CALCULATE_VOLUME_OF_CONE).execute(cone);
         } catch (ControllerException e) {
             this.volume=0;
         }
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
     }
 
     public Flow.Subscription getSubscription() {
@@ -98,8 +95,10 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
 
     @Override
     public void onNext(T item) {
-        setAll((Cone)item);
-        logger.info("ConeRegistrar calculate value for "+item);
+        if(this.id==((Cone)item).getId()) {
+            setAll((Cone) item);
+            logger.info("ConeRegistrar calculate value for " + item);
+        }
         subscription.request(1);
     }
 
@@ -120,31 +119,4 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
         setVolume(cone);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ConeRegistrar<?> that = (ConeRegistrar<?>) o;
-        return id == that.id &&
-                Double.compare(that.surfaceArea, surfaceArea) == 0 &&
-                Double.compare(that.sideSurfaceArea, sideSurfaceArea) == 0 &&
-                Double.compare(that.volume, volume) == 0 &&
-                subscription.equals(that.subscription);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(subscription, id, surfaceArea, sideSurfaceArea, volume);
-    }
-
-    @Override
-    public String toString() {
-        return "ConeRegistrar{" +
-                "subscription=" + subscription +
-                ", id=" + id +
-                ", surfaceArea=" + surfaceArea +
-                ", sideSurfaceArea=" + sideSurfaceArea +
-                ", volume=" + volume +
-                '}';
-    }
 }

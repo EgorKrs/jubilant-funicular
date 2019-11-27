@@ -5,10 +5,10 @@ import com.loneliess.controller.ControllerException;
 import com.loneliess.entity.Cone;
 import com.loneliess.servise.ServiceFactory;
 
-public class CalculateSideSurfaceArea implements Command<Cone,Double> {
+public class CalculateSideSurfaceArea implements Command<Cone,Double>,ConeCommand {
     @Override
     public Double execute(Cone request) throws ControllerException {
-        return ServiceFactory.getInstance().getConeLogic().calculateSideSurfaceArea(request);
+        return service.calculateSideSurfaceArea(request);
     }
 }
 

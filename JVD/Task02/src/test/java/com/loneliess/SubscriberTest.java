@@ -1,6 +1,7 @@
+package com.loneliess;
 
 import com.loneliess.entity.Cone;
-import com.loneliess.entity.ConeWrapper;
+import com.loneliess.servise.ConeWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
