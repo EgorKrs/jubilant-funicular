@@ -54,6 +54,42 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
         }
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public Flow.Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Flow.Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setSurfaceArea(double surfaceArea) {
+        this.surfaceArea = surfaceArea;
+    }
+
+    public void setSideSurfaceArea(double sideSurfaceArea) {
+        this.sideSurfaceArea = sideSurfaceArea;
+    }
+
+    public void setVolume(double volume) {
+        this.volume = volume;
+    }
+
     @Override
     public void onSubscribe(Flow.Subscription subscription) {
         this.subscription = subscription;

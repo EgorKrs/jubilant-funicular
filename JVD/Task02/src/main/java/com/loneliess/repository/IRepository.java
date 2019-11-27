@@ -1,11 +1,9 @@
 package com.loneliess.repository;
 
-import java.util.HashMap;
-
-public interface IRepository<Type,Collection> {
-    Collection getMap() throws RepositoryException;
-    boolean addNode(Type ob) throws RepositoryException;
-    boolean save(Collection ob) throws RepositoryException;
-    boolean delete(Type ob) throws RepositoryException;
-    boolean update(Type ob) throws RepositoryException;
+public interface IRepository<T, C> {
+    C getMap() throws RepositoryException;
+    boolean addNode(T ob) throws RepositoryException;
+    boolean save(C ob) throws RepositoryException;
+    boolean delete(T ob) throws RepositoryException;
+    boolean update(T ob) throws RepositoryException;
 }
