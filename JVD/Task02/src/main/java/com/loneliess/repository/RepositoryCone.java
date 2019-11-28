@@ -17,13 +17,13 @@ import java.util.HashMap;
 public class RepositoryCone implements IRepository<Cone>{
     private Logger logger= LogManager.getLogger();
     private HashMap<Integer,Cone> data=new HashMap<>();
-    private DataAccess dataAccess=DataAccess.getInstance();
+    private DataAccess dataAccess=new DataAccess();
     private Parser parser=new Parser();
+    private String dataFile=PathManager.getConeDataFile();
 
     public Cone getData(Integer key){
         return data.get(key);
     }
-    private String dataFile=PathManager.getConeDataFile();
 
     public boolean isContain(Cone cone){
         return data.containsValue(cone);

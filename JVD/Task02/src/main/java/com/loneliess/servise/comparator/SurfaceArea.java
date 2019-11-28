@@ -4,9 +4,9 @@ import com.loneliess.servise.ConeWrapper;
 
 import java.util.Comparator;
 
-public class CompareBySideSurfaceArea implements Comparator<ConeWrapper> {
+public class SurfaceArea implements Comparator<ConeWrapper> {
     @Override
     public int compare(ConeWrapper left, ConeWrapper right) {
-        return Double.compare(left.getSubscriber().getSideSurfaceArea(), right.getSubscriber().getSideSurfaceArea());
+        return Double.compare(left.getSubscriber().getSurfaceArea(), right.getSubscriber().getSurfaceArea());
     }
 }

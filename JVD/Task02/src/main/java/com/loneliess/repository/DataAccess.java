@@ -8,11 +8,6 @@ import java.io.*;
 import java.util.HashMap;
 
 public class DataAccess {
-    private DataAccess(){}
-    private static final DataAccess instance =new DataAccess();
-    public static DataAccess getInstance(){
-        return instance;
-    }
     public BufferedReader getReadConnectionToFile(String fileName) throws RepositoryException {
         try {
             return new BufferedReader(new FileReader(new File(fileName)));

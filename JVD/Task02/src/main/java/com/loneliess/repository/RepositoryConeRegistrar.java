@@ -36,7 +36,6 @@ public class RepositoryConeRegistrar implements IRepository<ConeRegistrar<Cone>>
     }
 
 
-
     @Override
     public boolean delete(ConeRegistrar<Cone> ob) throws RepositoryException {
         return coneRegistrarMap.remove(ob.getId(),ob);

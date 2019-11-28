@@ -12,16 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ConeService {
-    private static final ConeService instance = new ConeService();
     private Logger logger = LogManager.getLogger();
     private RepositoryCone repository = RepositoryFactory.getInstance().getRepositoryCone();
-
-    private ConeService() {
-    }
-
-    public static ConeService getInstance() {
-        return instance;
-    }
+    private ServiceValidation validator =new ServiceFactory().getServiceValidation();
 
     public double calculateSideSurfaceArea(Cone cone) {
         return cone.getR() * cone.getL() * Math.PI;
@@ -73,21 +66,21 @@ public class ConeService {
     public boolean addCone(double l, double r, double h,
                            double x1, double y1, double z1, double x2, double y2, double z2) {
         ConeWrapper cone = new ConeWrapper(UniqueID.getInstance().getId(), l, r, h, x1, y1, z1, x2, y2, z2);
-        if (ServiceFactory.getInstance().getServiceValidation().validate(cone.getCone()).size() == 0) {
+        if (validator.validate(cone.getCone()).size() == 0) {
             repository.add(cone.getCone());
             return true;
         } else return false;
     }
 
     public boolean addCone(ConeWrapper cone) {
-        if (ServiceFactory.getInstance().getServiceValidation().validate(cone.getCone()).size() == 0) {
+        if (validator.validate(cone.getCone()).size() == 0) {
             repository.add(cone.getCone());
             return true;
         } else return false;
     }
 
     public boolean updateCone(ConeWrapper cone) throws ServiceException {
-        if (ServiceFactory.getInstance().getServiceValidation().validate(cone.getCone()).size() == 0) {
+        if (validator.validate(cone.getCone()).size() == 0) {
             try {
                 return repository.update(cone.getCone());
             } catch (RepositoryException e) {
@@ -100,7 +93,7 @@ public class ConeService {
     public boolean deleteCone(Cone cone) throws ServiceException {
         if (repository.isContain(cone)) {
             try {
-                return RepositoryFactory.getInstance().getRepositoryCone().delete(cone);
+                return repository.delete(cone);
             } catch (RepositoryException e) {
                 logger.catching(Level.ERROR, e);
                 throw new ServiceException(e, "Ошибка обговления в  deleteCone(Cone cone) " + e);
