@@ -13,9 +13,15 @@ import org.apache.logging.log4j.Logger;
 
 public class ConeService {
     private Logger logger = LogManager.getLogger();
-    private RepositoryCone repository = RepositoryFactory.getInstance().getRepositoryCone();
-    private ServiceValidation validator =new ServiceFactory().getServiceValidation();
-    private PointService pointService=new PointService();
+    private RepositoryCone repository ;
+    private ServiceValidation validator;
+    private PointService pointService;
+
+    public ConeService(RepositoryCone repository,ServiceValidation validator,PointService pointService){
+        this.repository=repository;
+        this.validator=validator;
+        this.pointService=pointService;
+    }
 
     public double calculateSideSurfaceArea(Cone cone) {
         return cone.getR() * cone.getL() * Math.PI;

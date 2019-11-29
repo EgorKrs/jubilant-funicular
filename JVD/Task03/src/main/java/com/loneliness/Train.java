@@ -34,7 +34,7 @@ public class Train implements Runnable {
         this.locker=locker;
         this.railTracks=railTracks;
     }
-    public boolean isCheckLaunchArgs(){
+    private boolean isCheckLaunchArgs(){
         return semaphore!=null&&locker!=null&&railTracks.length!=0;
     }
 

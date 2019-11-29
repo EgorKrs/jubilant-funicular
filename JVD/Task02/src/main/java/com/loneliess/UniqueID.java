@@ -12,7 +12,7 @@ import com.loneliess.repository.RepositoryFactory;
 public class UniqueID {
     private static final UniqueID instance=new UniqueID();
     private AtomicInteger id = new AtomicInteger();
-    private CommandProvider provider;
+    private CommandProvider provider=new CommandProvider();
     private RepositoryCone repository=RepositoryFactory.getInstance().getRepositoryCone();
 
     public static UniqueID getInstance() {
@@ -22,7 +22,7 @@ public class UniqueID {
     public int getId() {
         try {
             if (id.get() == 0) {
-                if (RepositoryFactory.getInstance().getRepositoryCone().getData().size() == 0) {
+                if (repository.getData().size() == 0) {
                     id.set((Integer) provider.getCommand(CommandName.LOAD_CONE_MAP).execute(new Object()));
                 } else {
                     id.set( (repository.getData().size()-1));

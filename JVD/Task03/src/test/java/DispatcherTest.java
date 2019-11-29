@@ -20,6 +20,7 @@ public class DispatcherTest {
     public static void prepareToTest(){
        random=new Random();
     }
+
     private Train createTrain(){
         return new Train(random.nextInt(100), Direction.values()[random.nextInt(2)]);
     }
@@ -28,7 +29,6 @@ public class DispatcherTest {
         int quantity=6;
         for (int i = 0; i < quantity; i++) {
             dispatcher.sendToQueue(createTrain());
-
         }
         logger.info("\n\n");
         dispatcher.sendToTunnel();
