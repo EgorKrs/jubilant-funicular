@@ -4,15 +4,6 @@ import com.loneliess.entity.Point;
 
 public class PointService {
 
-    private static final PointService instance = new PointService();
-
-    private PointService() {
-    }
-
-    public static PointService getInstance() {
-        return instance;
-    }
-
     public Point difference(Point p1, Point p2) {
         return new Point(Math.abs(p1.getCoordinateX() - p2.getCoordinateX()),
                 Math.abs(p1.getCoordinateY() - p2.getCoordinateY()), Math.abs(p1.getCoordinateZ() - p2.getCoordinateZ()));

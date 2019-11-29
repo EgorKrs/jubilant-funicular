@@ -15,6 +15,7 @@ public class ConeService {
     private Logger logger = LogManager.getLogger();
     private RepositoryCone repository = RepositoryFactory.getInstance().getRepositoryCone();
     private ServiceValidation validator =new ServiceFactory().getServiceValidation();
+    private PointService pointService=new PointService();
 
     public double calculateSideSurfaceArea(Cone cone) {
         return cone.getR() * cone.getL() * Math.PI;
@@ -29,7 +30,7 @@ public class ConeService {
     }
 
     public double CalculateVolumeRatio(Cone cone, Point point) {
-        Point coordinate = PointService.getInstance().difference(cone.getCoordinateTheCenterOfCircle(), point);
+        Point coordinate = pointService.difference(cone.getCoordinateTheCenterOfCircle(), point);
         double coefficient = cone.getCoordinateTheCenterOfCircle().getCoordinateY() - coordinate.getCoordinateY();
         Cone cone1 = new Cone(UniqueID.getInstance().getId(),
                 cone.getL() * (Math.pow(Math.pow(cone.getR(), 2) + Math.pow(cone.getH(), 2), 0.5)),
@@ -96,7 +97,7 @@ public class ConeService {
                 return repository.delete(cone);
             } catch (RepositoryException e) {
                 logger.catching(Level.ERROR, e);
-                throw new ServiceException(e, "Ошибка обговления в  deleteCone(Cone cone) " + e);
+                throw new ServiceException(e, "Ошибка обновления в  deleteCone(Cone cone) " + e);
             }
         } else return false;
     }

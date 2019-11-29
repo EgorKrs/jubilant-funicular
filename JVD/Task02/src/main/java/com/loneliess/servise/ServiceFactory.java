@@ -1,10 +1,10 @@
 package com.loneliess.servise;
 
 public class ServiceFactory {
-    private final PointService pointService = PointService.getInstance();
-    private final ConeService coneService = ConeService.getInstance();
+    private final PointService pointService = new PointService();
+    private final ConeService coneService = new ConeService();
     private final static ServiceFactory instance=new ServiceFactory();
-    private final ServiceValidation serviceValidation=ServiceValidation.getInstance();
+    private final ServiceValidation serviceValidation=new ServiceValidation();
     public static ServiceFactory getInstance(){
         return instance;
     }
