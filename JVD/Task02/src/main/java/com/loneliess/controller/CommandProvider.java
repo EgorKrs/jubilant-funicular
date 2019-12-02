@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class CommandProvider {
     private final Map<CommandName, Command> repository = new HashMap<>();
-    private CommandProvider(){
+    public CommandProvider(){
         repository.put(CommandName.WRONG_REQUEST,new WrongRequest());
         repository.put(CommandName.LOAD_CONE_MAP,new LoadConeMap());
         repository.put(CommandName.ADD_CONE,new AddCone());
@@ -20,9 +20,6 @@ public class CommandProvider {
         repository.put(CommandName.DELETE_CONE,new DeleteCone());
         repository.put(CommandName.UPDATE_CONE,new UpdateCone());
 
-    }
-    public Map<CommandName, Command> getRepository() {
-        return repository;
     }
 
     public Command getCommand(CommandName commandName){

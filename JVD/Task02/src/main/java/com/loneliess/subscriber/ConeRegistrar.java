@@ -21,7 +21,7 @@ public class ConeRegistrar <T> implements Flow.Subscriber<T>{
     private double surfaceArea;
     private double sideSurfaceArea;
     private double volume;
-    private CommandProvider provider=CommandProvider.getCommandProvider();
+    private CommandProvider provider=new CommandProvider();
 
     public double getSurfaceArea() {
         return surfaceArea;

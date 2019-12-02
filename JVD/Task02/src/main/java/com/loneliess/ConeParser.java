@@ -7,11 +7,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Parser {
+public class ConeParser {
     private static final Logger logger = LogManager.getLogger();
     private ServiceValidation validator;
 
-    public Parser(){
+    public ConeParser(){
        validator =ServiceFactory.getInstance().getServiceValidation();
     }
 

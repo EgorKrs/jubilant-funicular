@@ -13,7 +13,7 @@ public class ConeWrapper {
     private SubmissionPublisher<Cone> publisher = new SubmissionPublisher<>();
     private ConeRegistrar<Cone> subscriber=new ConeRegistrar<>();
     private Cone cone=new Cone();
-
+    private RepositoryConeRegistrar repository=RepositoryFactory.getInstance().getRepositoryConeRegistrar();
     public ConeWrapper(int id,
                        @NotNull(message = "Обязательно должна быть задана длина образующей конуса")
                        @Positive(message = "Длина образующей конуса должна быть положительна. ") double l,
@@ -25,10 +25,12 @@ public class ConeWrapper {
         publisher.subscribe(subscriber);
         cone.setAll(id,l,  r, h, x1, y1, z1, x2, y2, z2);
         publisher.submit(cone);
+        repository.add(subscriber);
     }
     public ConeWrapper(){
         publisher.subscribe(subscriber);
         publisher.submit(cone);
+        repository.add(subscriber);
     }
 
     public void addCone(Cone cone){
@@ -43,10 +45,12 @@ public class ConeWrapper {
 
     }
     public void deleteCone(){
+        repository.delete(subscriber);
         publisher.close();
         publisher=null;
         subscriber=null;
         cone=null;
+
     }
     public Cone getCone(){
         return cone;

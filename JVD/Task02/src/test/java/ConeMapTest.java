@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class ConeMapTest {
-    private CommandProvider commandProvider=CommandProvider.getCommandProvider();
+    private CommandProvider commandProvider=new CommandProvider();
     private RepositoryCone repository=RepositoryFactory.getInstance().getRepositoryCone();
     private ConeService service= ServiceFactory.getInstance().getConeService();
 

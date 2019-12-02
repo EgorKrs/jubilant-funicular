@@ -13,13 +13,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Dispatcher {
+    private static final ReentrantLock locker = new ReentrantLock();
+    private Dispatcher(){ }
+    private static  Dispatcher instance;
+
+    public static Dispatcher getInstance() {
+        if(instance==null){
+            locker.lock();
+            instance=new Dispatcher();
+            locker.unlock();
+        }
+        return instance;
+    }
+
+
     private ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
     private final Logger logger= LogManager.getLogger();
-    private Tunnel tunnel=new Tunnel(3);
-    private ReentrantLock locker = new ReentrantLock();
+    private Tunnel tunnel=new Tunnel(5);
+    private Tunnel tunnel0=new Tunnel(3);
     private Deque<Train> leftQueue=new ArrayDeque<>();
     private Deque<Train> rightQueue=new ArrayDeque<>();
-    private Direction lastDirection=Direction.RIGHT;
+    private Direction lastDirection;
     public static AtomicInteger successCase=new AtomicInteger();
 
     private void addTrainToLeftQueue(Train train){
@@ -49,6 +63,9 @@ public class Dispatcher {
         return train;
     }
     public void sendToQueue(Train train){
+        if(lastDirection==null){
+            lastDirection=train.getDirection();
+        }
         switch (train.getDirection()){
             case RIGHT:
                 addTrainToRightQueue(train);
@@ -73,18 +90,26 @@ public class Dispatcher {
             else {
                 train=getTrainToLeftQueue();
             }
-            logger.info("Поезд "+train.getNumber() +" отправился в тоннель  c "+train.getDirection()+" стороны" );
             try {
-                tunnel.launchTrain(train);
+                    while (tunnel.quantity.get()==0&&tunnel0.quantity.get()==0){
+                        TimeUnit.SECONDS.sleep(1);
+                        logger.info("ожидание");
+                    }
+                    if (tunnel.quantity.get() > tunnel0.quantity.get()) {
+
+                        logger.info("Поезд " + train.getNumber() + " отправился в 2 тонель  c " + train.getDirection() + " стороны");
+                        tunnel.launchTrain(train,"тонель 2");
+                    } else {
+                        logger.info("Поезд " + train.getNumber() + " отправился в 1 тонель  c " + train.getDirection() + " стороны");
+                        tunnel0.launchTrain(train,"тонель 1");
+                    }
+
+
             } catch (ExecutionException | InterruptedException e) {
                 logger.catching(e);
                 e.printStackTrace();
             }
-        },0,1, TimeUnit.SECONDS);
+        },0,60, TimeUnit.MILLISECONDS);
 
-    }
-
-    public Tunnel getTunnel() {
-        return tunnel;
     }
 }
