@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class DispatcherTest {
     private static Logger logger= LogManager.getLogger();
     private static Random random;
-    private Dispatcher dispatcher=new Dispatcher();
+    private Dispatcher dispatcher=Dispatcher.getInstance();
     @BeforeClass
     public static void prepareToTest(){
        random=new Random();
@@ -26,13 +26,13 @@ public class DispatcherTest {
     }
     @Test
     public void dispatcherSendTest() throws InterruptedException {
-        int quantity=6;
+        int quantity=30;
         for (int i = 0; i < quantity; i++) {
             dispatcher.sendToQueue(createTrain());
         }
         logger.info("\n\n");
         dispatcher.sendToTunnel();
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(25);
         Assert.assertEquals(quantity,Dispatcher.successCase.get());
     }
 }
