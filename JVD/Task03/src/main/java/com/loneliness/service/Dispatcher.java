@@ -35,7 +35,8 @@ public class Dispatcher {
     private Deque<Train> rightQueue=new ArrayDeque<>();
     private Direction lastDirection;
     public static AtomicInteger successCase=new AtomicInteger();
-
+    private int maxQuantityOfTrainToOneDirection=4;
+    private AtomicInteger toOneDirection=new AtomicInteger(0);
     private void addTrainToLeftQueue(Train train){
         logger.info("Поезд "+train.getNumber()+" отправлен в Left очередь");
         locker.lock();
@@ -62,6 +63,22 @@ public class Dispatcher {
         locker.unlock();
         return train;
     }
+
+    private int getSizeOfRightQueue(){
+        int size;
+        locker.lock();
+        size=rightQueue.size();
+        locker.unlock();
+        return size;
+    }
+    private int getSizeOfLeftQueue(){
+        int size;
+        locker.lock();
+        size=leftQueue.size();
+        locker.unlock();
+        return size;
+    }
+
     public void sendToQueue(Train train){
         if(lastDirection==null){
             lastDirection=train.getDirection();
@@ -78,36 +95,56 @@ public class Dispatcher {
     public void sendToTunnel() {
         service.scheduleWithFixedDelay(() -> {
             Train train;
-            if(rightQueue.size()>leftQueue.size()){
-                train=getTrainToRightQueue();
+            if(toOneDirection.get()==maxQuantityOfTrainToOneDirection){
+                if(lastDirection.equals(Direction.LEFT)){
+                    lastDirection=Direction.RIGHT;
+                }
+                else if(lastDirection.equals(Direction.RIGHT)){
+                    lastDirection=Direction.LEFT;
+                }
+                toOneDirection.set(0);
             }
-            else if(rightQueue.size()<leftQueue.size()){
-                train=getTrainToLeftQueue();
+            else if(getSizeOfLeftQueue()==0){
+                lastDirection=Direction.RIGHT;
+                logger.info("left empty");
+                toOneDirection.set(0);
             }
-            else if(lastDirection.equals(Direction.RIGHT)){
+            else if(getSizeOfRightQueue()==0){
+                lastDirection=Direction.LEFT;
+                logger.info("right empty");
+                toOneDirection.set(0);
+            }
+
+
+
+            if(lastDirection.equals(Direction.RIGHT)){
                 train=getTrainToRightQueue();
+                toOneDirection.incrementAndGet();
             }
             else {
                 train=getTrainToLeftQueue();
+                toOneDirection.incrementAndGet();
             }
+            logger.info(toOneDirection.get());
+
+
             try {
-                    while (tunnel.quantity.get()==0&&tunnel0.quantity.get()==0){
+                    while (tunnel.getAvailableQuantityOfTrain()==0&&tunnel0.getAvailableQuantityOfTrain()==0){
                         TimeUnit.SECONDS.sleep(1);
                         logger.info("ожидание");
                     }
-                    if (tunnel.quantity.get() > tunnel0.quantity.get()) {
+                    if (tunnel.getAvailableQuantityOfTrain() > tunnel0.getAvailableQuantityOfTrain()) {
 
                         logger.info("Поезд " + train.getNumber() + " отправился в 2 тонель  c " + train.getDirection() + " стороны");
-                        tunnel.launchTrain(train,"тонель 2");
+                        tunnel.launchTrain(train);
                     } else {
                         logger.info("Поезд " + train.getNumber() + " отправился в 1 тонель  c " + train.getDirection() + " стороны");
-                        tunnel0.launchTrain(train,"тонель 1");
+                        tunnel0.launchTrain(train);
                     }
 
 
-            } catch (ExecutionException | InterruptedException e) {
+            } catch (InterruptedException e) {
                 logger.catching(e);
-                e.printStackTrace();
             }
         },0,60, TimeUnit.MILLISECONDS);
 
