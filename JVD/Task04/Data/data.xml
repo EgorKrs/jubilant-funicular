@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<touristVouchers>
+    <vouchers>
+        <TravelPackages id="509-01-8849">
+            <type>day off</type>
+            <country>Chile</country>
+            <numberOfDay>7</numberOfDay>
+            <hotelCharacteristic hotelId="324-78-7002">
+                <numberOfStars>3</numberOfStars>
+                <feed>false</feed>
+                <other>Удовлетворительный Бетонный Свитер</other>
+            </hotelCharacteristic>
+            <price>31265.34812</price>
+        </TravelPackages>
+        <TravelPackages id="051-98-6913">
+            <type>day off</type>
+            <country>Armenia</country>
+            <numberOfDay>6</numberOfDay>
+            <hotelCharacteristic hotelId="471-64-9002">
+                <numberOfStars>2</numberOfStars>
+                <feed>true</feed>
+                <other>Аэродинамический Пластиковый Ботинок</other>
+            </hotelCharacteristic>
+            <price>64002.78988</price>
+        </TravelPackages>
+        <TravelPackages id="274-16-3653">
+            <type>pilgrimage</type>
+            <country>Brunei Darussalam</country>
+            <numberOfDay>1</numberOfDay>
+            <hotelCharacteristic hotelId="157-44-6928">
+                <numberOfStars>4</numberOfStars>
+                <feed>true</feed>
+                <other>Великолепный Гранитный Клавиатура</other>
+            </hotelCharacteristic>
+            <price>36785.44675</price>
+        </TravelPackages>
+        <TravelPackages id="667-77-6691">
+            <type>pilgrimage</type>
+            <country>Saint Lucia</country>
+            <numberOfDay>4</numberOfDay>
+            <hotelCharacteristic hotelId="239-90-2385">
+                <numberOfStars>1</numberOfStars>
+                <feed>false</feed>
+                <other>Практичный Бронзовый Клавиатура</other>
+            </hotelCharacteristic>
+            <price>34772.54962</price>
+        </TravelPackages>
+        <TravelPackages id="812-04-1403">
+            <type>day off</type>
+            <country>Saint Kitts and Nevis</country>
+            <numberOfDay>4</numberOfDay>
+            <hotelCharacteristic hotelId="678-03-2712">
+                <numberOfStars>4</numberOfStars>
+                <feed>true</feed>
+                <other>Великолепный Мраморный Тарелка</other>
+            </hotelCharacteristic>
+            <price>67656.34011</price>
+        </TravelPackages>
+    </vouchers>
+</touristVouchers>
