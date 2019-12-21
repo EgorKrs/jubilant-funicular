@@ -1,4 +1,4 @@
-package entity;
+package com.loneliness.entity;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -27,5 +27,12 @@ public class TouristVouchers {
     @Override
     public int hashCode() {
         return Objects.hash(vouchers);
+    }
+
+    @Override
+    public String toString() {
+        return "TouristVouchers{" +
+                "vouchers=" + vouchers.toString() +
+                '}';
     }
 }

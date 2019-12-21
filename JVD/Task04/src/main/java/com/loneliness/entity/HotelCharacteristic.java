@@ -1,4 +1,4 @@
-package entity;
+package com.loneliness.entity;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -67,16 +67,13 @@ public class HotelCharacteristic {
 
     @Override
     public String toString() {
-        return "entity.HotelCharacteristic{" +
-                "id=" + hotelId +
-                ", numberOfStars=" + numberOfStars +
-                ", feed=" + feed +
-                ", other='" + other + '\'' +
+        return "HotelCharacteristic{" +
+                " \nhotelId='" + hotelId + '\'' +
+                ",\nnumberOfStars=" + numberOfStars +
+                ",\nfeed=" + feed +
+                ",\nother='" + other + '\'' +
                 '}';
     }
-
-
-
 
     public class Builder{
         private Builder(){

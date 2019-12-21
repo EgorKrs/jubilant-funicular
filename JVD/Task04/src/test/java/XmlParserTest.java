@@ -1,28 +1,36 @@
 import com.github.javafaker.Faker;
-import entity.HotelCharacteristic;
-import entity.TouristVouchers;
-import entity.TravelPackages;
-import entity.Type;
+import com.loneliness.*;
+import com.loneliness.entity.HotelCharacteristic;
+import com.loneliness.entity.TouristVouchers;
+import com.loneliness.entity.TravelPackages;
+import com.loneliness.entity.Type;
+import com.loneliness.parser.XmlDomParser;
+import com.loneliness.parser.XmlJaxbParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.util.*;
 
 public class XmlParserTest {
     private static Faker faker;
-    private static XmlParser xmlParser;
+    private static XmlJaxbParser xmlJaxbParser;
+    private static XmlDomParser xmlDomParser;
     @BeforeClass
     public static void init(){
         faker=new Faker(new Locale("ru"));
-        xmlParser=new XmlParser();
+        xmlJaxbParser =new XmlJaxbParser();
+        xmlDomParser=new XmlDomParser();
     }
     private TravelPackages createValid(){
-        HotelCharacteristic hotelCharacteristic=HotelCharacteristic.newBuilder().setFeed(faker.random().nextBoolean()).
-                setId(faker.idNumber().valid()).setNumberOfStars(faker.number().numberBetween(1,5)).setOther(faker.commerce().productName()).build();
+        HotelCharacteristic hotelCharacteristic= HotelCharacteristic.newBuilder().setFeed(faker.random().nextBoolean()).
+                setId(faker.idNumber().valid()).setNumberOfStars(faker.number().numberBetween(1,5)).setOther(faker.
+                commerce().productName()).build();
         TravelPackages.Builder builder=TravelPackages.newBuilder().setCountry(faker.country().name()).
                 setHotelCharacteristic(hotelCharacteristic).setId(faker.idNumber().valid()).setNumberOfDay(faker.number().
-                randomDigit()).setPrice(String.valueOf(faker.number().randomDouble(5,10,100000)));
+                randomDigitNotZero()).setPrice(String.valueOf(faker.number().randomDouble(5,10,100000)));
         switch (faker.number().numberBetween(0,3)){
             case 0:
                 builder.setType(Type.DAY_OFF);
@@ -55,23 +63,44 @@ public class XmlParserTest {
     }
 
     @Test
-    public void ParserTest(){
+    public void ParserJaxbTest(){
         TouristVouchers startVouchers=new TouristVouchers();
         for (int i = 0; i < 5; i++) {
             startVouchers.vouchers.add(createValid());
         }
-        xmlParser.marshall(startVouchers,"Data\\data.xml");
-        Assert.assertEquals(startVouchers,xmlParser.unMarshall("Data\\data.xml"));
+        xmlJaxbParser.marshall(startVouchers,"Data\\data.xml");
+        Assert.assertEquals(startVouchers, xmlJaxbParser.unMarshall("Data\\data.xml"));
     }
     @Test
-    public void validationParserTest(){
+    public void validationJaxbParserTest(){
         TouristVouchers invalidVouchers=new TouristVouchers();
         for (int i = 0; i < 5; i++) {
             invalidVouchers.vouchers.add(createInValid());
         }
-        xmlParser.marshall(invalidVouchers,"Data\\data.xml");
-        xmlParser.unMarshall("Data\\data.xml");
-        Assert.assertFalse(xmlParser.getErrors().isEmpty());
+        xmlJaxbParser.marshall(invalidVouchers,"Data\\data.xml");
+        xmlJaxbParser.unMarshall("Data\\data.xml");
+        Assert.assertFalse(xmlJaxbParser.getErrors().isEmpty());
+    }
+
+    @Test
+    public void ValidationTest(){
+        TouristVouchers invalidVouchers=new TouristVouchers();
+        for (int i = 0; i < 5; i++) {
+            invalidVouchers.vouchers.add(createInValid());
+        }
+        xmlDomParser.marshall("Data\\data.xml",invalidVouchers);
+        TouristVouchers vouchers=xmlDomParser.unMarshall("Data\\data.xml");
+        Assert.assertEquals(0,vouchers.vouchers.size());
+    }
+
+    @Test
+    public void DomParserTest(){
+        TouristVouchers vouchers=new TouristVouchers();
+        for (int i = 0; i < 5; i++) {
+            vouchers.vouchers.add(createValid());
+        }
+        xmlDomParser.marshall("Data\\data.xml",vouchers);
+        Assert.assertEquals(vouchers, xmlDomParser.unMarshall("Data\\data.xml"));
     }
 
 

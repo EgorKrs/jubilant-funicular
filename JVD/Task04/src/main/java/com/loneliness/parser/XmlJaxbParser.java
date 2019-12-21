@@ -1,8 +1,6 @@
-import com.github.javafaker.Faker;
-import entity.HotelCharacteristic;
-import entity.TouristVouchers;
-import entity.TravelPackages;
-import entity.Type;
+package com.loneliness.parser;
+
+import com.loneliness.entity.TouristVouchers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -13,17 +11,15 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
-import java.util.Stack;
 
 
-public class XmlParser {
+public class XmlJaxbParser {
     private Set<String> errors=new HashSet<>();
     private Logger logger = LogManager.getLogger();
     public boolean marshall(TouristVouchers object,String fileName) {
         try( BufferedWriter writer=new BufferedWriter(new FileWriter(fileName))) {
-            JAXBContext context = JAXBContext.newInstance(entity.TouristVouchers.class);
+            JAXBContext context = JAXBContext.newInstance(TouristVouchers.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.marshal(object, writer);
@@ -36,7 +32,7 @@ public class XmlParser {
     public TouristVouchers unMarshall(String fileName){
         try {
 
-        JAXBContext context = JAXBContext.newInstance(entity.TouristVouchers.class);
+        JAXBContext context = JAXBContext.newInstance(TouristVouchers.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
