@@ -17,7 +17,7 @@ import java.util.Set;
 public class XmlJaxbParser {
     private Set<String> errors=new HashSet<>();
     private Logger logger = LogManager.getLogger();
-    public boolean marshall(TouristVouchers object,String fileName) {
+    public boolean marshall(String fileName,TouristVouchers object) {
         try( BufferedWriter writer=new BufferedWriter(new FileWriter(fileName))) {
             JAXBContext context = JAXBContext.newInstance(TouristVouchers.class);
             Marshaller marshaller = context.createMarshaller();

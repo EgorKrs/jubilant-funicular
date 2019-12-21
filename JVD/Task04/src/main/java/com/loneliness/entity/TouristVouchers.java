@@ -16,6 +16,13 @@ public class TouristVouchers {
     @XmlElement(name = "TravelPackages")
     public List<TravelPackages> vouchers = new ArrayList<>();
 
+    public List<TravelPackages> getVouchers() {
+        return vouchers;
+    }
+    public void add(TravelPackages travelPackages){
+        vouchers.add(travelPackages);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

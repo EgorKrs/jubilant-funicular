@@ -6,6 +6,7 @@ import com.loneliness.entity.TravelPackages;
 import com.loneliness.entity.Type;
 import com.loneliness.parser.XmlDomParser;
 import com.loneliness.parser.XmlJaxbParser;
+import com.loneliness.parser.XmlStAXParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,11 +19,13 @@ public class XmlParserTest {
     private static Faker faker;
     private static XmlJaxbParser xmlJaxbParser;
     private static XmlDomParser xmlDomParser;
+    private static XmlStAXParser xmlStAXParser;
     @BeforeClass
     public static void init(){
         faker=new Faker(new Locale("ru"));
         xmlJaxbParser =new XmlJaxbParser();
         xmlDomParser=new XmlDomParser();
+        xmlStAXParser=new XmlStAXParser();
     }
     private TravelPackages createValid(){
         HotelCharacteristic hotelCharacteristic= HotelCharacteristic.newBuilder().setFeed(faker.random().nextBoolean()).
@@ -68,7 +71,7 @@ public class XmlParserTest {
         for (int i = 0; i < 5; i++) {
             startVouchers.vouchers.add(createValid());
         }
-        xmlJaxbParser.marshall(startVouchers,"Data\\data.xml");
+        xmlJaxbParser.marshall("Data\\data.xml",startVouchers);
         Assert.assertEquals(startVouchers, xmlJaxbParser.unMarshall("Data\\data.xml"));
     }
     @Test
@@ -77,7 +80,7 @@ public class XmlParserTest {
         for (int i = 0; i < 5; i++) {
             invalidVouchers.vouchers.add(createInValid());
         }
-        xmlJaxbParser.marshall(invalidVouchers,"Data\\data.xml");
+        xmlJaxbParser.marshall("Data\\data.xml",invalidVouchers);
         xmlJaxbParser.unMarshall("Data\\data.xml");
         Assert.assertFalse(xmlJaxbParser.getErrors().isEmpty());
     }
@@ -101,6 +104,15 @@ public class XmlParserTest {
         }
         xmlDomParser.marshall("Data\\data.xml",vouchers);
         Assert.assertEquals(vouchers, xmlDomParser.unMarshall("Data\\data.xml"));
+    }
+    @Test
+    public void StAX(){
+        TouristVouchers vouchers=new TouristVouchers();
+        for (int i = 0; i < 5; i++) {
+            vouchers.vouchers.add(createValid());
+        }
+        xmlStAXParser.marshall("Data\\data.xml",vouchers);
+        Assert.assertEquals(vouchers,xmlStAXParser.unMarshall("Data\\data.xml"));
     }
 
 

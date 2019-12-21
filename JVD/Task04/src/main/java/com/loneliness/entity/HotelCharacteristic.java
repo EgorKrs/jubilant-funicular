@@ -72,7 +72,7 @@ public class HotelCharacteristic {
                 ",\nnumberOfStars=" + numberOfStars +
                 ",\nfeed=" + feed +
                 ",\nother='" + other + '\'' +
-                '}';
+                "}\n";
     }
 
     public class Builder{

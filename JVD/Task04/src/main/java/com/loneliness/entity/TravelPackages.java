@@ -99,7 +99,7 @@ public class TravelPackages {
                 ", \nnumberOfDay=" + numberOfDay +
                 ", \nhotelCharacteristic=" + hotelCharacteristic +
                 ", \nprice=" + price +
-                '}';
+                "}\n";
     }
 
     public class Builder{
