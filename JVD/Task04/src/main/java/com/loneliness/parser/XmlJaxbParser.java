@@ -14,9 +14,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class XmlJaxbParser {
+public class XmlJaxbParser implements Parser{
     private Set<String> errors=new HashSet<>();
-    private Logger logger = LogManager.getLogger();
+
     public boolean marshall(String fileName,TouristVouchers object) {
         try( BufferedWriter writer=new BufferedWriter(new FileWriter(fileName))) {
             JAXBContext context = JAXBContext.newInstance(TouristVouchers.class);

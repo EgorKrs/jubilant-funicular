@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import org.w3c.dom.Document;
 
-public class XmlDomParser {
+public class XmlDomParser implements Parser{
     private Logger logger = LogManager.getLogger();
     public TouristVouchers unMarshall(String fileName){
         Validation validation =new Validation();

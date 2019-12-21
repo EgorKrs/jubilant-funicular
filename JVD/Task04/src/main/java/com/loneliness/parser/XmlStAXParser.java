@@ -14,7 +14,7 @@ import javax.xml.stream.events.*;
 import java.io.*;
 import java.util.Iterator;
 
-public class XmlStAXParser {
+public class XmlStAXParser implements Parser{
     private Logger logger = LogManager.getLogger();
 
     public TouristVouchers unMarshall(String fileName) {
