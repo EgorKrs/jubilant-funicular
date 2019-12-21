@@ -1,4 +1,4 @@
-package entity;
+package com.loneliness.entity;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -16,6 +16,13 @@ public class TouristVouchers {
     @XmlElement(name = "TravelPackages")
     public List<TravelPackages> vouchers = new ArrayList<>();
 
+    public List<TravelPackages> getVouchers() {
+        return vouchers;
+    }
+    public void add(TravelPackages travelPackages){
+        vouchers.add(travelPackages);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -27,5 +34,12 @@ public class TouristVouchers {
     @Override
     public int hashCode() {
         return Objects.hash(vouchers);
+    }
+
+    @Override
+    public String toString() {
+        return "TouristVouchers{" +
+                "vouchers=" + vouchers.toString() +
+                '}';
     }
 }

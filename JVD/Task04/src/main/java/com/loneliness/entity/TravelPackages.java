@@ -1,4 +1,4 @@
-package entity;
+package com.loneliness.entity;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,7 +9,7 @@ import java.util.Objects;
 @XmlType(propOrder = { "id", "type","country","numberOfDay","hotelCharacteristic","price" })
 @XmlRootElement
 public class TravelPackages {
-    @XmlAttribute
+
     private String id;
     private Type type;
     private String country;
@@ -17,6 +17,10 @@ public class TravelPackages {
     private HotelCharacteristic hotelCharacteristic;
     private BigDecimal price;
 
+    public String getId(){
+        return id;
+    }
+    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }
@@ -88,14 +92,14 @@ public class TravelPackages {
 
     @Override
     public String toString() {
-        return "entity.TravelPackages{" +
-                "id=" + id +
-                ", type=" + type +
-                ", country='" + country + '\'' +
-                ", numberOfDay=" + numberOfDay +
-                ", entity.HotelCharacteristic='" + hotelCharacteristic.toString() + '\'' +
-                ", price=" + price +
-                '}';
+        return "TravelPackages{" +
+                "  \nid='" + id + '\'' +
+                ", \ntype=" + type +
+                ", \ncountry='" + country + '\'' +
+                ", \nnumberOfDay=" + numberOfDay +
+                ", \nhotelCharacteristic=" + hotelCharacteristic +
+                ", \nprice=" + price +
+                "}\n";
     }
 
     public class Builder{

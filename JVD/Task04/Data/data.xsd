@@ -2,33 +2,33 @@
     <xs:element name="touristVouchers">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="vouchers">
+                <xs:element name="vouchers" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="TravelPackages" >
+                            <xs:element name="TravelPackages" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element  name="type" maxOccurs="unbounded">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
-                                                    <xs:enumeration value="day off"/>
-                                                    <xs:enumeration value="sightseeing"/>
-                                                    <xs:enumeration value="pilgrimage"/>
+                                                    <xs:enumeration value="DAY_OFF"/>
+                                                    <xs:enumeration value="SIGHTSEEING"/>
+                                                    <xs:enumeration value="PILGRIMAGE"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
                                         <xs:element  name="country" maxOccurs="unbounded">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
-                                                    <xs:length value="20"/>
+                                                    <xs:maxLength value="20"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
                                         <xs:element  name="numberOfDay" maxOccurs="unbounded">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:integer">
-                                        <xs:minInclusive value="0"/>
-                                        <xs:maxInclusive value="5"/>
+                                        <xs:minInclusive value="1"/>
+                                        <xs:maxInclusive value="360"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
@@ -46,7 +46,7 @@
                                                     <xs:element type="xs:string" name="feed"/>
                                                     <xs:element type="xs:string" name="other" />
                                                 </xs:sequence>
-                                                <xs:attribute type="xs:string" name="hotelId" />
+                                                <xs:attribute type="xs:string" name="hotelId" use="optional"/>
                                             </xs:complexType>
                                         </xs:element>
                                         <xs:element type="xs:decimal" name="price"/>
