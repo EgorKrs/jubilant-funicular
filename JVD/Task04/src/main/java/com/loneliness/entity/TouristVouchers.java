@@ -14,12 +14,12 @@ public class TouristVouchers {
 
     @XmlElementWrapper(name = "vouchers")
     @XmlElement(name = "TravelPackages")
-    public List<TravelPackages> vouchers = new ArrayList<>();
+    public List<TravelPackagesBuilder.TravelPackages> vouchers = new ArrayList<>();
 
-    public List<TravelPackages> getVouchers() {
+    public List<TravelPackagesBuilder.TravelPackages> getVouchers() {
         return vouchers;
     }
-    public void add(TravelPackages travelPackages){
+    public void add(TravelPackagesBuilder.TravelPackages travelPackages){
         vouchers.add(travelPackages);
     }
 
@@ -39,7 +39,7 @@ public class TouristVouchers {
     @Override
     public String toString() {
         return "TouristVouchers{" +
-                "vouchers=" + vouchers.toString() +
+                "vouchers=" + vouchers +
                 '}';
     }
 }
