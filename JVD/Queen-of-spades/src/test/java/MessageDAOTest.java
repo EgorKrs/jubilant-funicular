@@ -28,6 +28,7 @@ public class MessageDAOTest {
     public static void initialize()  {
         faker=new Faker(new Locale("ru"));
     }
+
     private Collection<User> getUsers() throws PropertyVetoException {
         UserDAO userDAO=new UserDAO();
         return userDAO.receiveAll(new int[]{0,2});
