@@ -1,9 +1,9 @@
 package com.loneliness.parser;
 
 import com.loneliness.Validation;
-import com.loneliness.entity.HotelCharacteristic;
+import com.loneliness.entity.HotelCharacteristicBuilder;
 import com.loneliness.entity.TouristVouchers;
-import com.loneliness.entity.TravelPackages;
+import com.loneliness.entity.TravelPackagesBuilder;
 import com.loneliness.entity.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -44,7 +43,7 @@ public class XmlDomParser implements Parser{
                 for (int temp = 0; temp < travelPackages.getLength(); temp++) {
                     Element element = (Element) travelPackages.item(temp);
                     Node node = travelPackages.item(temp);
-                    TravelPackages.Builder builder = TravelPackages.newBuilder();
+                    TravelPackagesBuilder builder = new TravelPackagesBuilder();
                     builder.setType(Type.valueOf(element.getElementsByTagName("type").item(0).getTextContent()));
                     builder.setPrice(element.getElementsByTagName("price").item(0).getTextContent());
                     builder.setCountry(element.getElementsByTagName("country").item(0).getTextContent());
@@ -53,14 +52,14 @@ public class XmlDomParser implements Parser{
                     builder.setId(node.getAttributes().getNamedItem("id").getNodeValue());
 
                     Element hotelCharacteristicElem = (Element) element.getElementsByTagName("hotelCharacteristic").item(0);
-                    HotelCharacteristic.Builder hotelBuilder = HotelCharacteristic.newBuilder();
+                    HotelCharacteristicBuilder hotelBuilder=new HotelCharacteristicBuilder(
+                            hotelCharacteristicElem.getAttribute("hotelId"));
                     hotelBuilder.setFeed(Boolean.parseBoolean(hotelCharacteristicElem.getElementsByTagName("feed").
                             item(0).getTextContent()));
                     hotelBuilder.setOther(hotelCharacteristicElem.getElementsByTagName("other").item(0).
                             getTextContent());
                     hotelBuilder.setNumberOfStars(Integer.parseInt(hotelCharacteristicElem.
                             getElementsByTagName("numberOfStars").item(0).getTextContent()));
-                    hotelBuilder.setId(hotelCharacteristicElem.getAttribute("hotelId"));
                     builder.setHotelCharacteristic(hotelBuilder.build());
                     touristVouchers.vouchers.add(builder.build());
 
@@ -84,7 +83,7 @@ public class XmlDomParser implements Parser{
             document.appendChild(root);
             Element voucher=document.createElement("vouchers");
             root.appendChild(voucher);
-            for (TravelPackages packages :
+            for (TravelPackagesBuilder.TravelPackages packages :
                     vouchers.vouchers) {
 
                 voucher.appendChild(createNode(document,packages));
@@ -106,7 +105,7 @@ public class XmlDomParser implements Parser{
     }
 
 
-    private  Node createNode(Document doc, TravelPackages packages) {
+    private  Node createNode(Document doc, TravelPackagesBuilder.TravelPackages packages) {
         Element travelPackage = doc.createElement("TravelPackages");
         Element hotelCharacteristic=doc.createElement("hotelCharacteristic");
 

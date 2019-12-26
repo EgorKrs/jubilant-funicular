@@ -1,9 +1,9 @@
 package com.loneliness.parser;
 
 import com.loneliness.Validation;
-import com.loneliness.entity.HotelCharacteristic;
+import com.loneliness.entity.HotelCharacteristicBuilder;
 import com.loneliness.entity.TouristVouchers;
-import com.loneliness.entity.TravelPackages;
+import com.loneliness.entity.TravelPackagesBuilder;
 import com.loneliness.entity.Type;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,75 +33,96 @@ public class XmlStAXParser implements Parser{
                 XMLInputFactory factory = XMLInputFactory.newInstance();
                 XMLEventReader eventReader = factory.createXMLEventReader(reader);
 
-                TravelPackages.Builder travelPackagesBuilder = TravelPackages.newBuilder();
-                HotelCharacteristic.Builder hotelCharacteristicBuilder = HotelCharacteristic.newBuilder();
-
+                TravelPackagesBuilder travelPackagesBuilder = new TravelPackagesBuilder();
+                HotelCharacteristicBuilder hotelCharacteristicBuilder=new HotelCharacteristicBuilder("0");
+                String information="";
+                String qName="";
                 while (eventReader.hasNext()) {
                     XMLEvent event = eventReader.nextEvent();
 
                     switch (event.getEventType()) {
                         case XMLStreamConstants.START_ELEMENT:
                             StartElement startElement = event.asStartElement();
-                            String qName = startElement.getName().getLocalPart();
+                            qName = startElement.getName().getLocalPart();
 
                             if (qName.equalsIgnoreCase("TravelPackages")) {
                                 Iterator<Attribute> attributes = startElement.getAttributes();
                                 travelPackagesBuilder.setId(attributes.next().getValue());
                             } else if (qName.equalsIgnoreCase("hotelCharacteristic")) {
                                 Iterator<Attribute> attributes = startElement.getAttributes();
-                                hotelCharacteristicBuilder.setId(attributes.next().getValue());
-                            } else if (qName.equalsIgnoreCase("type")) {
-                                type = true;
-                            } else if (qName.equalsIgnoreCase("country")) {
-                                country = true;
-                            } else if (qName.equalsIgnoreCase("numberOfDay")) {
-                                numberOfDay = true;
-                            } else if (qName.equalsIgnoreCase("feed")) {
-                                feed = true;
-                            } else if (qName.equalsIgnoreCase("other")) {
-                                other = true;
-                            } else if (qName.equalsIgnoreCase("price")) {
-                                price = true;
-                            } else if (qName.equalsIgnoreCase("numberOfStars")) {
-                                numberOfStars = true;
+                                hotelCharacteristicBuilder = new HotelCharacteristicBuilder(attributes.next().getValue());
                             }
+//                             else if (qName.equalsIgnoreCase("type")) {
+//                                type = true;
+//                            } else if (qName.equalsIgnoreCase("country")) {
+//                                country = true;
+//                            } else if (qName.equalsIgnoreCase("numberOfDay")) {
+//                                numberOfDay = true;
+//                            } else if (qName.equalsIgnoreCase("feed")) {
+//                                feed = true;
+//                            } else if (qName.equalsIgnoreCase("other")) {
+//                                other = true;
+//                            } else if (qName.equalsIgnoreCase("price")) {
+//                                price = true;
+//                            } else if (qName.equalsIgnoreCase("numberOfStars")) {
+//                                numberOfStars = true;
+//                            }
                             break;
 
                         case XMLStreamConstants.CHARACTERS:
                             Characters characters = event.asCharacters();
-                            if (type) {
-                                travelPackagesBuilder.setType(Type.valueOf(characters.getData()));
-                                type = false;
-                            } else if (country) {
-                                travelPackagesBuilder.setCountry(characters.getData());
-                                country = false;
-                            } else if (numberOfDay) {
-                                travelPackagesBuilder.setNumberOfDay(Integer.parseInt(characters.getData()));
-                                numberOfDay = false;
-                            } else if (price) {
-                                travelPackagesBuilder.setPrice(characters.getData());
-                                price = false;
-                            } else if (feed) {
-                                hotelCharacteristicBuilder.setFeed(Boolean.parseBoolean(characters.getData()));
-                                feed = false;
-                            } else if (other) {
-                                hotelCharacteristicBuilder.setOther(characters.getData());
-                                other = false;
-                            } else if (numberOfStars) {
-                                hotelCharacteristicBuilder.setNumberOfStars(Integer.parseInt(characters.getData()));
-                                numberOfStars = false;
-                            }
+                            information=characters.getData();
+//                            if (type) {
+//                                travelPackagesBuilder.setType(Type.valueOf(characters.getData()));
+//                                type = false;
+//                            } else if (country) {
+//                                travelPackagesBuilder.setCountry(characters.getData());
+//                                country = false;
+//                            } else if (numberOfDay) {
+//                                travelPackagesBuilder.setNumberOfDay(Integer.parseInt(characters.getData()));
+//                                numberOfDay = false;
+//                            } else if (price) {
+//                                travelPackagesBuilder.setPrice(characters.getData());
+//                                price = false;
+//                            } else if (feed) {
+//                                hotelCharacteristicBuilder.setFeed(Boolean.parseBoolean(characters.getData()));
+//                                feed = false;
+//                            } else if (other) {
+//                                hotelCharacteristicBuilder.setOther(characters.getData());
+//                                other = false;
+//                            } else if (numberOfStars) {
+//                                hotelCharacteristicBuilder.setNumberOfStars(Integer.parseInt(characters.getData()));
+//                                numberOfStars = false;
+//                            }
                             break;
 
                         case XMLStreamConstants.END_ELEMENT:
                             EndElement endElement = event.asEndElement();
+
+                            if (!information.isEmpty()) {
+                                if (qName.equalsIgnoreCase("type")) {
+                                    travelPackagesBuilder.setType(Type.valueOf(information));
+                                } else if (qName.equalsIgnoreCase("country")) {
+                                    travelPackagesBuilder.setCountry(information);
+                                } else if (qName.equalsIgnoreCase("numberOfDay")) {
+                                    travelPackagesBuilder.setNumberOfDay(Integer.parseInt(information));
+                                } else if (qName.equalsIgnoreCase("feed")) {
+                                    hotelCharacteristicBuilder.setFeed(Boolean.parseBoolean(information));
+                                } else if (qName.equalsIgnoreCase("other")) {
+                                    hotelCharacteristicBuilder.setOther(information);
+                                } else if (qName.equalsIgnoreCase("price")) {
+                                    travelPackagesBuilder.setPrice(information);
+                                } else if (qName.equalsIgnoreCase("numberOfStars")) {
+                                    hotelCharacteristicBuilder.setNumberOfStars(Integer.parseInt(information));
+                                }
+                            }
                             if (endElement.getName().getLocalPart().equalsIgnoreCase("hotelCharacteristic")) {
                                 travelPackagesBuilder.setHotelCharacteristic(hotelCharacteristicBuilder.build());
-                                hotelCharacteristicBuilder = HotelCharacteristic.newBuilder();
+                                // hotelCharacteristicBuilder = HotelCharacteristicBuilder.newBuilder();
 
                             } else if (endElement.getName().getLocalPart().equalsIgnoreCase("TravelPackages")) {
                                 vouchers.add(travelPackagesBuilder.build());
-                                travelPackagesBuilder = TravelPackages.newBuilder();
+                                //travelPackagesBuilder = TravelPackagesBuilder.newBuilder();
                             }
                             break;
                     }
@@ -123,7 +144,7 @@ public class XmlStAXParser implements Parser{
             xMLStreamWriter.writeStartElement("touristVouchers");
 
             xMLStreamWriter.writeStartElement("vouchers");
-            for (TravelPackages packages :
+            for (TravelPackagesBuilder.TravelPackages packages :
                     vouchers.getVouchers()) {
                write(packages,xMLStreamWriter);
 
@@ -140,7 +161,7 @@ public class XmlStAXParser implements Parser{
         return false;
     }
 
-    private void write(TravelPackages packages,XMLStreamWriter xMLStreamWriter) throws XMLStreamException {
+    private void write(TravelPackagesBuilder.TravelPackages packages, XMLStreamWriter xMLStreamWriter) throws XMLStreamException {
         xMLStreamWriter.writeStartElement("TravelPackages");
         xMLStreamWriter.writeAttribute("id", packages.getId());
         writeElem("type",packages.getType().toString(),xMLStreamWriter);
@@ -150,7 +171,7 @@ public class XmlStAXParser implements Parser{
         writeElem("price",packages.getPrice().toString(),xMLStreamWriter);
         xMLStreamWriter.writeEndElement();
     }
-    private void write(HotelCharacteristic hotelCharacteristic,XMLStreamWriter xMLStreamWriter)throws XMLStreamException{
+    private void write(HotelCharacteristicBuilder.HotelCharacteristic hotelCharacteristic, XMLStreamWriter xMLStreamWriter)throws XMLStreamException{
         xMLStreamWriter.writeStartElement("hotelCharacteristic");
         xMLStreamWriter.writeAttribute("hotelId", hotelCharacteristic.getHotelId());
         writeElem("numberOfStars",String.valueOf(hotelCharacteristic.getNumberOfStars()),xMLStreamWriter);

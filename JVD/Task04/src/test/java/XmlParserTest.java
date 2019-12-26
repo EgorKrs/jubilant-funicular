@@ -1,8 +1,7 @@
 import com.github.javafaker.Faker;
-import com.loneliness.*;
-import com.loneliness.entity.HotelCharacteristic;
+import com.loneliness.entity.HotelCharacteristicBuilder;
 import com.loneliness.entity.TouristVouchers;
-import com.loneliness.entity.TravelPackages;
+import com.loneliness.entity.TravelPackagesBuilder;
 import com.loneliness.entity.Type;
 import com.loneliness.parser.XmlDomParser;
 import com.loneliness.parser.XmlJaxbParser;
@@ -11,9 +10,7 @@ import com.loneliness.parser.XmlStAXParser;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.util.*;
 
 public class XmlParserTest {
@@ -30,11 +27,11 @@ public class XmlParserTest {
         xmlStAXParser=new XmlStAXParser();
         xmlSAXParser=new XmlSAXParser();
     }
-    private TravelPackages createValid(){
-        HotelCharacteristic hotelCharacteristic= HotelCharacteristic.newBuilder().setFeed(faker.random().nextBoolean()).
-                setId(faker.idNumber().valid()).setNumberOfStars(faker.number().numberBetween(1,5)).setOther(faker.
+    private TravelPackagesBuilder.TravelPackages createValid(){
+        HotelCharacteristicBuilder.HotelCharacteristic hotelCharacteristic= new HotelCharacteristicBuilder(faker.idNumber().valid()).
+                setFeed(faker.random().nextBoolean()).setNumberOfStars(faker.number().numberBetween(1,5)).setOther(faker.
                 commerce().productName()).build();
-        TravelPackages.Builder builder=TravelPackages.newBuilder().setCountry(faker.country().name()).
+        TravelPackagesBuilder builder= new TravelPackagesBuilder().setCountry(faker.country().name()).
                 setHotelCharacteristic(hotelCharacteristic).setId(faker.idNumber().valid()).setNumberOfDay(faker.number().
                 randomDigitNotZero()).setPrice(String.valueOf(faker.number().randomDouble(5,10,100000)));
         switch (faker.number().numberBetween(0,3)){
@@ -49,10 +46,10 @@ public class XmlParserTest {
         }
         return builder.build();
     }
-    private TravelPackages createInValid(){
-        HotelCharacteristic hotelCharacteristic=HotelCharacteristic.newBuilder().setFeed(faker.random().nextBoolean()).
+    private TravelPackagesBuilder.TravelPackages createInValid(){
+        HotelCharacteristicBuilder.HotelCharacteristic hotelCharacteristic= new HotelCharacteristicBuilder(faker.idNumber().invalid()).setFeed(faker.random().nextBoolean()).
                 setNumberOfStars(faker.number().numberBetween(5,10)).setOther(faker.commerce().productName()).build();
-        TravelPackages.Builder builder=TravelPackages.newBuilder().setCountry(faker.country().name()).
+        TravelPackagesBuilder builder= new TravelPackagesBuilder().setCountry(faker.country().name()).
                 setHotelCharacteristic(hotelCharacteristic).setNumberOfDay(faker.number().
                 randomDigit()).setPrice(String.valueOf(faker.number().randomDouble(5,10,100000)));
         switch (faker.number().numberBetween(0,3)){
@@ -68,25 +65,25 @@ public class XmlParserTest {
         return builder.build();
     }
 
-    @Test
-    public void ParserJaxbTest(){
-        TouristVouchers startVouchers=new TouristVouchers();
-        for (int i = 0; i < 5; i++) {
-            startVouchers.vouchers.add(createValid());
-        }
-        xmlJaxbParser.marshall("Data\\data.xml",startVouchers);
-        Assert.assertEquals(startVouchers, xmlJaxbParser.unMarshall("Data\\data.xml"));
-    }
-    @Test
-    public void validationJaxbParserTest(){
-        TouristVouchers invalidVouchers=new TouristVouchers();
-        for (int i = 0; i < 5; i++) {
-            invalidVouchers.vouchers.add(createInValid());
-        }
-        xmlJaxbParser.marshall("Data\\data.xml",invalidVouchers);
-        xmlJaxbParser.unMarshall("Data\\data.xml");
-        Assert.assertFalse(xmlJaxbParser.getErrors().isEmpty());
-    }
+//    @Test
+//    public void ParserJaxbTest(){
+//        TouristVouchers startVouchers=new TouristVouchers();
+//        for (int i = 0; i < 5; i++) {
+//            startVouchers.vouchers.add(createValid());
+//        }
+//        xmlJaxbParser.marshall("Data\\data.xml",startVouchers);
+//        Assert.assertEquals(startVouchers, xmlJaxbParser.unMarshall("Data\\data.xml"));
+//    }
+//    @Test
+//    public void validationJaxbParserTest(){
+//        TouristVouchers invalidVouchers=new TouristVouchers();
+//        for (int i = 0; i < 5; i++) {
+//            invalidVouchers.vouchers.add(createInValid());
+//        }
+//        xmlJaxbParser.marshall("Data\\data.xml",invalidVouchers);
+//        xmlJaxbParser.unMarshall("Data\\data.xml");
+//        Assert.assertFalse(xmlJaxbParser.getErrors().isEmpty());
+//    }
 
     @Test
     public void ValidationTest(){
