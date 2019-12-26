@@ -1,5 +1,4 @@
 import com.github.javafaker.Faker;
-import com.loneliness.dao.SQLConnection;
 import com.loneliness.dao.UserDAO;
 import com.loneliness.entity.User;
 import org.junit.Assert;

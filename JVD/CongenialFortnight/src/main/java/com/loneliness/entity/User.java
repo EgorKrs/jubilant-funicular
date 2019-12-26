@@ -16,7 +16,7 @@ public class User {
     private final LocalDate createDate;
     private final int avatarId;
 
-    public User(Builder builder) {
+    private User(Builder builder) {
         this.id = builder.id;
         this.login = builder.login;
         this.password = builder.password;
@@ -34,16 +34,6 @@ public class User {
         this.createDate = other.createDate;
         this.avatarId = other.avatarId;
     }
-    private User() {
-        id = 0;
-        login = "";
-        password = "";
-        type = Type.GAMER;
-        lastUpdate = LocalDate.now();
-        createDate = LocalDate.now();
-        avatarId = 0;
-    }
-
 
     public int getId() {
         return id;

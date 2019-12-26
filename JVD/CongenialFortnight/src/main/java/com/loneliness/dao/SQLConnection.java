@@ -7,11 +7,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class SQLConnection {
+class SQLConnection {
     private static  SQLConnection instance;
     private static final ReentrantLock locker = new ReentrantLock();
     private final static ComboPooledDataSource comboPooledDataSource = new ComboPooledDataSource();
-    public static SQLConnection getInstance() throws PropertyVetoException {
+    static SQLConnection getInstance() throws PropertyVetoException {
         if (instance==null){
             locker.lock();
             if (instance==null){
@@ -31,7 +31,7 @@ public class SQLConnection {
         comboPooledDataSource.setAcquireIncrement(5);
         comboPooledDataSource.setMaxPoolSize(200);
     }
-    public Connection getConnection() throws SQLException {
+    Connection getConnection() throws SQLException {
         locker.lock();
         Connection connection= comboPooledDataSource.getConnection();
         locker.unlock();

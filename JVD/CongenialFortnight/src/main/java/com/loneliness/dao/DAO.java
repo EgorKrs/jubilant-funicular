@@ -10,6 +10,10 @@ public interface  DAO<T> {
     3-invalid note
     4-db error
     */
+
+
+
+
     int create(T note);
     int update(T note);
     int delete(T note);
