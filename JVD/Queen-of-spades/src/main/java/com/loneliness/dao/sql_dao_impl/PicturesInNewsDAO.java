@@ -1,15 +1,16 @@
 package com.loneliness.dao.sql_dao_impl;
 
 import com.loneliness.dao.DAOException;
-import com.loneliness.entity.Language;
-import com.loneliness.entity.Profile;
+import com.loneliness.entity.PicturesInNews;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class ProfileDAO extends SQLDAO<Profile> {
+public class PicturesInNewsDAO extends SQLDAO<PicturesInNews>{
+
+
     protected enum Command{
         CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
         Command(String command){
@@ -27,21 +28,20 @@ public class ProfileDAO extends SQLDAO<Profile> {
             return command;
         }
     }
-    public ProfileDAO() throws DAOException {
+
+    public PicturesInNewsDAO() throws  DAOException {
         super();
-
         StringBuffer command=new StringBuffer();
-        String tableName = "profiles";
-        String idField = "profile_id";
+        String tableName = "pictures_in_news";
+        String idField = "id_pictures_in_news";
 
-        command.append("INSERT ").append(tableName).append(" (user_id, language, rating, telegram, instagram, about," +
-                "number_of_defeats,number_of_victories,number_of_game) ").
-                append("VALUES(?,?,?,?,?,?,?,?,?);");
+
+        command.append("INSERT ").append(tableName).append(" (news_id,picture_id) ").
+                append("VALUES(?,?);");
         Command.CREATE.setCommand(command.toString());
-
         command=new StringBuffer();
-        command.append("UPDATE ").append(tableName).append(" SET user_id= ?, language =? , rating =?, telegram =?, instagram =?,about =?, " +
-                "number_of_defeats =?, number_of_victories =?,number_of_game =? ").
+
+        command.append("UPDATE ").append(tableName).append(" SET news_id= ?, picture_id =? ").
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
@@ -64,19 +64,14 @@ public class ProfileDAO extends SQLDAO<Profile> {
         command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
-
     }
 
     @Override
-    public int create(Profile note) throws DAOException {
+    public int create(PicturesInNews note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.CREATE.getCommand());
-            statement.setInt(1,note.getUserID());
-            statement.setString(2,note.getLanguage().toString());
-            statement.setInt(3,note.getRating());
-            statement.setString(4,note.getTelegram());
-            statement.setString(5,note.getInstagram());
-            statement.setString(6,note.getAbout());
+            statement.setInt(1,note.getNewsID());
+            statement.setInt(2,note.getPictureID());
             if(statement.executeUpdate()==1){
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
@@ -92,16 +87,12 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
 
     @Override
-    public int update(Profile note) throws DAOException {
+    public int update(PicturesInNews note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
-            statement.setInt(1,note.getUserID());
-            statement.setString(2,note.getLanguage().toString());
-            statement.setInt(3,note.getRating());
-            statement.setString(4,note.getTelegram());
-            statement.setString(5,note.getInstagram());
-            statement.setString(6,note.getAbout());
-            statement.setInt(7,note.getId());
+            statement.setInt(1,note.getNewsID());
+            statement.setInt(2,note.getPictureID());
+            statement.setInt(3,note.getId());
             if(statement.executeUpdate()==1){
                 return 1;
             }
@@ -113,7 +104,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
 
     @Override
-    public int delete(Profile note) throws DAOException {
+    public int delete(PicturesInNews note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
@@ -128,7 +119,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
 
     @Override
-    public Profile receive(Profile note) throws DAOException {
+    public PicturesInNews receive(PicturesInNews note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
@@ -140,11 +131,11 @@ public class ProfileDAO extends SQLDAO<Profile> {
             logger.catching(e);
             throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
         }
-        return new Profile.Builder().build();
+        return new PicturesInNews.Builder().build();
     }
 
     @Override
-    public Collection<Profile> receiveAll() throws DAOException {
+    public Collection<PicturesInNews> receiveAll() throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
@@ -155,7 +146,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
 
     @Override
-    public Collection<Profile> receiveAll(int[] bound) throws DAOException {
+    public Collection<PicturesInNews> receiveAll(int[] bound) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
@@ -166,18 +157,11 @@ public class ProfileDAO extends SQLDAO<Profile> {
             throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
     }
-    protected Profile receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Profile.Builder().setId(resultSet.getInt("profile_id")).
-                setUserID(resultSet.getInt("user_id")).
-                setRating(resultSet.getInt("rating")).
-                setLanguage(Language.valueOf(resultSet.getString("language"))).
-                setLastUpdate(resultSet.getDate("last_update").toLocalDate()).
-                setTelegram(resultSet.getString("telegram")).
-                setInstagram(resultSet.getString("instagram")).
-                setAbout(resultSet.getString("about")).
-                setNumberOfDefeats(resultSet.getInt("number_of_defeats")).
-                setNumberOfVictories(resultSet.getInt("number_of_victories")).
-                setNumberOfGame(resultSet.getInt("number_of_game")).
-                build();
+    @Override
+    protected PicturesInNews receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
+        return new PicturesInNews.Builder().setId(resultSet.getInt("id_pictures_in_news"))
+                .setNewsID(resultSet.getInt("news_id"))
+                .setPictureID(resultSet.getInt("picture_id"))
+                .build();
     }
 }

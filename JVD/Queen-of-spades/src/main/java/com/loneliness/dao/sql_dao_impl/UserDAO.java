@@ -1,14 +1,13 @@
 package com.loneliness.dao.sql_dao_impl;
 
 
+import com.loneliness.dao.DAOException;
 import com.loneliness.entity.User;
 
-import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 /*
@@ -38,7 +37,8 @@ public class UserDAO extends SQLDAO<User> {
             return command;
         }
     }
-    public UserDAO() throws PropertyVetoException {
+    public UserDAO() throws  DAOException {
+        super();
         StringBuffer command=new StringBuffer();
         String tableName = "users";
         String idField = "id_users";
@@ -75,7 +75,7 @@ public class UserDAO extends SQLDAO<User> {
     }
 
     @Override
-    public int create(User note) {
+    public int create(User note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.CREATE.getCommand());
             statement.setString(1,note.getLogin());
@@ -92,12 +92,12 @@ public class UserDAO extends SQLDAO<User> {
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_CREATE",e.getCause());
         }
     }
 
     @Override
-    public int update(User note) {
+    public int update(User note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
             statement.setString(1,note.getLogin());
@@ -111,13 +111,13 @@ public class UserDAO extends SQLDAO<User> {
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_UPDATE",e.getCause());
         }
 
     }
 
     @Override
-    public int delete(User note) {
+    public int delete(User note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
@@ -127,12 +127,12 @@ public class UserDAO extends SQLDAO<User> {
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
 
     @Override
-    public User receive(User note) {
+    public User receive(User note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
@@ -142,23 +142,24 @@ public class UserDAO extends SQLDAO<User> {
             }
         } catch (SQLException e) {
             logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
         }
         return new User.Builder().build();
     }
 
     @Override
-    public Collection<User> receiveAll() {
+    public Collection<User> receiveAll() throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
             logger.catching(e);
-            return new ConcurrentLinkedQueue<User>();
+            throw new DAOException("ERROR_IN_RECEIVE_ALL",e.getCause());
         }
     }
 
     @Override
-    public Collection<User> receiveAll(int[] bound) {
+    public Collection<User> receiveAll(int[] bound) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
@@ -166,18 +167,18 @@ public class UserDAO extends SQLDAO<User> {
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
             logger.catching(e);
-            return new ConcurrentLinkedQueue<User>();
+            throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
     }
 
     protected User receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
-        User.Builder builder = new User.Builder();
-        builder.setId(resultSet.getInt("id_users")).setLogin(resultSet.getString("login"))
+        return new User.Builder().setId(resultSet.getInt("id_users"))
+                .setLogin(resultSet.getString("login"))
                 .setPassword(resultSet.getString("password"))
                 .setType(User.Type.valueOf(resultSet.getString("type")))
                 .setLastUpdate(resultSet.getDate("last_update").toLocalDate())
                 .setCreateDate(resultSet.getDate("create_date").toLocalDate())
-                .setAvatarId(resultSet.getInt("avatar_id"));
-        return builder.build();
+                .setAvatarId(resultSet.getInt("avatar_id"))
+                .build();
     }
 }

@@ -1,4 +1,5 @@
 import com.github.javafaker.Faker;
+import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.ProfileDAO;
 import com.loneliness.dao.sql_dao_impl.UserDAO;
 import com.loneliness.entity.Language;
@@ -8,7 +9,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.beans.PropertyVetoException;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -16,15 +16,15 @@ public class ProfileDAOTest {
     private static Faker faker;
     private static ProfileDAO dao;
     @BeforeClass
-    public static void initialize() throws PropertyVetoException {
+    public static void initialize() throws DAOException {
         faker=new Faker(new Locale("ru"));
         dao=new ProfileDAO();
     }
-    private User getUser() throws PropertyVetoException {
+    private User getUser()throws  DAOException {
         UserDAO userDAO=new UserDAO();
         return userDAO.receiveAll(new int[]{0,1}).iterator().next();
     }
-    private Profile createValidProfile() throws PropertyVetoException {
+    private Profile createValidProfile() throws  DAOException {
         Profile.Builder builder = new Profile.Builder();
         User user=getUser();
         builder.setUserID(user.getId());
@@ -48,7 +48,7 @@ public class ProfileDAOTest {
         return builder.build();
     }
     @Test
-    public void createTest() throws PropertyVetoException {
+    public void createTest() throws  DAOException {
         Profile profile=createValidProfile();
         Profile.Builder builder=new Profile.Builder(profile);
         builder.setId(dao.create(profile));
@@ -56,7 +56,7 @@ public class ProfileDAOTest {
         Assert.assertEquals(profile,dao.receive(profile));
     }
     @Test
-    public void updateTest(){
+    public void updateTest()throws  DAOException{
         Profile profile=dao.receiveAll(new int[]{0,1}).iterator().next();
         Profile.Builder builder=new Profile.Builder(profile);
         if (builder.getLanguage() == Language.EN) {
@@ -69,13 +69,13 @@ public class ProfileDAOTest {
         Assert.assertNotEquals(profile,dao.receive(changedProfile));
     }
     @Test
-    public void deleteTest(){
+    public void deleteTest()throws  DAOException{
         Profile profile=dao.receiveAll(new int[]{0,1}).iterator().next();
         dao.delete(profile);
         Assert.assertNotEquals(profile,dao.receive(profile));
     }
     @Test
-    public void receiveTest(){
+    public void receiveTest()throws  DAOException{
         int lengthAll=dao.receiveAll().size();
         int lengthInLim=dao.receiveAll(new int[]{0,lengthAll}).size();
         Assert.assertEquals(lengthAll,lengthInLim);

@@ -1,11 +1,11 @@
 import com.github.javafaker.Faker;
+import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.UserDAO;
 import com.loneliness.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.beans.PropertyVetoException;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -13,7 +13,7 @@ public class UserDAOTest {
     private static Faker faker;
     private static UserDAO dao;
     @BeforeClass
-    public static void initialize() throws PropertyVetoException {
+    public static void initialize() throws DAOException {
         faker=new Faker(new Locale("ru"));
         dao=new UserDAO();
     }
@@ -34,7 +34,7 @@ public class UserDAOTest {
         return builder.build();
     }
     @Test
-    public void createTest(){
+    public void createTest()throws  DAOException{
         User user=createValidUser();
         User.Builder builder=new User.Builder(user);
         builder.setId(dao.create(user));
@@ -42,7 +42,7 @@ public class UserDAOTest {
         Assert.assertEquals(user,dao.receive(user));
     }
     @Test
-    public void updateTest(){
+    public void updateTest()throws  DAOException{
         User user=dao.receiveAll(new int[]{0,1}).iterator().next();
         User.Builder builder=new User.Builder(user);
         if(builder.getType().equals(User.Type.GAMER)){
@@ -54,37 +54,15 @@ public class UserDAOTest {
         Assert.assertNotEquals(user,dao.receive(changedUser));
     }
     @Test
-    public void deleteTest(){
+    public void deleteTest()throws  DAOException{
         User user=dao.receiveAll(new int[]{0,1}).iterator().next();
         dao.delete(user);
         Assert.assertNotEquals(user,dao.receive(user));
     }
     @Test
-    public void receiveTest(){
+    public void receiveTest()throws  DAOException{
         int lengthAll=dao.receiveAll().size();
         int lengthInLim=dao.receiveAll(new int[]{0,lengthAll}).size();
         Assert.assertEquals(lengthAll,lengthInLim);
     }
-
-
-
-
-
-
-
-
-
-//    @Test
-//    public void img() throws SQLException, IOException, PropertyVetoException {
-//        Connection con=SQLConnection.getInstance().getConnection();
-//        Statement st = con.createStatement();
-//        File imgfile = new File("data\\Anonymous.png");
-//        FileInputStream fin = new FileInputStream(imgfile);
-//        PreparedStatement pre = con.prepareStatement("insert into pictures (image) values(?)");
-//        pre.setBinaryStream(1, fin, (int) imgfile.length());
-//        pre.executeUpdate();
-//        System.out.println("Inserting Successfully!");
-//        pre.close();
-//        fin.close();
-//    }
 }

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Picture {
+public class Picture implements Entity{
     private final int id;
     private final byte [] byteImage;
     private final String name;

@@ -1,10 +1,10 @@
 package com.loneliness.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Profile {
+public class Profile implements Entity{
     private final int id;
     private final int userID;
     private final Language language;
@@ -13,6 +13,9 @@ public class Profile {
     private final String instagram;
     private final String about;
     private final LocalDate lastUpdate;
+    private final AtomicInteger numberOfVictories;
+    private final AtomicInteger numberOfDefeats;
+    private final AtomicInteger numberOfGame;
 
     private Profile(Builder builder) {
         this.id = builder.id;
@@ -23,6 +26,9 @@ public class Profile {
         this.instagram = builder.instagram;
         this.about = builder.about;
         this.lastUpdate = builder.lastUpdate;
+        this.numberOfDefeats=builder.numberOfDefeats;
+        this.numberOfVictories=builder.numberOfVictories;
+        this.numberOfGame=builder.numberOfGame;
     }
 
     public int getId() {
@@ -57,6 +63,18 @@ public class Profile {
         return lastUpdate;
     }
 
+    public AtomicInteger getNumberOfVictories() {
+        return numberOfVictories;
+    }
+
+    public AtomicInteger getNumberOfDefeats() {
+        return numberOfDefeats;
+    }
+
+    public AtomicInteger getNumberOfGame() {
+        return numberOfGame;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,12 +87,15 @@ public class Profile {
                 telegram.equals(profile.telegram) &&
                 instagram.equals(profile.instagram) &&
                 about.equals(profile.about) &&
-                lastUpdate.equals(profile.lastUpdate);
+                lastUpdate.equals(profile.lastUpdate) &&
+                numberOfVictories.equals(profile.numberOfVictories) &&
+                numberOfDefeats.equals(profile.numberOfDefeats) &&
+                numberOfGame.equals(profile.numberOfGame);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userID, language, rating, telegram, instagram, about, lastUpdate);
+        return Objects.hash(id, userID, language, rating, telegram, instagram, about, lastUpdate, numberOfVictories, numberOfDefeats, numberOfGame);
     }
 
     @Override
@@ -88,6 +109,9 @@ public class Profile {
                 ", instagram='" + instagram + '\'' +
                 ", about='" + about + '\'' +
                 ", lastUpdate=" + lastUpdate +
+                ", numberOfVictories=" + numberOfVictories +
+                ", numberOfDefeats=" + numberOfDefeats +
+                ", numberOfGame=" + numberOfGame +
                 '}';
     }
 
@@ -100,6 +124,9 @@ public class Profile {
         private String instagram="";
         private String about="";
         private LocalDate lastUpdate=LocalDate.now();
+        private AtomicInteger numberOfVictories=new AtomicInteger(0);
+        private AtomicInteger numberOfDefeats=new AtomicInteger(0);
+        private AtomicInteger numberOfGame=new AtomicInteger(0);
 
         public Builder(Profile profile) {
             this.id = profile.id;
@@ -110,6 +137,9 @@ public class Profile {
             this.instagram = profile.instagram;
             this.about = profile.about;
             this.lastUpdate = profile.lastUpdate;
+            this.numberOfDefeats=profile.numberOfDefeats;
+            this.numberOfVictories=profile.numberOfVictories;
+            this.numberOfGame=profile.numberOfGame;
         }
 
         public Builder() {
@@ -153,6 +183,47 @@ public class Profile {
         public Builder setLastUpdate(LocalDate lastUpdate) {
             this.lastUpdate = lastUpdate;
             return this;
+        }
+
+        public Builder setNumberOfVictories(AtomicInteger numberOfVictories) {
+            this.numberOfVictories = numberOfVictories;
+            return this;
+        }
+
+        public Builder setNumberOfDefeats(AtomicInteger numberOfDefeats) {
+            this.numberOfDefeats = numberOfDefeats;
+            return this;
+        }
+
+        public Builder setNumberOfGame(int numberOfGame) {
+            this.numberOfGame.set( numberOfGame);
+            return this;
+        }
+        public Builder setNumberOfVictories(int numberOfVictories) {
+            this.numberOfVictories.set(numberOfVictories);
+            return this;
+        }
+
+        public Builder setNumberOfDefeats(int numberOfDefeats) {
+            this.numberOfDefeats.set(numberOfDefeats);
+            return this;
+        }
+
+        public Builder setNumberOfGame(AtomicInteger numberOfGame) {
+            this.numberOfGame = numberOfGame;
+            return this;
+        }
+
+        public AtomicInteger getNumberOfVictories() {
+            return numberOfVictories;
+        }
+
+        public AtomicInteger getNumberOfDefeats() {
+            return numberOfDefeats;
+        }
+
+        public AtomicInteger getNumberOfGame() {
+            return numberOfGame;
         }
 
         public int getId() {

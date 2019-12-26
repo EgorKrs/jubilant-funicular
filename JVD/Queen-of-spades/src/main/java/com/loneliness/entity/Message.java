@@ -3,7 +3,7 @@ package com.loneliness.entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Message {
+public class Message implements Entity{
     private final int id;
     private final int toUser;
     private final int fromUser;

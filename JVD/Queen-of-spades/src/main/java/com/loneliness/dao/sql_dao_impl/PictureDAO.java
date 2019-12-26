@@ -1,9 +1,9 @@
 package com.loneliness.dao.sql_dao_impl;
 
 
+import com.loneliness.dao.DAOException;
 import com.loneliness.entity.Picture;
 
-import java.beans.PropertyVetoException;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -12,7 +12,8 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PictureDAO extends SQLDAO<Picture>{
-
+    private String tableName = "pictures";
+    private String idField = "id_pictures";
     protected enum Command{
         CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
 
@@ -29,10 +30,10 @@ public class PictureDAO extends SQLDAO<Picture>{
         }
     }
 
-    public PictureDAO() throws PropertyVetoException {
+    public PictureDAO() throws  DAOException {
+        super();
         StringBuffer command=new StringBuffer();
-        String tableName = "pictures";
-        String idField = "id_pictures";
+
 
 
         command.append("INSERT ").append(tableName).append(" (image,name) ").
@@ -66,7 +67,7 @@ public class PictureDAO extends SQLDAO<Picture>{
     }
 
     @Override
-    public int create(Picture note) {
+    public int create(Picture note) throws DAOException {
         try (Connection connection = sqlConnection.getConnection();InputStream stream=getStream(note)) {
             if(stream!=null) {
                 statement = connection.prepareStatement(Command.CREATE.getCommand());
@@ -82,16 +83,17 @@ public class PictureDAO extends SQLDAO<Picture>{
             }
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_CREATE",e.getCause());
         } catch (IOException e) {
             logger.catching(e);
+            throw new DAOException("ERROR_WHILE_CREATE_IN_PICTURE_FILE",e.getCause());
         }
         return -2;
     }
 
 
     @Override
-    public int update(Picture note) {
+    public int update(Picture note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection();InputStream stream=getStream(note)) {
             if(stream!=null) {
                 statement = connection.prepareStatement(Command.UPDATE.getCommand());
@@ -104,15 +106,15 @@ public class PictureDAO extends SQLDAO<Picture>{
             }
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_UPDATE",e.getCause());
         } catch (IOException e) {
-            logger.catching(e);
+            throw new DAOException("ERROR_WHILE_UPDATE_IN_PICTURE_FILE",e.getCause());
         }
         return -2;
     }
 
     @Override
-    public int delete(Picture note) {
+    public int delete(Picture note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
@@ -122,12 +124,12 @@ public class PictureDAO extends SQLDAO<Picture>{
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
 
     @Override
-    public Picture receive(Picture note) {
+    public Picture receive(Picture note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
@@ -137,23 +139,24 @@ public class PictureDAO extends SQLDAO<Picture>{
             }
         } catch (SQLException e) {
             logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
         }
         return new Picture.Builder().build();
     }
 
     @Override
-    public Collection<Picture> receiveAll() {
+    public Collection<Picture> receiveAll() throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
             logger.catching(e);
-            return new ConcurrentLinkedQueue<Picture>();
+            throw new DAOException("ERROR_IN_RECEIVE_ALL",e.getCause());
         }
     }
 
     @Override
-    public Collection<Picture> receiveAll(int[] bound) {
+    public Collection<Picture> receiveAll(int[] bound) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
@@ -161,9 +164,35 @@ public class PictureDAO extends SQLDAO<Picture>{
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
             logger.catching(e);
-            return new ConcurrentLinkedQueue<Picture>();
+            throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
     }
+
+    public Collection<Picture> receivePicturesInNews(Picture picture){
+        String request="SELECT * FROM pictures_in_news INNER JOIN "+tableName+" ON pictures_in_news.picture_id="+
+                tableName+'.'+idField+" WHERE "+idField+" =?;";
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(request);
+            statement.setInt(1,picture.getId());
+            return receiveCollection(statement.executeQuery());
+        } catch (SQLException e) {
+            logger.catching(e);
+            return new ConcurrentLinkedQueue<>();
+        }
+    }
+    public Collection<Picture> receivePicturesInNews(){
+        String request="SELECT * FROM pictures_in_news INNER JOIN "+tableName+" ON pictures_in_news.picture_id="+
+                tableName+'.'+idField+';';
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(request);
+            return receiveCollection(statement.executeQuery());
+        } catch (SQLException e) {
+            logger.catching(e);
+            return new ConcurrentLinkedQueue<>();
+        }
+    }
+
+
     @Override
     protected Picture receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
         Picture.Builder builder = new Picture.Builder();
@@ -193,4 +222,5 @@ public class PictureDAO extends SQLDAO<Picture>{
             return null;
         }
     }
+
 }

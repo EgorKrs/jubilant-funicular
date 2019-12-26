@@ -1,13 +1,12 @@
 package com.loneliness.dao.sql_dao_impl;
 
+import com.loneliness.dao.DAOException;
 import com.loneliness.entity.Message;
 
-import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MessageDAO extends SQLDAO<Message>{
     protected enum Command{
@@ -27,7 +26,8 @@ public class MessageDAO extends SQLDAO<Message>{
             return command;
         }
     }
-    public MessageDAO() throws PropertyVetoException {
+    public MessageDAO() throws  DAOException {
+        super();
         StringBuffer command=new StringBuffer();
         String tableName = "messages";
         String idField = "id_messages";
@@ -65,7 +65,7 @@ public class MessageDAO extends SQLDAO<Message>{
 
 
     @Override
-    public int create(Message note) {
+    public int create(Message note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.CREATE.getCommand());
             statement.setInt(1,note.getToUser());
@@ -81,12 +81,12 @@ public class MessageDAO extends SQLDAO<Message>{
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_CREATE",e.getCause());
         }
     }
 
     @Override
-    public int update(Message note) {
+    public int update(Message note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
             statement.setInt(1,note.getToUser());
@@ -99,12 +99,12 @@ public class MessageDAO extends SQLDAO<Message>{
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_UPDATE",e.getCause());
         }
     }
 
     @Override
-    public int delete(Message note) {
+    public int delete(Message note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
@@ -114,12 +114,12 @@ public class MessageDAO extends SQLDAO<Message>{
             else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            return -4;
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
 
     @Override
-    public Message receive(Message note) {
+    public Message receive(Message note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
@@ -129,23 +129,24 @@ public class MessageDAO extends SQLDAO<Message>{
             }
         } catch (SQLException e) {
             logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
         }
         return new Message.Builder().build();
     }
 
     @Override
-    public Collection<Message> receiveAll() {
+    public Collection<Message> receiveAll() throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
             logger.catching(e);
-            return new ConcurrentLinkedQueue<Message>();
+            throw new DAOException("ERROR_IN_RECEIVE_ALL",e.getCause());
         }
     }
 
     @Override
-    public Collection<Message> receiveAll(int[] bound) {
+    public Collection<Message> receiveAll(int[] bound) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
@@ -153,19 +154,17 @@ public class MessageDAO extends SQLDAO<Message>{
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
             logger.catching(e);
-            return new ConcurrentLinkedQueue<Message>();
+            throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
     }
 
     @Override
     protected Message receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
-        Message.Builder builder = new Message.Builder();
-        builder.setId(resultSet.getInt("id_messages"))
+        return new Message.Builder().setId(resultSet.getInt("id_messages"))
                 .setToUser(resultSet.getInt("to_user"))
                 .setFromUser(resultSet.getInt("from_user"))
                 .setDate(resultSet.getDate("data").toLocalDate())
-                .setMessage(resultSet.getString("message"));
-        return builder.build();
+                .setMessage(resultSet.getString("message")).build();
     }
 
 }

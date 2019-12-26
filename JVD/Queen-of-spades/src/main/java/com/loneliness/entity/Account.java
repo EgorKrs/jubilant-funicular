@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Account {
+public class Account implements Entity{
     private final int id;
     private final int userID;
     private final String number;

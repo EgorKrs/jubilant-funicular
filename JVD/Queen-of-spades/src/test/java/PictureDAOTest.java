@@ -1,23 +1,22 @@
 import com.github.javafaker.Faker;
+import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.PictureDAO;
-import com.loneliness.entity.Message;
 import com.loneliness.entity.Picture;
-import com.loneliness.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.beans.PropertyVetoException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Iterator;
 import java.util.Locale;
 
 public class PictureDAOTest {
     private static Faker faker;
     private PictureDAO dao=new PictureDAO();
 
-    public PictureDAOTest() throws PropertyVetoException {
+    public PictureDAOTest() throws DAOException {
     }
 
     @BeforeClass
@@ -35,7 +34,7 @@ public class PictureDAOTest {
         return builder.build();
     }
     @Test
-    public void createTest() throws IOException {
+    public void createTest() throws IOException, DAOException {
         Picture picture=createValidPicture();
         Picture.Builder builder=new Picture.Builder(picture);
         builder.setId(dao.create(picture));
@@ -43,7 +42,7 @@ public class PictureDAOTest {
         Assert.assertEquals(picture,dao.receive(picture));
     }
     @Test
-    public void updateTest(){
+    public void updateTest()throws  DAOException{
         Picture picture=dao.receiveAll(new int[]{1,2}).iterator().next();
         Picture.Builder builder=new Picture.Builder(picture);
         builder.setName(faker.funnyName().name());
@@ -54,13 +53,13 @@ public class PictureDAOTest {
 
     }
     @Test
-    public void deleteTest(){
+    public void deleteTest()throws  DAOException{
         Picture picture=dao.receiveAll(new int[]{1,2}).iterator().next();
         dao.delete(picture);
         Assert.assertNotEquals(picture,dao.receive(picture));
     }
     @Test
-    public void receiveTest(){
+    public void receiveTest()throws  DAOException{
         int lengthAll=dao.receiveAll().size();
         int lengthInLim=dao.receiveAll(new int[]{0,lengthAll}).size();
         Assert.assertEquals(lengthAll,lengthInLim);

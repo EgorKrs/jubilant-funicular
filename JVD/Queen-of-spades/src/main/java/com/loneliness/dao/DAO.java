@@ -1,8 +1,10 @@
 package com.loneliness.dao;
 
+import com.loneliness.entity.Entity;
+
 import java.util.Collection;
 
-public interface  DAO<T> {
+public interface  DAO<T extends Entity > {
     /*
     return :
     1-ok
@@ -11,11 +13,11 @@ public interface  DAO<T> {
     -4-db error
     -5 file error
     */
-    int create(T note);
-    int update(T note);
-    int delete(T note);
-    T receive(T note);
-    Collection<T> receiveAll();
-    Collection<T> receiveAll(int[] bound);
+    int create(T note) throws DAOException;
+    int update(T note) throws DAOException;
+    int delete(T note) throws DAOException;
+    T receive(T note) throws DAOException;
+    Collection<T> receiveAll() throws DAOException;
+    Collection<T> receiveAll(int[] bound) throws DAOException;
 
 }

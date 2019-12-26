@@ -3,7 +3,7 @@ package com.loneliness.entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class News {
+public class News implements Entity{
     private final int id;
     private final String text;
     private final LocalDate last_update;

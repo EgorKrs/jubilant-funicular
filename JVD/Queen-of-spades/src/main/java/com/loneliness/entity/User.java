@@ -1,10 +1,9 @@
 package com.loneliness.entity;
 
-import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class User {
+public class User implements Entity {
     public enum Type{
         ADMIN,GAMER
     }
