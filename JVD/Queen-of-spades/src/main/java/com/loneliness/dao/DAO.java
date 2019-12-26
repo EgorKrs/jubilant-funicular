@@ -6,9 +6,10 @@ public interface  DAO<T> {
     /*
     return :
     1-ok
-    2-error
-    3-invalid note
-    4-db error
+    -2-error
+    -3-invalid note
+    -4-db error
+    -5 file error
     */
     int create(T note);
     int update(T note);
