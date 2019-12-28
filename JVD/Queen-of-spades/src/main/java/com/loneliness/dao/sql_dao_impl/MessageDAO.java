@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class MessageDAO extends SQLDAO<Message>{
+public class MessageDAO extends SQLDAO<Message> {
     protected enum Command{
         CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
         Command(String command){
@@ -26,7 +26,7 @@ public class MessageDAO extends SQLDAO<Message>{
             return command;
         }
     }
-    public MessageDAO() throws  DAOException {
+    public MessageDAO() throws DAOException {
         super();
         StringBuffer command=new StringBuffer();
         String tableName = "messages";
@@ -117,12 +117,41 @@ public class MessageDAO extends SQLDAO<Message>{
             throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
+    @Override
+    public int delete(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1,note);
+            if(statement.execute()){
+                return 1;
+            }
+            else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
+        }
+    }
 
     @Override
     public Message receive(Message note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
+            resultSet=statement.executeQuery();
+            if(resultSet.next()){
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+        }
+        return new Message.Builder().build();
+    }
+    @Override
+    public Message receive(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1,note);
             resultSet=statement.executeQuery();
             if(resultSet.next()){
                 return receiveDataFromResultSet(resultSet);

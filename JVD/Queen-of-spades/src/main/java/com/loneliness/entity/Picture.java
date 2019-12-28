@@ -1,13 +1,20 @@
 package com.loneliness.entity;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Picture implements Entity{
+public class Picture implements Entity {
+    @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
     private final byte [] byteImage;
+    @Length(min = 1,message = "name MUST_HAVE_MORE_SYMBOLS")
     private final String name;
+    @PastOrPresent(message = "last_update MUST_BE_NOT_IN_FUTURE")
     private final LocalDate lastUpdate;
 
     private Picture(Builder builder) {
@@ -53,11 +60,11 @@ public class Picture implements Entity{
 
     @Override
     public String toString() {
-        return "\nPicture{" +
-                "\nid=" + id +
-                ", \nbyteImage=" + Arrays.toString(byteImage) +
-                ", \nname='" + name + '\'' +
-                ", \nlastUpdate=" + lastUpdate +
+        return "Picture{" +
+                "id=" + id +
+                ", byteImage=" + Arrays.toString(byteImage) +
+                ", name='" + name + '\'' +
+                ", lastUpdate=" + lastUpdate +
                 '}';
     }
 

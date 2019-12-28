@@ -1,10 +1,14 @@
 package com.loneliness.entity;
 
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 
-public class PicturesInNews implements Entity{
+public class PicturesInNews implements Entity {
+    @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
+    @Positive(message = "newsID MUST_BE_POSITIVE")
     private final int newsID;
+    @Positive(message = "pictureID MUST_BE_POSITIVE")
     private final int pictureID;
 
     private PicturesInNews(Builder builder) {

@@ -29,7 +29,7 @@ public class PicturesInNewsDAO extends SQLDAO<PicturesInNews>{
         }
     }
 
-    public PicturesInNewsDAO() throws  DAOException {
+    public PicturesInNewsDAO() throws DAOException {
         super();
         StringBuffer command=new StringBuffer();
         String tableName = "pictures_in_news";
@@ -117,12 +117,41 @@ public class PicturesInNewsDAO extends SQLDAO<PicturesInNews>{
             throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
+    @Override
+    public int delete(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1,note);
+            if(statement.execute()){
+                return 1;
+            }
+            else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
+        }
+    }
 
     @Override
     public PicturesInNews receive(PicturesInNews note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
+            resultSet=statement.executeQuery();
+            if(resultSet.next()){
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+        }
+        return new PicturesInNews.Builder().build();
+    }
+    @Override
+    public PicturesInNews receive(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1,note);
             resultSet=statement.executeQuery();
             if(resultSet.next()){
                 return receiveDataFromResultSet(resultSet);

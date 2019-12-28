@@ -77,6 +77,9 @@ public class ProfileDAO extends SQLDAO<Profile> {
             statement.setString(4,note.getTelegram());
             statement.setString(5,note.getInstagram());
             statement.setString(6,note.getAbout());
+            statement.setInt(7,note.getNumberOfDefeats().get());
+            statement.setInt(8,note.getNumberOfVictories().get());
+            statement.setInt(9,note.getNumberOfGame().get());
             if(statement.executeUpdate()==1){
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
@@ -101,7 +104,10 @@ public class ProfileDAO extends SQLDAO<Profile> {
             statement.setString(4,note.getTelegram());
             statement.setString(5,note.getInstagram());
             statement.setString(6,note.getAbout());
-            statement.setInt(7,note.getId());
+            statement.setInt(7,note.getNumberOfDefeats().get());
+            statement.setInt(8,note.getNumberOfVictories().get());
+            statement.setInt(9,note.getNumberOfGame().get());
+            statement.setInt(10,note.getId());
             if(statement.executeUpdate()==1){
                 return 1;
             }
@@ -126,12 +132,41 @@ public class ProfileDAO extends SQLDAO<Profile> {
             throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
+    @Override
+    public int delete(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1,note);
+            if(statement.execute()){
+                return 1;
+            }
+            else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
+        }
+    }
 
     @Override
     public Profile receive(Profile note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
+            resultSet=statement.executeQuery();
+            if(resultSet.next()){
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+        }
+        return new Profile.Builder().build();
+    }
+    @Override
+    public Profile receive(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1,note);
             resultSet=statement.executeQuery();
             if(resultSet.next()){
                 return receiveDataFromResultSet(resultSet);

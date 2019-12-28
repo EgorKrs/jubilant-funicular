@@ -1,13 +1,22 @@
 package com.loneliness.entity;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Message implements Entity{
+public class Message implements Entity {
+    @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
+    @Positive(message = "toUser MUST_BE_POSITIVE")
     private final int toUser;
+    @Positive(message = "fromUser MUST_BE_POSITIVE")
     private final int fromUser;
+    @Length(min = 1,message = "message must be ")
     private final String message;
+    @PastOrPresent(message = "date MUST_BE_NOT_IN_FUTURE")
     private final LocalDate date;
 
     private Message(Builder builder) {

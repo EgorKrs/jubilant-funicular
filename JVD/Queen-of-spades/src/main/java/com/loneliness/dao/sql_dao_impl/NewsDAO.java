@@ -112,12 +112,41 @@ public class NewsDAO extends SQLDAO<News>{
             throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
+    @Override
+    public int delete(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1,note);
+            if(statement.execute()){
+                return 1;
+            }
+            else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
+        }
+    }
 
     @Override
     public News receive(News note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
+            resultSet=statement.executeQuery();
+            if(resultSet.next()){
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+        }
+        return new News.Builder().build();
+    }
+    @Override
+    public News receive(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1,note);
             resultSet=statement.executeQuery();
             if(resultSet.next()){
                 return receiveDataFromResultSet(resultSet);

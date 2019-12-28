@@ -1,20 +1,29 @@
 package com.loneliness.entity;
 
+import org.hibernate.validator.constraints.CreditCardNumber;
+
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Account implements Entity{
+public class Account implements Entity {
+    @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
+    @Positive(message = "userID MUST_BE_POSITIVE")
     private final int userID;
-    private final String number;
+    @CreditCardNumber(message = "creditCardNumber MUST_BE_VALID")
+    private final String creditCardNumber;
+    @Positive(message = "sumOfMoney MUST_BE_POSITIVE")
     private final BigDecimal sumOfMoney;
+    @PastOrPresent(message = "lastUpdate MUST_BE_NOT_IN_FUTURE")
     private final LocalDate lastUpdate;
 
     private Account(Builder builder) {
         this.id = builder.id;
         this.userID = builder.userID;
-        this.number = builder.number;
+        this.creditCardNumber = builder.number;
         this.sumOfMoney = builder.sumOfMoney;
         this.lastUpdate = builder.lastUpdate;
     }
@@ -27,8 +36,8 @@ public class Account implements Entity{
         return userID;
     }
 
-    public String getNumber() {
-        return number;
+    public String getCreditCardNumber() {
+        return creditCardNumber;
     }
 
     public BigDecimal getSumOfMoney() {
@@ -46,14 +55,14 @@ public class Account implements Entity{
         Account account = (Account) o;
         return id == account.id &&
                 userID == account.userID &&
-                number.equals(account.number) &&
+                creditCardNumber.equals(account.creditCardNumber) &&
                 sumOfMoney.equals(account.sumOfMoney) &&
                 lastUpdate.equals(account.lastUpdate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userID, number, sumOfMoney, lastUpdate);
+        return Objects.hash(id, userID, creditCardNumber, sumOfMoney, lastUpdate);
     }
 
     @Override
@@ -61,7 +70,7 @@ public class Account implements Entity{
         return "Account{" +
                 "id=" + id +
                 ", userID=" + userID +
-                ", number='" + number + '\'' +
+                ", number='" + creditCardNumber + '\'' +
                 ", sumOfMoney=" + sumOfMoney +
                 ", lastUpdate=" + lastUpdate +
                 '}';
@@ -77,7 +86,7 @@ public class Account implements Entity{
         public Builder(Account account) {
             this.id = account.id;
             this.userID = account.userID;
-            this.number = account.number;
+            this.number = account.creditCardNumber;
             this.sumOfMoney = account.sumOfMoney;
             this.lastUpdate = account.lastUpdate;
         }

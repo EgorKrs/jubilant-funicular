@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantLock;
 
 class SQLConnection {
-    private static  SQLConnection instance;
+    private static SQLConnection instance;
     private static final ReentrantLock locker = new ReentrantLock();
     private final static ComboPooledDataSource comboPooledDataSource = new ComboPooledDataSource();
     static SQLConnection getInstance() throws PropertyVetoException {

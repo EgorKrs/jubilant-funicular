@@ -16,6 +16,8 @@ public interface  DAO<T extends Entity > {
     int create(T note) throws DAOException;
     int update(T note) throws DAOException;
     int delete(T note) throws DAOException;
+    int delete(int note) throws DAOException;
+    T receive(int id) throws DAOException;
     T receive(T note) throws DAOException;
     Collection<T> receiveAll() throws DAOException;
     Collection<T> receiveAll(int[] bound) throws DAOException;

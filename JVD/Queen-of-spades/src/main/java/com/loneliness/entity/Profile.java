@@ -1,20 +1,32 @@
 package com.loneliness.entity;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Profile implements Entity{
+public class Profile implements Entity {
+    @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
+    @Positive(message = "userID MUST_BE_POSITIVE")
     private final int userID;
+    @NotNull(message = "language MUST_BE_SET")
     private final Language language;
+    @PositiveOrZero(message = "rating MUST_BE_POSITIVE")
     private final int rating;
     private final String telegram;
     private final String instagram;
     private final String about;
+    @PastOrPresent(message = "last_update MUST_BE_NOT_IN_FUTURE")
     private final LocalDate lastUpdate;
+    @PositiveOrZero(message = "numberOfVictories MUST_BE_POSITIVE")
     private final AtomicInteger numberOfVictories;
+    @PositiveOrZero(message = "numberOfDefeats MUST_BE_POSITIVE")
     private final AtomicInteger numberOfDefeats;
+    @PositiveOrZero(message = "numberOfGame MUST_BE_POSITIVE")
     private final AtomicInteger numberOfGame;
 
     private Profile(Builder builder) {
@@ -26,9 +38,9 @@ public class Profile implements Entity{
         this.instagram = builder.instagram;
         this.about = builder.about;
         this.lastUpdate = builder.lastUpdate;
-        this.numberOfDefeats=builder.numberOfDefeats;
-        this.numberOfVictories=builder.numberOfVictories;
-        this.numberOfGame=builder.numberOfGame;
+        this.numberOfDefeats=new AtomicInteger(builder.numberOfDefeats.get());
+        this.numberOfVictories=new AtomicInteger(builder.numberOfVictories.get());
+        this.numberOfGame=new AtomicInteger(builder.numberOfGame.get());
     }
 
     public int getId() {
@@ -118,7 +130,7 @@ public class Profile implements Entity{
     public static class Builder{
         private int id=0;
         private int userID=0;
-        private Language language=Language.EN;
+        private Language language= Language.EN;
         private int rating=0;
         private String telegram="";
         private String instagram="";

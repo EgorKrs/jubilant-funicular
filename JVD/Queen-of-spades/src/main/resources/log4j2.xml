@@ -5,7 +5,7 @@
 
     <Appenders>
         <Console name="STDOUT">
-            <Layout type="PatternLayout" pattern="%m %n" />
+            <Layout type="PatternLayout" pattern="%d{dd MMM yyyy HH:mm:ss,SSS} {%t} %-5p %c %x - %m%n" />
         </Console>
         <RollingFile name="rollingFile"
                      fileName="logs\\Logs.log"

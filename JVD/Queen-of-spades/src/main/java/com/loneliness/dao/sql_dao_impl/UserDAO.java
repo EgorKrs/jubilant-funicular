@@ -21,7 +21,7 @@ import java.util.Collection;
 
 public class UserDAO extends SQLDAO<User> {
     protected enum Command{
-        CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
+        CREATE,UPDATE,GET_BY_ID,GET_BY_LOGIN,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
         Command(String command){
             this.command=command;
         }
@@ -37,7 +37,7 @@ public class UserDAO extends SQLDAO<User> {
             return command;
         }
     }
-    public UserDAO() throws  DAOException {
+    public UserDAO() throws DAOException {
         super();
         StringBuffer command=new StringBuffer();
         String tableName = "users";
@@ -60,6 +60,10 @@ public class UserDAO extends SQLDAO<User> {
         command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append(" = ? ;");
         Command.GET_BY_ID.setCommand(command.toString());
+
+        command=new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE login").append(" = ? ;");
+        Command.GET_BY_LOGIN.setCommand(command.toString());
 
         command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" ;");
@@ -106,7 +110,7 @@ public class UserDAO extends SQLDAO<User> {
             statement.setInt(4,note.getAvatarId());
             statement.setInt(5,note.getId());
             if(statement.executeUpdate()==1){
-                return 1;
+                return note.getId();
             }
             else return -3;
         } catch (SQLException e) {
@@ -130,12 +134,32 @@ public class UserDAO extends SQLDAO<User> {
             throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
+    @Override
+    public int delete(int note) throws DAOException {
+        try(Connection connection=sqlConnection.getConnection()) {
+            statement=connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1,note);
+            if(statement.execute()){
+                return 1;
+            }
+            else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
+        }
+    }
 
     @Override
     public User receive(User note) throws DAOException {
         try(Connection connection=sqlConnection.getConnection()) {
-            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
-            statement.setInt(1,note.getId());
+            if(note.getId()>0) {
+                statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
+                statement.setInt(1, note.getId());
+            }
+            else {
+                statement=connection.prepareStatement(Command.GET_BY_LOGIN.getCommand());
+                statement.setString(1,note.getLogin());
+            }
             resultSet=statement.executeQuery();
             if(resultSet.next()){
                 return receiveDataFromResultSet(resultSet);
@@ -143,6 +167,21 @@ public class UserDAO extends SQLDAO<User> {
         } catch (SQLException e) {
             logger.catching(e);
             throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+        }
+        return new User.Builder().build();
+    }
+
+    public  User receive(int id) throws DAOException {
+        try (Connection connection = sqlConnection.getConnection()) {
+            statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE", e.getCause());
         }
         return new User.Builder().build();
     }
