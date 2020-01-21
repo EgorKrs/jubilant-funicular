@@ -18,20 +18,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public abstract class SQLDAO<T extends Entity> implements DAO<T> {
 
     Logger logger = LogManager.getLogger();
-    SQLConnection sqlConnection;
     PreparedStatement statement;
     ResultSet resultSet;
-
-    SQLDAO() throws DAOException {
-        try {
-            sqlConnection = SQLConnection.getInstance();
-        } catch (PropertyVetoException e) {
-            logger.catching(e);
-            throw new DAOException(e.getMessage(),e.getCause());
-        }
-
-    }
-
 
     Collection<T> receiveCollection(ResultSet resultSet) {
         Collection<T> data = new ConcurrentLinkedQueue<>();

@@ -4,17 +4,12 @@
 <head>
     <meta charset="utf-8">
     <title>Queen Of Spades</title>
-    
-    
-    <script src="../js/jquery-3.4.1.min.js"></script>
-    
+
 
      <style>
-
      <%@include file='/css/reset.css' %>
-               <%@include file='/css/style.css' %>
-
-            </style>
+     <%@include file='/css/style.css' %>
+     </style>
         
     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,600,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
@@ -97,28 +92,28 @@
                 <h4>News item 1<br>
                 <span>see detail</span>
                 </h4>
-                <a href="blog.jsp"><img src="img/portfolio1.jpg" alt="item1"></a>
+                <a href="blog.jsp"><img src="img/news1.jpg" alt="item1"></a>
             </div>
             
             <div class="fourths_portfolio">
                 <h4>News item 2<br>
                 <span>see detail</span>
                 </h4>
-                <a href="blog.jsp"><img src="img/portfolio2.jpg" alt="item2"></a>
+                <a href="blog.jsp"><img src="img/news2.jpg" alt="item2"></a>
             </div>
             
             <div class="fourths_portfolio">
                 <h4>News item 3<br>
                 <span>see detail</span>
                 </h4>
-                <a href="blog.jsp"><img src="img/portfolio3.jpg" alt="item3"></a>
+                <a href="blog.jsp"><img src="img/news3.jpg" alt="item3"></a>
             </div>
             
             <div class="fourths_portfolio">
                 <h4>News item 4<br>
                 <span>see detail</span>
                 </h4>
-                <a href="blog.jsp"><img src="img/portfolio4.jpg" alt="item4"></a>
+                <a href="blog.jsp"><img src="img/news4.jpg" alt="item4"></a>
             </div>
             
             <hr class="cleanit">

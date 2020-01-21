@@ -69,7 +69,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
 
     @Override
     public int create(Profile note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.CREATE.getCommand());
             statement.setInt(1,note.getUserID());
             statement.setString(2,note.getLanguage().toString());
@@ -96,7 +96,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
 
     @Override
     public int update(Profile note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
             statement.setInt(1,note.getUserID());
             statement.setString(2,note.getLanguage().toString());
@@ -120,7 +120,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
 
     @Override
     public int delete(Profile note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
             if(statement.execute()){
@@ -134,7 +134,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
     @Override
     public int delete(int note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note);
             if(statement.execute()){
@@ -149,7 +149,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
 
     @Override
     public Profile receive(Profile note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
             resultSet=statement.executeQuery();
@@ -164,7 +164,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
     @Override
     public Profile receive(int note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);
             resultSet=statement.executeQuery();
@@ -180,7 +180,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
 
     @Override
     public Collection<Profile> receiveAll() throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
@@ -191,7 +191,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
 
     @Override
     public Collection<Profile> receiveAll(int[] bound) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
             statement.setInt(2,bound[1]);

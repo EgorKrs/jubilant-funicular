@@ -68,7 +68,7 @@ public class PictureDAO extends SQLDAO<Picture>{
 
     @Override
     public int create(Picture note) throws DAOException {
-        try (Connection connection = sqlConnection.getConnection();InputStream stream=getStream(note)) {
+        try (SQLConnection connection= new SQLConnection(); InputStream stream=getStream(note)) {
             if(stream!=null) {
                 statement = connection.prepareStatement(Command.CREATE.getCommand());
                 statement.setBinaryStream(1, stream, note.getByteImage().length);
@@ -94,7 +94,7 @@ public class PictureDAO extends SQLDAO<Picture>{
 
     @Override
     public int update(Picture note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection();InputStream stream=getStream(note)) {
+        try(SQLConnection connection= new SQLConnection(); InputStream stream=getStream(note)) {
             if(stream!=null) {
                 statement = connection.prepareStatement(Command.UPDATE.getCommand());
                 statement.setBinaryStream(1, stream, note.getByteImage().length);
@@ -115,7 +115,7 @@ public class PictureDAO extends SQLDAO<Picture>{
 
     @Override
     public int delete(Picture note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
             if(statement.execute()){
@@ -129,7 +129,7 @@ public class PictureDAO extends SQLDAO<Picture>{
     }
     @Override
     public int delete(int note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note);
             if(statement.execute()){
@@ -144,7 +144,7 @@ public class PictureDAO extends SQLDAO<Picture>{
 
     @Override
     public Picture receive(Picture note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
             resultSet=statement.executeQuery();
@@ -159,7 +159,7 @@ public class PictureDAO extends SQLDAO<Picture>{
     }
     @Override
     public Picture receive(int note) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);
             resultSet=statement.executeQuery();
@@ -175,7 +175,7 @@ public class PictureDAO extends SQLDAO<Picture>{
 
     @Override
     public Collection<Picture> receiveAll() throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {
@@ -186,7 +186,7 @@ public class PictureDAO extends SQLDAO<Picture>{
 
     @Override
     public Collection<Picture> receiveAll(int[] bound) throws DAOException {
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
             statement.setInt(2,bound[1]);
@@ -197,10 +197,10 @@ public class PictureDAO extends SQLDAO<Picture>{
         }
     }
 
-    public Collection<Picture> receivePicturesInNews(Picture picture){
+    public Collection<Picture> receivePicturesInNews(Picture picture) throws DAOException {
         String request="SELECT * FROM pictures_in_news INNER JOIN "+tableName+" ON pictures_in_news.picture_id="+
                 tableName+'.'+idField+" WHERE "+idField+" =?;";
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(request);
             statement.setInt(1,picture.getId());
             return receiveCollection(statement.executeQuery());
@@ -209,10 +209,10 @@ public class PictureDAO extends SQLDAO<Picture>{
             return new ConcurrentLinkedQueue<>();
         }
     }
-    public Collection<Picture> receivePicturesInNews(){
+    public Collection<Picture> receivePicturesInNews() throws DAOException {
         String request="SELECT * FROM pictures_in_news INNER JOIN "+tableName+" ON pictures_in_news.picture_id="+
                 tableName+'.'+idField+';';
-        try(Connection connection=sqlConnection.getConnection()) {
+        try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(request);
             return receiveCollection(statement.executeQuery());
         } catch (SQLException e) {

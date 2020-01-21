@@ -1,19 +1,20 @@
 package com.loneliness.dao.sql_dao_impl;
 
 import com.loneliness.dao.DAOException;
-import com.loneliness.entity.News;
+import com.loneliness.entity.Card;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class NewsDAO extends SQLDAO<News>{
-    private String tableName = "news";
-    private String idField = "id_news";
-    private enum Command{
-        CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
+public class CardDAO extends SQLDAO<Card>{
+
+    protected enum Command{
+        CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID, RECEIVE_DECK_OF_CARDS;
+
         Command(){}
 
         private String command;
@@ -27,18 +28,20 @@ public class NewsDAO extends SQLDAO<News>{
         }
     }
 
-    public NewsDAO() throws  DAOException {
+    public CardDAO() throws DAOException {
         super();
+
         StringBuffer command=new StringBuffer();
+        String tableName = "cards";
+        String idField = "id_cards";
 
 
-
-        command.append("INSERT ").append(tableName).append(" (text) ").
-                append("VALUES(?);");
+        command.append("INSERT ").append(tableName).append(" (lear,par,picture_id,id_decks_of_cards) ").
+                append("VALUES(?,?,?);");
         Command.CREATE.setCommand(command.toString());
         command=new StringBuffer();
 
-        command.append("UPDATE ").append(tableName).append(" SET text= ? ").
+        command.append("UPDATE ").append(tableName).append(" SET lear= ?, par =? ,picture_id =? ,id_decks_of_cards=? ").
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
@@ -59,15 +62,22 @@ public class NewsDAO extends SQLDAO<News>{
         Command.GET_ALL_IN_LIMIT.setCommand(command.toString());
 
         command=new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE id_decks_of_cards=").append("= ? ;");
+        Command.RECEIVE_DECK_OF_CARDS.setCommand(command.toString());
+
+        command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
     }
 
     @Override
-    public int create(News note) throws DAOException {
+    public int create(Card note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.CREATE.getCommand());
-            statement.setString(1,note.getText());
+            statement.setString(1,note.getLear());
+            statement.setString(2,note.getPar());
+            statement.setInt(3,note.getImageID());
+            statement.setInt(4,note.getDecksOfCardsID());
             if(statement.executeUpdate()==1){
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
@@ -83,11 +93,14 @@ public class NewsDAO extends SQLDAO<News>{
     }
 
     @Override
-    public int update(News note) throws DAOException {
+    public int update(Card note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
-            statement.setString(1,note.getText());
-            statement.setInt(2,note.getId());
+            statement.setString(1,note.getLear());
+            statement.setString(2,note.getPar());
+            statement.setInt(3,note.getImageID());
+            statement.setInt(4,note.getDecksOfCardsID());
+            statement.setInt(5,note.getId());
             if(statement.executeUpdate()==1){
                 return 1;
             }
@@ -99,7 +112,7 @@ public class NewsDAO extends SQLDAO<News>{
     }
 
     @Override
-    public int delete(News note) throws DAOException {
+    public int delete(Card note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.DELETE.getCommand());
             statement.setInt(1,note.getId());
@@ -112,6 +125,7 @@ public class NewsDAO extends SQLDAO<News>{
             throw new DAOException("ERROR_IN_DELETE",e.getCause());
         }
     }
+
     @Override
     public int delete(int note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
@@ -128,7 +142,23 @@ public class NewsDAO extends SQLDAO<News>{
     }
 
     @Override
-    public News receive(News note) throws DAOException {
+    public Card receive(int id) throws DAOException {
+        try(SQLConnection connection= new SQLConnection()) {
+            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1,id);
+            resultSet=statement.executeQuery();
+            if(resultSet.next()){
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+        }
+        return new Card.Builder().build();
+    }
+
+    @Override
+    public Card receive(Card note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note.getId());
@@ -140,26 +170,26 @@ public class NewsDAO extends SQLDAO<News>{
             logger.catching(e);
             throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
         }
-        return new News.Builder().build();
+        return new Card.Builder().build();
     }
-    @Override
-    public News receive(int note) throws DAOException {
+
+    public Map<Integer,Card> receiveDeckOfCards(int id) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
-            statement.setInt(1,note);
-            resultSet=statement.executeQuery();
-            if(resultSet.next()){
-                return receiveDataFromResultSet(resultSet);
-            }
+            statement=connection.prepareStatement(Command.RECEIVE_DECK_OF_CARDS.getCommand());
+            statement.setInt(1,id);
+            Collection<Card> cards=receiveCollection(statement.executeQuery());
+
+            Map<Integer,Card> cardMap=new ConcurrentHashMap<>();
+            cards.forEach(card -> cardMap.put(card.getId(),card));
+            return cardMap;
         } catch (SQLException e) {
             logger.catching(e);
-            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+            throw new DAOException("ERROR_IN_RECEIVE_ALL",e.getCause());
         }
-        return new News.Builder().build();
     }
 
     @Override
-    public Collection<News> receiveAll() throws DAOException {
+    public Collection<Card> receiveAll() throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL.getCommand());
             return receiveCollection(statement.executeQuery());
@@ -170,7 +200,7 @@ public class NewsDAO extends SQLDAO<News>{
     }
 
     @Override
-    public Collection<News> receiveAll(int[] bound) throws DAOException {
+    public Collection<Card> receiveAll(int[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
@@ -181,23 +211,14 @@ public class NewsDAO extends SQLDAO<News>{
             throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
     }
-    public Collection<News> receivePicturesInNews(News news){
-        String request="SELECT * FROM pictures_in_news INNER JOIN "+tableName+" ON pictures_in_news.news_id="+
-                tableName+'.'+idField+" WHERE "+idField+" =?;";
-        try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(request);
-            statement.setInt(1,news.getId());
-            return receiveCollection(statement.executeQuery());
-        } catch (SQLException | DAOException e) {
-            logger.catching(e);
-            return new ConcurrentLinkedQueue<>();
-        }
-    }
-
     @Override
-    protected News receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
-        return new News.Builder().setId(resultSet.getInt("id_news"))
-                .setText(resultSet.getString("text"))
-                .setLast_update(resultSet.getDate("last_update").toLocalDate()).build();
+    protected Card receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Card.Builder().setId(resultSet.getInt("id_cards"))
+                .setLear(resultSet.getString("lear"))
+                .setPar(resultSet.getString("par"))
+                .setLastUpdate(resultSet.getDate("lastUpdate").toLocalDate())
+                .setImageID(resultSet.getInt("picture_id"))
+                .setDecksOfCardsID(resultSet.getInt("id_decks_of_cards"))
+                .build();
     }
 }

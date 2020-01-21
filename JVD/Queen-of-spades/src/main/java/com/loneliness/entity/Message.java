@@ -14,7 +14,7 @@ public class Message implements Entity {
     private final int toUser;
     @Positive(message = "fromUser MUST_BE_POSITIVE")
     private final int fromUser;
-    @Length(min = 1,message = "message must be ")
+    @Length(min = 1,message = "message MUST_BE ")
     private final String message;
     @PastOrPresent(message = "date MUST_BE_NOT_IN_FUTURE")
     private final LocalDate date;
@@ -136,6 +136,7 @@ public class Message implements Entity {
         public LocalDate getDate() {
             return date;
         }
+
         public Message build(){
             return new Message(this);
         }
