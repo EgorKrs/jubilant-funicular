@@ -163,7 +163,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
         return new Profile.Builder().build();
     }
     @Override
-    public Profile receive(int note) throws DAOException {
+    public Profile receive(Integer note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);

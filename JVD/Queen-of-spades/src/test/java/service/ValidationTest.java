@@ -1,15 +1,11 @@
 package service;
 
-import com.github.javafaker.CreditCardType;
 import com.github.javafaker.Faker;
 import com.loneliness.dao.DAOException;
-import com.loneliness.dao.sql_dao_impl.AccountDAO;
-import com.loneliness.dao.sql_dao_impl.UserDAO;
 import com.loneliness.entity.*;
-import com.loneliness.service.Command;
+import com.loneliness.command.Command;
 import com.loneliness.service.ServiceException;
-import com.loneliness.service.common_service.Create;
-import com.loneliness.service.common_service.Validation;
+import com.loneliness.command.common_comand.Validation;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,8 +17,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 

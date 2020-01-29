@@ -2,18 +2,14 @@ package service;
 
 import com.github.javafaker.Faker;
 import com.loneliness.dao.DAOException;
-import com.loneliness.dao.sql_dao_impl.MessageDAO;
 import com.loneliness.dao.sql_dao_impl.NewsDAO;
-import com.loneliness.dao.sql_dao_impl.UserDAO;
-import com.loneliness.entity.Message;
 import com.loneliness.entity.News;
-import com.loneliness.entity.User;
-import com.loneliness.service.Command;
+import com.loneliness.command.Command;
 import com.loneliness.service.ServiceException;
-import com.loneliness.service.common_service.Create;
-import com.loneliness.service.common_service.Delete;
-import com.loneliness.service.common_service.ReceiveAll;
-import com.loneliness.service.common_service.Update;
+import com.loneliness.command.common_comand.Create;
+import com.loneliness.command.common_comand.Delete;
+import com.loneliness.command.common_comand.ReceiveAll;
+import com.loneliness.command.common_comand.Update;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -21,7 +17,6 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
 
 public class NewServiceTest {

@@ -8,22 +8,17 @@ import com.loneliness.dao.sql_dao_impl.PicturesInNewsDAO;
 import com.loneliness.entity.News;
 import com.loneliness.entity.Picture;
 import com.loneliness.entity.PicturesInNews;
-import com.loneliness.service.Command;
+import com.loneliness.command.Command;
 import com.loneliness.service.ServiceException;
-import com.loneliness.service.common_service.Create;
-import com.loneliness.service.common_service.Delete;
-import com.loneliness.service.common_service.ReceiveAll;
-import com.loneliness.service.common_service.Update;
+import com.loneliness.command.common_comand.Create;
+import com.loneliness.command.common_comand.Delete;
+import com.loneliness.command.common_comand.ReceiveAll;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 

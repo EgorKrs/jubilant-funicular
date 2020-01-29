@@ -1,8 +1,7 @@
-package com.loneliness.service.common_service;
+package com.loneliness.command.common_comand;
 
 import com.loneliness.entity.Entity;
-import com.loneliness.service.Command;
-import com.loneliness.service.ServiceException;
+import com.loneliness.command.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

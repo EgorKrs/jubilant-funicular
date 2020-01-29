@@ -2,10 +2,8 @@ package com.loneliness.service.game;
 
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.CardDAO;
-import com.loneliness.dao.sql_dao_impl.UserDAO;
 import com.loneliness.entity.Card;
-import com.loneliness.entity.User;
-import com.loneliness.service.Command;
+import com.loneliness.command.Command;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

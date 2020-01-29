@@ -143,7 +143,7 @@ public class NewsDAO extends SQLDAO<News>{
         return new News.Builder().build();
     }
     @Override
-    public News receive(int note) throws DAOException {
+    public News receive(Integer note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);

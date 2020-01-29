@@ -147,7 +147,7 @@ public class AccountDAO extends SQLDAO<Account> {
         return new Account.Builder().build();
     }
     @Override
-    public Account receive(int note) throws DAOException {
+    public Account receive(Integer note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);

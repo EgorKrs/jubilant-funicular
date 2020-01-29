@@ -4,7 +4,6 @@ package com.loneliness.dao.sql_dao_impl;
 import com.loneliness.dao.DAOException;
 import com.loneliness.entity.User;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -21,7 +20,7 @@ import java.util.Collection;
 
 public class UserDAO extends SQLDAO<User> {
     protected enum Command{
-        CREATE,UPDATE,GET_BY_ID,GET_BY_LOGIN,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
+        CREATE,UPDATE,GET_BY_ID, GET_BY_LOGIN_AND_PASSWORD,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
         Command(String command){
             this.command=command;
         }
@@ -62,8 +61,8 @@ public class UserDAO extends SQLDAO<User> {
         Command.GET_BY_ID.setCommand(command.toString());
 
         command=new StringBuffer();
-        command.append("SELECT * FROM ").append(tableName).append(" WHERE login").append(" = ? ;");
-        Command.GET_BY_LOGIN.setCommand(command.toString());
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE login").append(" = ? AND password= ? ;");
+        Command.GET_BY_LOGIN_AND_PASSWORD.setCommand(command.toString());
 
         command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" ;");
@@ -151,27 +150,29 @@ public class UserDAO extends SQLDAO<User> {
 
     @Override
     public User receive(User note) throws DAOException {
-        try(SQLConnection connection= new SQLConnection()) {
-            if(note.getId()>0) {
-                statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
-                statement.setInt(1, note.getId());
+        try (SQLConnection connection = new SQLConnection()) {
+            if(note.getLogin()!=null&&note.getLogin().length()!=0) {
+                statement = connection.prepareStatement(Command.GET_BY_LOGIN_AND_PASSWORD.getCommand());
+                statement.setString(1, note.getLogin());
+                statement.setString(2, note.getPassword());
             }
             else {
-                statement=connection.prepareStatement(Command.GET_BY_LOGIN.getCommand());
-                statement.setString(1,note.getLogin());
+                statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
+                statement.setInt(1, note.getId());
+                resultSet = statement.executeQuery();
             }
-            resultSet=statement.executeQuery();
-            if(resultSet.next()){
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
                 return receiveDataFromResultSet(resultSet);
             }
         } catch (SQLException e) {
             logger.catching(e);
-            throw new DAOException("ERROR_IN_RECEIVE",e.getCause());
+            throw new DAOException("ERROR_IN_RECEIVE", e.getCause());
         }
         return new User.Builder().build();
     }
 
-    public  User receive(int id) throws DAOException {
+    public  User receive(Integer id) throws DAOException {
         try (SQLConnection connection= new SQLConnection()) {
             statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1, id);

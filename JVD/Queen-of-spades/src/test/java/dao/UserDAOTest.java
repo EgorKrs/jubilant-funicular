@@ -3,17 +3,14 @@ package dao;
 import com.github.javafaker.Faker;
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.UserDAO;
-import com.loneliness.entity.Account;
 import com.loneliness.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class UserDAOTest {
     private static Faker faker;
@@ -33,7 +30,7 @@ public class UserDAOTest {
         if (faker.number().numberBetween(0, 1) == 0) {
             type = User.Type.ADMIN;
         } else {
-            type = User.Type.GAMER;
+            type = User.Type.USER;
         }
         builder.setType(type);
         builder.setLastUpdate(LocalDate.now());
@@ -53,10 +50,10 @@ public class UserDAOTest {
     public void updateTest()throws  DAOException{
         User user=dao.receiveAll(new int[]{0,1}).iterator().next();
         User.Builder builder=new User.Builder(user);
-        if(builder.getType().equals(User.Type.GAMER)){
+        if(builder.getType().equals(User.Type.USER)){
             builder.setType(User.Type.ADMIN);
         }
-        else  builder.setType(User.Type.GAMER);
+        else  builder.setType(User.Type.USER);
         User changedUser=builder.build();
         dao.update(changedUser);
         Assert.assertNotEquals(user,dao.receive(changedUser));

@@ -148,7 +148,7 @@ public class PicturesInNewsDAO extends SQLDAO<PicturesInNews>{
         return new PicturesInNews.Builder().build();
     }
     @Override
-    public PicturesInNews receive(int note) throws DAOException {
+    public PicturesInNews receive(Integer note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);

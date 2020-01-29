@@ -4,9 +4,9 @@ import com.github.javafaker.Faker;
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.UserDAO;
 import com.loneliness.entity.*;
-import com.loneliness.service.Command;
+import com.loneliness.command.Command;
 import com.loneliness.service.ServiceException;
-import com.loneliness.service.common_service.Create;
+import com.loneliness.command.common_comand.Create;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class CommonTest {
         if (faker.number().numberBetween(0, 1) == 0) {
             type = User.Type.ADMIN;
         } else {
-            type = User.Type.GAMER;
+            type = User.Type.USER;
         }
         builder.setType(type);
         builder.setLastUpdate(LocalDate.now());

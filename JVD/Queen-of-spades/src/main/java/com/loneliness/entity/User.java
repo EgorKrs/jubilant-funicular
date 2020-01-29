@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class User implements Entity {
     public enum Type{
-        ADMIN,GAMER
+        ADMIN, USER,UNKNOWN
     }
     @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
@@ -100,7 +100,7 @@ public class User implements Entity {
         private int id=0;
         private String login="";
         private String password="";
-        private Type type= Type.GAMER;
+        private Type type= Type.USER;
         private LocalDate lastUpdate=LocalDate.now();
         private LocalDate createDate=LocalDate.now();
         private int avatarId=0;

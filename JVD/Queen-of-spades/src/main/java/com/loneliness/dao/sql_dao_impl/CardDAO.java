@@ -142,7 +142,7 @@ public class CardDAO extends SQLDAO<Card>{
     }
 
     @Override
-    public Card receive(int id) throws DAOException {
+    public Card receive(Integer id) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,id);

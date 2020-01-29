@@ -33,12 +33,12 @@ public class MessageDAO extends SQLDAO<Message> {
         String idField = "id_messages";
 
 
-        command.append("INSERT ").append(tableName).append(" (to_user,from_user,message) ").
-                append("VALUES(?,?,?);");
+        command.append("INSERT ").append(tableName).append(" (userName,message) ").
+                append("VALUES(?,?);");
         Command.CREATE.setCommand(command.toString());
         command=new StringBuffer();
 
-        command.append("UPDATE ").append(tableName).append(" SET to_user= ?, from_user =? ,message =? ").
+        command.append("UPDATE ").append(tableName).append(" SET userName= ?, message =? ").
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
@@ -68,9 +68,8 @@ public class MessageDAO extends SQLDAO<Message> {
     public int create(Message note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.CREATE.getCommand());
-            statement.setInt(1,note.getToUser());
-            statement.setInt(2,note.getFromUser());
-            statement.setString(3,note.getMessage());
+            statement.setString(1,note.getUserName());
+            statement.setString(2,note.getMessage());
             if(statement.executeUpdate()==1){
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
@@ -89,10 +88,9 @@ public class MessageDAO extends SQLDAO<Message> {
     public int update(Message note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
-            statement.setInt(1,note.getToUser());
-            statement.setInt(2,note.getFromUser());
-            statement.setString(3,note.getMessage());
-            statement.setInt(4,note.getId());
+            statement.setString(1,note.getUserName());
+            statement.setString(2,note.getMessage());
+            statement.setInt(3,note.getId());
             if(statement.executeUpdate()==1){
                 return 1;
             }
@@ -148,7 +146,7 @@ public class MessageDAO extends SQLDAO<Message> {
         return new Message.Builder().build();
     }
     @Override
-    public Message receive(int note) throws DAOException {
+    public Message receive(Integer note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1,note);
@@ -190,9 +188,8 @@ public class MessageDAO extends SQLDAO<Message> {
     @Override
     protected Message receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
         return new Message.Builder().setId(resultSet.getInt("id_messages"))
-                .setToUser(resultSet.getInt("to_user"))
-                .setFromUser(resultSet.getInt("from_user"))
-                .setDate(resultSet.getDate("data").toLocalDate())
+                .setUserName(resultSet.getString("userName"))
+                .setDate(resultSet.getTimestamp("data").toLocalDateTime())
                 .setMessage(resultSet.getString("message")).build();
     }
 

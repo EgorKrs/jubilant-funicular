@@ -4,7 +4,7 @@ import com.loneliness.entity.Entity;
 
 import java.util.Collection;
 
-public interface  DAO<T extends Entity > {
+public interface  DAO<T  > {
     /*
     return :
     1-ok
@@ -17,7 +17,7 @@ public interface  DAO<T extends Entity > {
     int update(T note) throws DAOException;
     int delete(T note) throws DAOException;
     int delete(int note) throws DAOException;
-    T receive(int id) throws DAOException;
+    T receive(Integer id) throws DAOException;
     T receive(T note) throws DAOException;
     Collection<T> receiveAll() throws DAOException;
     Collection<T> receiveAll(int[] bound) throws DAOException;
