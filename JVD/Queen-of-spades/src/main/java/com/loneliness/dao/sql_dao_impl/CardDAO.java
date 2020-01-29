@@ -200,7 +200,7 @@ public class CardDAO extends SQLDAO<Card>{
     }
 
     @Override
-    public Collection<Card> receiveAll(int[] bound) throws DAOException {
+    public Collection<Card> receiveAll(Integer[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);

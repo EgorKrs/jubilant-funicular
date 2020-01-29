@@ -190,7 +190,7 @@ public class ProfileDAO extends SQLDAO<Profile> {
     }
 
     @Override
-    public Collection<Profile> receiveAll(int[] bound) throws DAOException {
+    public Collection<Profile> receiveAll(Integer[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);

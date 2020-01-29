@@ -20,6 +20,7 @@ public interface  DAO<T  > {
     T receive(Integer id) throws DAOException;
     T receive(T note) throws DAOException;
     Collection<T> receiveAll() throws DAOException;
-    Collection<T> receiveAll(int[] bound) throws DAOException;
+
+    Collection<T> receiveAll(Integer[] bound) throws DAOException;
 
 }

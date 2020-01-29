@@ -1,7 +1,9 @@
 package com.loneliness.servlet;
 
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.sql_dao_impl.MessageDAO;
 import com.loneliness.dao.sql_dao_impl.UserDAO;
+import com.loneliness.entity.Message;
 import com.loneliness.entity.User;
 import com.loneliness.command.Command;
 import com.loneliness.service.ServiceException;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class MagicServlet extends HttpServlet {
@@ -99,6 +103,9 @@ public class MagicServlet extends HttpServlet {
                     request.setCharacterEncoding("UTF-8");
                     response.setCharacterEncoding("UTF-8");
                     request.setAttribute("login",session.getAttribute("login"));
+                    command = new ReceiveInLimit<Message>(new MessageDAO());
+                    Collection<Message> messages = (Collection<Message>) command.execute(new Integer[]{0, 50});
+                    request.setAttribute("messages", messages);
                     request.getRequestDispatcher("message/chat.jsp").forward(request, response);
                     break;
             }

@@ -175,7 +175,7 @@ public class PicturesInNewsDAO extends SQLDAO<PicturesInNews>{
     }
 
     @Override
-    public Collection<PicturesInNews> receiveAll(int[] bound) throws DAOException {
+    public Collection<PicturesInNews> receiveAll(Integer[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);

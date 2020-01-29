@@ -1,6 +1,8 @@
 package com.loneliness.service.chat;
 
 import com.loneliness.entity.Message;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.websocket.CloseReason.CloseCodes;
 import javax.websocket.*;
@@ -8,21 +10,22 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Objects;
 
-@ServerEndpoint(value = "/{username}", encoders = MessageEncoder.class, decoders = MessageDecoder.class)
+@ServerEndpoint(value = "/{chat}", encoders = MessageEncoder.class, decoders = MessageDecoder.class)
 public final class ChatEndPoint {
-
+    private Logger logger = LogManager.getLogger();
     @OnOpen
-    public void onOpen(@PathParam(Constants.USER_NAME_KEY) final String userName, final Session session) {
+    public void onOpen(@PathParam("chat") final String userName, final Session session) {
         if (Objects.isNull(userName) || userName.isEmpty()) {
             throw new RegistrationFailedException("User name is required");
         } else {
             session.getUserProperties().put(Constants.USER_NAME_KEY, userName);
             if (ChatSessionManager.register(session)) {
-                System.out.printf("Session opened for %s\n", userName);
+                logger.info("Chat opened for " + userName);
 
                 ChatSessionManager.publish(new com.loneliness.entity.Message((String) session.getUserProperties().get(Constants.USER_NAME_KEY), "**joined the chat**"), session);
             } else {
-                throw new RegistrationFailedException("Unable to register, username already exists, try another");
+                logger.error("Unable to register, username already exists");
+                throw new RegistrationFailedException("Unable to register, username already exists");
             }
         }
     }
@@ -42,7 +45,7 @@ public final class ChatEndPoint {
     @OnClose
     public void onClose(final Session session) {
         if (ChatSessionManager.remove(session)) {
-            System.out.printf("Session closed for %s\n", session.getUserProperties().get(Constants.USER_NAME_KEY));
+            logger.info("Chat closed for %s\n" + session.getUserProperties().get(Constants.USER_NAME_KEY));
 
             ChatSessionManager.publish(new Message((String) session.getUserProperties().get(Constants.USER_NAME_KEY), "***left the chat***"), session);
         }

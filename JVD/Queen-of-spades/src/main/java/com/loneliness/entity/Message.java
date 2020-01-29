@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 
-    public  final class Message implements Entity{
+public class Message implements Entity {
 
         @Positive(message = "id MUST_BE_POSITIVE")
         private final int id;
@@ -34,7 +34,7 @@ import java.util.Objects;
             Objects.requireNonNull(message);
             id=0;
             this.userName = userName;
-            this.message = message;
+            this.message = message.replace('\n', ' ').replace('\r', ' ');
             date=LocalDateTime.now();
         }
 
@@ -54,9 +54,10 @@ import java.util.Objects;
 
         private Message(Builder builder) {
             this.id = builder.id;
-            this.message = builder.message;
+            this.message = builder.message.replace('\n', ' ').replace('\r', ' ');
             this.userName=builder.userName;
             this.date = builder.date;
+
         }
 
         @Override

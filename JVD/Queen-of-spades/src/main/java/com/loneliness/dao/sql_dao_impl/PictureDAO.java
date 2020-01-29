@@ -185,7 +185,7 @@ public class PictureDAO extends SQLDAO<Picture>{
     }
 
     @Override
-    public Collection<Picture> receiveAll(int[] bound) throws DAOException {
+    public Collection<Picture> receiveAll(Integer[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);

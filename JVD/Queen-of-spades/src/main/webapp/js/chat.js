@@ -2,7 +2,6 @@ let userName = null;
 let websocket = null;
 
 function init(login) {
-console.log(userName);
 	if ("WebSocket" in window) {
 		userName=login;
         console.log("User is set.");
@@ -30,7 +29,9 @@ console.log(userName);
 			let reason = (data.reason && data.reason !== null) ? data.reason : 'Goodbye';
 			console.log(reason);
 		};
-	} else {
+
+	}
+	else {
 		alert("Websockets not supported");
 	}
 }
@@ -53,7 +54,7 @@ function sendMessage() {
 	websocket.send(JSON.stringify(message));
 }
 
-function buildMessage(userName, message,toUser) {
+function buildMessage(userName, message) {
 	return {
 		username : userName,
 		message : message,
@@ -62,6 +63,7 @@ function buildMessage(userName, message,toUser) {
 }
 
 function setMessage(msg) {
+       console.log(msg);
 	let currentHTML = document.getElementById('scrolling-messages').innerHTML;
 	let newElem;
 
@@ -75,4 +77,5 @@ function setMessage(msg) {
 
 	document.getElementById('scrolling-messages').innerHTML = currentHTML
 			+ newElem;
+
 }

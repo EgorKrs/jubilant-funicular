@@ -55,7 +55,7 @@ public class MessageDAO extends SQLDAO<Message> {
         Command.GET_ALL.setCommand(command.toString());
 
         command=new StringBuffer();
-        command.append("SELECT * FROM ").append(tableName).append(" LIMIT ?, ? ;");
+        command.append("SELECT * FROM ").append(tableName).append(" ORDER BY ").append(tableName).append(".data asc LIMIT ?, ? ;");
         Command.GET_ALL_IN_LIMIT.setCommand(command.toString());
 
         command=new StringBuffer();
@@ -173,7 +173,7 @@ public class MessageDAO extends SQLDAO<Message> {
     }
 
     @Override
-    public Collection<Message> receiveAll(int[] bound) throws DAOException {
+    public Collection<Message> receiveAll(Integer[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);

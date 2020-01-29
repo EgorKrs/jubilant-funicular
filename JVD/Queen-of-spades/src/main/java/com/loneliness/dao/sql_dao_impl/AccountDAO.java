@@ -174,7 +174,7 @@ public class AccountDAO extends SQLDAO<Account> {
     }
 
     @Override
-    public Collection<Account> receiveAll(int[] bound) throws DAOException {
+    public Collection<Account> receiveAll(Integer[] bound) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.GET_ALL_IN_LIMIT.getCommand());
             statement.setInt(1,bound[0]);
