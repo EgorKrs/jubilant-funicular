@@ -4,6 +4,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,13 +17,12 @@ public class Profile implements Entity {
     private final int userID;
     @NotNull(message = "language MUST_BE_SET")
     private final Language language;
-    @PositiveOrZero(message = "rating MUST_BE_POSITIVE")
     private final int rating;
-    private final String telegram;
-    private final String instagram;
     private final String about;
     @PastOrPresent(message = "last_update MUST_BE_NOT_IN_FUTURE")
     private final LocalDate lastUpdate;
+    @NotNull(message = "score MUST_BE_SET")
+    private final BigDecimal score;
     @PositiveOrZero(message = "numberOfVictories MUST_BE_POSITIVE")
     private final AtomicInteger numberOfVictories;
     @PositiveOrZero(message = "numberOfDefeats MUST_BE_POSITIVE")
@@ -34,13 +35,16 @@ public class Profile implements Entity {
         this.userID = builder.userID;
         this.language = builder.language;
         this.rating = builder.rating;
-        this.telegram = builder.telegram;
-        this.instagram = builder.instagram;
+        this.score = builder.score;
         this.about = builder.about;
         this.lastUpdate = builder.lastUpdate;
         this.numberOfDefeats=new AtomicInteger(builder.numberOfDefeats.get());
         this.numberOfVictories=new AtomicInteger(builder.numberOfVictories.get());
         this.numberOfGame=new AtomicInteger(builder.numberOfGame.get());
+    }
+
+    public BigDecimal getScore() {
+        return score;
     }
 
     public int getId() {
@@ -59,13 +63,6 @@ public class Profile implements Entity {
         return rating;
     }
 
-    public String getTelegram() {
-        return telegram;
-    }
-
-    public String getInstagram() {
-        return instagram;
-    }
 
     public String getAbout() {
         return about;
@@ -96,8 +93,6 @@ public class Profile implements Entity {
                 userID == profile.userID &&
                 rating == profile.rating &&
                 language == profile.language &&
-                telegram.equals(profile.telegram) &&
-                instagram.equals(profile.instagram) &&
                 about.equals(profile.about) &&
                 lastUpdate.equals(profile.lastUpdate) &&
                 numberOfVictories.equals(profile.numberOfVictories) &&
@@ -107,7 +102,7 @@ public class Profile implements Entity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userID, language, rating, telegram, instagram, about, lastUpdate, numberOfVictories, numberOfDefeats, numberOfGame);
+        return Objects.hash(id, userID, language, rating, about, lastUpdate, numberOfVictories, numberOfDefeats, numberOfGame);
     }
 
     @Override
@@ -117,8 +112,6 @@ public class Profile implements Entity {
                 ", userID=" + userID +
                 ", language=" + language +
                 ", rating=" + rating +
-                ", telegram='" + telegram + '\'' +
-                ", instagram='" + instagram + '\'' +
                 ", about='" + about + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 ", numberOfVictories=" + numberOfVictories +
@@ -132,8 +125,7 @@ public class Profile implements Entity {
         private int userID=0;
         private Language language= Language.EN;
         private int rating=0;
-        private String telegram="";
-        private String instagram="";
+        private BigDecimal score = new BigDecimal("0");
         private String about="";
         private LocalDate lastUpdate=LocalDate.now();
         private AtomicInteger numberOfVictories=new AtomicInteger(0);
@@ -145,8 +137,6 @@ public class Profile implements Entity {
             this.userID = profile.userID;
             this.language = profile.language;
             this.rating = profile.rating;
-            this.telegram = profile.telegram;
-            this.instagram = profile.instagram;
             this.about = profile.about;
             this.lastUpdate = profile.lastUpdate;
             this.numberOfDefeats=profile.numberOfDefeats;
@@ -174,16 +164,6 @@ public class Profile implements Entity {
 
         public Builder setRating(int rating) {
             this.rating = rating;
-            return this;
-        }
-
-        public Builder setTelegram(String telegram) {
-            this.telegram = telegram;
-            return this;
-        }
-
-        public Builder setInstagram(String instagram) {
-            this.instagram = instagram;
             return this;
         }
 
@@ -226,6 +206,18 @@ public class Profile implements Entity {
             return this;
         }
 
+        public Builder addOneVictory() {
+            this.numberOfVictories.incrementAndGet();
+            this.numberOfGame.incrementAndGet();
+            return this;
+        }
+
+        public Builder addOneDefeat() {
+            this.numberOfDefeats.incrementAndGet();
+            this.numberOfGame.incrementAndGet();
+            return this;
+        }
+
         public AtomicInteger getNumberOfVictories() {
             return numberOfVictories;
         }
@@ -254,13 +246,32 @@ public class Profile implements Entity {
             return rating;
         }
 
-        public String getTelegram() {
-            return telegram;
+        public Builder addScore(int delta) {
+            this.score = new BigDecimal(String.valueOf(delta));
+            return this;
         }
 
-        public String getInstagram() {
-            return instagram;
+        public Builder addScore(BigDecimal delta) {
+            this.score = this.score.add(delta);
+            return this;
         }
+
+        public Builder minusScore(int delta) {
+            BigDecimal deltaScore = new BigDecimal(String.valueOf(delta));
+            this.score = this.score.min(deltaScore);
+            return this;
+        }
+
+        public Builder minusScore(BigDecimal delta) {
+            this.score = this.score.min(delta);
+            return this;
+        }
+
+        public Builder addRating(int delta) {
+            this.rating += delta;
+            return this;
+        }
+
 
         public String getAbout() {
             return about;
@@ -269,6 +280,20 @@ public class Profile implements Entity {
         public LocalDate getLastUpdate() {
             return lastUpdate;
         }
+
+        public BigDecimal getScore() {
+            return score;
+        }
+
+        public void setScore(BigDecimal score) {
+            this.score = score;
+        }
+
+        public Builder setScore(int score) {
+            this.score = new BigDecimal(String.valueOf(score));
+            return this;
+        }
+
         public Profile build(){
             return new Profile(this);
         }

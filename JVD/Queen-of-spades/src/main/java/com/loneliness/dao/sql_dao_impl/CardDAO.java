@@ -36,12 +36,12 @@ public class CardDAO extends SQLDAO<Card>{
         String idField = "id_cards";
 
 
-        command.append("INSERT ").append(tableName).append(" (lear,par,picture_id,id_decks_of_cards) ").
-                append("VALUES(?,?,?);");
+        command.append("INSERT ").append(tableName).append(" (lear,par,id_decks_of_cards) ").
+                append("VALUES(?,?);");
         Command.CREATE.setCommand(command.toString());
         command=new StringBuffer();
 
-        command.append("UPDATE ").append(tableName).append(" SET lear= ?, par =? ,picture_id =? ,id_decks_of_cards=? ").
+        command.append("UPDATE ").append(tableName).append(" SET lear= ?, par =?  ,id_decks_of_cards=? ").
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
@@ -76,8 +76,7 @@ public class CardDAO extends SQLDAO<Card>{
             statement=connection.prepareStatement(Command.CREATE.getCommand());
             statement.setString(1,note.getLear());
             statement.setString(2,note.getPar());
-            statement.setInt(3,note.getImageID());
-            statement.setInt(4,note.getDecksOfCardsID());
+            statement.setInt(3, note.getDecksOfCardsID());
             if(statement.executeUpdate()==1){
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
@@ -98,9 +97,8 @@ public class CardDAO extends SQLDAO<Card>{
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
             statement.setString(1,note.getLear());
             statement.setString(2,note.getPar());
-            statement.setInt(3,note.getImageID());
-            statement.setInt(4,note.getDecksOfCardsID());
-            statement.setInt(5,note.getId());
+            statement.setInt(3, note.getDecksOfCardsID());
+            statement.setInt(4, note.getId());
             if(statement.executeUpdate()==1){
                 return 1;
             }
@@ -217,7 +215,6 @@ public class CardDAO extends SQLDAO<Card>{
                 .setLear(resultSet.getString("lear"))
                 .setPar(resultSet.getString("par"))
                 .setLastUpdate(resultSet.getDate("lastUpdate").toLocalDate())
-                .setImageID(resultSet.getInt("picture_id"))
                 .setDecksOfCardsID(resultSet.getInt("id_decks_of_cards"))
                 .build();
     }

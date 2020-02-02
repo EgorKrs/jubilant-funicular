@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class ProfileDAO extends SQLDAO<Profile> {
     protected enum Command{
-        CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
+        CREATE, UPDATE, GET_BY_ID, DELETE, GET_ALL, GET_ALL_IN_LIMIT, GET_LAST_INSERTED_ID, GET_PROFILE_BY_USER_ID;
         Command(String command){
             this.command=command;
         }
@@ -34,13 +34,13 @@ public class ProfileDAO extends SQLDAO<Profile> {
         String tableName = "profiles";
         String idField = "profile_id";
 
-        command.append("INSERT ").append(tableName).append(" (user_id, language, rating, telegram, instagram, about," +
+        command.append("INSERT ").append(tableName).append(" (user_id, language, rating, about,score" +
                 "number_of_defeats,number_of_victories,number_of_game) ").
-                append("VALUES(?,?,?,?,?,?,?,?,?);");
+                append("VALUES(?,?,?,?,?,?,?,?);");
         Command.CREATE.setCommand(command.toString());
 
         command=new StringBuffer();
-        command.append("UPDATE ").append(tableName).append(" SET user_id= ?, language =? , rating =?, telegram =?, instagram =?,about =?, " +
+        command.append("UPDATE ").append(tableName).append(" SET user_id= ?, language =? , rating =?, score =?,about =?, " +
                 "number_of_defeats =?, number_of_victories =?,number_of_game =? ").
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
@@ -65,6 +65,10 @@ public class ProfileDAO extends SQLDAO<Profile> {
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
 
+        command = new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id=?;");
+        Command.GET_PROFILE_BY_USER_ID.setCommand(command.toString());
+
     }
 
     @Override
@@ -74,12 +78,11 @@ public class ProfileDAO extends SQLDAO<Profile> {
             statement.setInt(1,note.getUserID());
             statement.setString(2,note.getLanguage().toString());
             statement.setInt(3,note.getRating());
-            statement.setString(4,note.getTelegram());
-            statement.setString(5,note.getInstagram());
-            statement.setString(6,note.getAbout());
-            statement.setInt(7,note.getNumberOfDefeats().get());
-            statement.setInt(8,note.getNumberOfVictories().get());
-            statement.setInt(9,note.getNumberOfGame().get());
+            statement.setInt(4, note.getScore().intValue());
+            statement.setString(5, note.getAbout());
+            statement.setInt(6, note.getNumberOfDefeats().get());
+            statement.setInt(7, note.getNumberOfVictories().get());
+            statement.setInt(8, note.getNumberOfGame().get());
             if(statement.executeUpdate()==1){
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
@@ -101,13 +104,12 @@ public class ProfileDAO extends SQLDAO<Profile> {
             statement.setInt(1,note.getUserID());
             statement.setString(2,note.getLanguage().toString());
             statement.setInt(3,note.getRating());
-            statement.setString(4,note.getTelegram());
-            statement.setString(5,note.getInstagram());
-            statement.setString(6,note.getAbout());
-            statement.setInt(7,note.getNumberOfDefeats().get());
-            statement.setInt(8,note.getNumberOfVictories().get());
-            statement.setInt(9,note.getNumberOfGame().get());
-            statement.setInt(10,note.getId());
+            statement.setInt(4, note.getScore().intValue());
+            statement.setString(5, note.getAbout());
+            statement.setInt(6, note.getNumberOfDefeats().get());
+            statement.setInt(7, note.getNumberOfVictories().get());
+            statement.setInt(8, note.getNumberOfGame().get());
+            statement.setInt(9, note.getId());
             if(statement.executeUpdate()==1){
                 return 1;
             }
@@ -201,14 +203,29 @@ public class ProfileDAO extends SQLDAO<Profile> {
             throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
     }
+
+    public Profile getProfileByUserId(Integer userID) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.GET_PROFILE_BY_USER_ID.getCommand());
+            statement.setInt(1, userID);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException | DAOException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE", e.getCause());
+        }
+        return new Profile.Builder().build();
+    }
+
     protected Profile receiveDataFromResultSet(ResultSet resultSet) throws SQLException {
         return new Profile.Builder().setId(resultSet.getInt("profile_id")).
                 setUserID(resultSet.getInt("user_id")).
                 setRating(resultSet.getInt("rating")).
                 setLanguage(Language.valueOf(resultSet.getString("language"))).
                 setLastUpdate(resultSet.getDate("last_update").toLocalDate()).
-                setTelegram(resultSet.getString("telegram")).
-                setInstagram(resultSet.getString("instagram")).
+                setScore(resultSet.getInt("score")).
                 setAbout(resultSet.getString("about")).
                 setNumberOfDefeats(resultSet.getInt("number_of_defeats")).
                 setNumberOfVictories(resultSet.getInt("number_of_victories")).

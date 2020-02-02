@@ -1,4 +1,4 @@
-package com.loneliness.service.game;
+package com.loneliness.command;
 
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.CardDAO;
