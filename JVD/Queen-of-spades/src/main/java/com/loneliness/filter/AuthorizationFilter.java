@@ -1,9 +1,9 @@
 package com.loneliness.filter;
 
-import com.loneliness.entity.User;
 import com.loneliness.command.Authorization;
 import com.loneliness.command.Command;
-import com.loneliness.service.ServiceException;
+import com.loneliness.command.CommandException;
+import com.loneliness.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 public class AuthorizationFilter implements Filter {
     private Logger logger = LogManager.getLogger();
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
     @Override
@@ -32,20 +32,14 @@ public class AuthorizationFilter implements Filter {
         final HttpServletRequest req = (HttpServletRequest) request;
         final HttpServletResponse res = (HttpServletResponse) response;
 
-        final String login = req.getParameter("login");
-        final String password = req.getParameter("password");
+
         final HttpSession session = req.getSession();
 
         //Logged user.
-        if (nonNull(session) && nonNull(session.getAttribute("userId"))) {
-
-            final User.Type type = (User.Type) session.getAttribute("type");
-
-            moveToMenu(req, res, type);
-
-
-        } else {
+        if (isNull(session.getAttribute("userId"))) {
             try {
+                final String login = req.getParameter("login");
+                final String password = req.getParameter("password");
                 Command<User,User,User> userCommand= new Authorization();
                 User user=userCommand.execute(new User.Builder().setLogin(login).setPassword(password).build());
                 if (user.getId()>0) {
@@ -59,7 +53,7 @@ public class AuthorizationFilter implements Filter {
 
                     moveToMenu(req, res, User.Type.UNKNOWN);
                 }
-            } catch (ServiceException e) {
+            } catch (CommandException e) {
                 logger.catching(e);
             }
         }

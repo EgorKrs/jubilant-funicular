@@ -3,7 +3,6 @@ package com.loneliness.dao.sql_dao_impl;
 import com.loneliness.dao.DAOException;
 import com.loneliness.entity.Card;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -62,7 +61,7 @@ public class CardDAO extends SQLDAO<Card>{
         Command.GET_ALL_IN_LIMIT.setCommand(command.toString());
 
         command=new StringBuffer();
-        command.append("SELECT * FROM ").append(tableName).append(" WHERE id_decks_of_cards=").append("= ? ;");
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE id_decks_of_cards= ? ;");
         Command.RECEIVE_DECK_OF_CARDS.setCommand(command.toString());
 
         command=new StringBuffer();

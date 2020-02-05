@@ -1,21 +1,24 @@
 package com.loneliness.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Card implements Entity{
     @Positive(message = "id MUST_BE_POSITIVE")
     private final int id;
+    @JsonProperty("lear")
     @Length(min = 1,message = "lear MUST_BE_SET ")
-    private final String lear;
+    private final String lear; // масть
+    @JsonProperty("par")
     @Length(min = 1,message = "par MUST_BE_SET ")
-    private final String par;
+    private final String par;  // номинал
     @PositiveOrZero(message = "decksOfCardsID MUST_BE_MORE_THAN_NULL ")
     private final int decksOfCardsID;
     @PastOrPresent(message = "last_update MUST_BE_NOT_IN_FUTURE ")
@@ -28,6 +31,19 @@ public class Card implements Entity{
         this.lastUpdate=builder.lastUpdate;
         this.decksOfCardsID=builder.decksOfCardsID;
     }
+
+    @JsonCreator
+    public Card(@JsonProperty("lear") final String lear,
+                @JsonProperty("par") final String par) {
+        Objects.requireNonNull(lear);
+        Objects.requireNonNull(par);
+        id = 0;
+        this.lear = lear;
+        this.par = par;
+        decksOfCardsID = 0;
+        lastUpdate = LocalDate.now();
+    }
+
 
     public int getId() {
         return id;
@@ -56,6 +72,14 @@ public class Card implements Entity{
         Card card = (Card) o;
         return id == card.id &&
                 lear.equals(card.lear) &&
+                par.equals(card.par);
+    }
+
+    public boolean lightEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return lear.equals(card.lear) &&
                 par.equals(card.par);
     }
 

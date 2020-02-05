@@ -33,7 +33,7 @@ console.log(xhr.response);
                     <input type="submit" name="chat" value="сообщения"/>
                 </form>
 
-<a href="<c:url value="/logout"/>">play</a>
+<a href="<c:url value="../game/game.jsp"/>">play</a>
 <a href="<c:url value='/logout' />">Logout</a>
 </body>
 </html>

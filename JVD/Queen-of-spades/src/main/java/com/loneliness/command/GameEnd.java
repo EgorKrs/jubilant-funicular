@@ -1,8 +1,6 @@
 package com.loneliness.command;
 
-import com.loneliness.dao.DAOException;
-import com.loneliness.dao.sql_dao_impl.ProfileDAO;
-import com.loneliness.entity.Profile;
+import com.loneliness.service.Service;
 import com.loneliness.service.ServiceException;
 import com.loneliness.service.game.GameData;
 import org.apache.logging.log4j.LogManager;
@@ -10,49 +8,35 @@ import org.apache.logging.log4j.Logger;
 
 public class GameEnd implements Command<Integer, Boolean, GameData> {
     private Logger logger = LogManager.getLogger();
-    private final ProfileDAO dao;
-    private Profile profile;
+    private final Service<Integer, Boolean, GameData, GameData> service;
+    private GameData gameData;
 
-    public GameEnd(ProfileDAO dao) {
-        this.dao = dao;
+    public GameEnd(Service<Integer, Boolean, GameData, GameData> service) {
+        this.service = service;
     }
 
     @Override
-    public Boolean execute(GameData note) throws ServiceException {
+    public Boolean execute(GameData note) throws CommandException {
         try {
-            profile = dao.getProfileByUserId(note.getGamerId());
-            dao.update(changeProfileData(profile, note));
+            this.gameData = note;
+            service.execute(note);
 
-        } catch (DAOException e) {
-            e.printStackTrace();
+        } catch (ServiceException e) {
             logger.catching(e);
-            throw new ServiceException(e.getMessage(), e.getCause());
+            throw new CommandException(e.getMessage(), e.getCause());
         }
         return null;
     }
 
     @Override
-    public Integer undo() throws ServiceException {
+    public Integer undo() throws CommandException {
         try {
-            return dao.update(profile);
-        } catch (DAOException e) {
+            return service.undo(gameData);
+        } catch (ServiceException e) {
             logger.catching(e);
-            throw new ServiceException(e.getMessage(), e.getCause());
+            throw new CommandException(e.getMessage(), e.getCause());
         }
     }
 
-    private Profile changeProfileData(Profile profile, GameData gameData) {
-        Profile.Builder builder = new Profile.Builder(profile);
-        int deltaRating = -50;
-        if (gameData.isGamerWon()) {
-            deltaRating *= -1;
-            builder.addScore(gameData.getJackpot())
-                    .addOneVictory();
-        } else {
-            builder.minusScore(gameData.getJackpot())
-                    .addOneDefeat();
-        }
-        builder.addRating(deltaRating);
-        return builder.build();
-    }
+
 }

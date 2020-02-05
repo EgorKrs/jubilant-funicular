@@ -1,8 +1,8 @@
 package com.loneliness.command.common_comand;
 
-import com.loneliness.dao.DAO;
-import com.loneliness.dao.DAOException;
 import com.loneliness.command.Command;
+import com.loneliness.command.CommandException;
+import com.loneliness.service.Service;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,30 +10,30 @@ import org.apache.logging.log4j.Logger;
 public class Delete<T> implements Command<Integer,Integer,  T> {
     private T data;
     private Logger logger = LogManager.getLogger();
-    private final DAO<T> dao;
+    private final Service<Integer, Integer, T, T> service;
 
-    public Delete(DAO<T> dao) {
-        this.dao=dao;
+    public Delete(Service<Integer, Integer, T, T> service) {
+        this.service = service;
     }
 
     @Override
-    public Integer execute(T data) throws ServiceException {
+    public Integer execute(T data) throws CommandException {
         try {
             this.data =data;
-            return dao.delete(data);
-        } catch (DAOException e) {
+            return service.execute(data);
+        } catch (ServiceException e) {
             logger.catching(e);
-            throw new ServiceException(e.getMessage(),e.getCause());
+            throw new CommandException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public Integer undo() throws ServiceException {
+    public Integer undo() throws CommandException {
         try {
-            return dao.create(data);
-        } catch (DAOException e) {
+            return service.undo(data);
+        } catch (ServiceException e) {
             logger.catching(e);
-            throw new ServiceException(e.getMessage(),e.getCause());
+            throw new CommandException(e.getMessage(), e.getCause());
         }
     }
 }
