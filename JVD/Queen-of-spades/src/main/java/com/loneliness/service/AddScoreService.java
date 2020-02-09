@@ -1,6 +1,7 @@
 package com.loneliness.service;
 
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.FactoryDAO;
 import com.loneliness.dao.sql_dao_impl.AccountDAO;
 import com.loneliness.dao.sql_dao_impl.ProfileDAO;
 import com.loneliness.entity.Account;
@@ -19,6 +20,17 @@ public class AddScoreService implements Service<Integer, Integer, Object[], Obje
     public AddScoreService(ProfileDAO profileDAO, AccountDAO accountDAO) {
         this.profileDAO = profileDAO;
         this.accountDAO = accountDAO;
+    }
+
+    public AddScoreService() throws ServiceException {
+        try {
+            FactoryDAO factoryDAO = FactoryDAO.getInstance();
+            this.profileDAO = factoryDAO.getProfileDAO();
+            this.accountDAO = factoryDAO.getAccountDAO();
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
+
     }
 
     @Override

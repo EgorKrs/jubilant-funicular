@@ -2,13 +2,10 @@ package com.loneliness.dao.sql_dao_impl;
 
 
 import com.loneliness.dao.DAO;
-import com.loneliness.dao.DAOException;
 import com.loneliness.entity.Entity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-import java.beans.PropertyVetoException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,5 +37,6 @@ public abstract class SQLDAO<T extends Entity> implements DAO<T> {
     }
 
     abstract protected T receiveDataFromResultSet(ResultSet resultSet) throws SQLException;
+
 
 }

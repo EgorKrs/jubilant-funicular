@@ -2,6 +2,7 @@ package com.loneliness.service.common_service;
 
 
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.FactoryDAO;
 import com.loneliness.dao.WorkWithUserDAO;
 import com.loneliness.entity.Entity;
 import com.loneliness.service.Service;
@@ -15,6 +16,15 @@ public class ReceiveByUserIdService<T extends Entity> implements Service<T, T, I
 
     public ReceiveByUserIdService(WorkWithUserDAO<T> dao) {
         this.dao = dao;
+    }
+
+    public ReceiveByUserIdService(Class<T> tClass) throws ServiceException {
+        try {
+            dao = (WorkWithUserDAO<T>) FactoryDAO.getInstance().getDao(tClass);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
+
     }
 
     @Override

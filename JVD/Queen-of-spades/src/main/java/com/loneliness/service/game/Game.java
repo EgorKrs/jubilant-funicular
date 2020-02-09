@@ -5,10 +5,10 @@ import com.loneliness.command.CommandException;
 import com.loneliness.command.GameEnd;
 import com.loneliness.command.ReceiveDeckOfCardsCommand;
 import com.loneliness.dao.DAOException;
-import com.loneliness.dao.sql_dao_impl.CardDAO;
 import com.loneliness.dao.sql_dao_impl.ProfileDAO;
 import com.loneliness.entity.Card;
 import com.loneliness.service.GameEndService;
+import com.loneliness.service.ReceiveDeckOfCardsService;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,9 +36,9 @@ public class Game {
         forehead = new HashSet<>();
         sonic = new HashSet<>();
         try {
-            this.cardDeck = new ReceiveDeckOfCardsCommand(new <Card>CardDAO()).execute(decksOfCardsID);
+            this.cardDeck = new ReceiveDeckOfCardsCommand(new ReceiveDeckOfCardsService()).execute(decksOfCardsID);
 
-        } catch (DAOException | CommandException e) {
+        } catch (CommandException e) {
             logger.catching(e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }

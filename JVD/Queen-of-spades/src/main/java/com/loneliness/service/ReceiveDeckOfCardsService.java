@@ -2,40 +2,42 @@ package com.loneliness.service;
 
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.FactoryDAO;
-import com.loneliness.dao.sql_dao_impl.UserDAO;
-import com.loneliness.entity.User;
+import com.loneliness.dao.sql_dao_impl.CardDAO;
+import com.loneliness.entity.Card;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AuthorizationService implements Service<User, User, User, User> {
-    private final UserDAO dao;
+import java.util.Map;
+
+public class ReceiveDeckOfCardsService implements Service<Integer, Map<Integer, Card>, Integer, Integer> {
+    private final CardDAO dao;
     private Logger logger = LogManager.getLogger();
 
-    public AuthorizationService(UserDAO dao) {
+    public ReceiveDeckOfCardsService(CardDAO dao) {
         this.dao = dao;
     }
 
-    public AuthorizationService() throws ServiceException {
+    public ReceiveDeckOfCardsService() throws ServiceException {
         try {
-            this.dao = FactoryDAO.getInstance().getUserDAO();
+            this.dao = FactoryDAO.getInstance().getCardDAO();
         } catch (DAOException e) {
-            logger.catching(e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public User execute(User user) throws ServiceException {
+    public Map<Integer, Card> execute(Integer note) throws ServiceException {
         try {
-            return dao.receive(user);
+            return dao.receiveDeckOfCards(note);
         } catch (DAOException e) {
             logger.catching(e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }
+
     }
 
     @Override
-    public User undo(User user) {
-        return user;
+    public Integer undo(Integer id) {
+        return id;
     }
 }

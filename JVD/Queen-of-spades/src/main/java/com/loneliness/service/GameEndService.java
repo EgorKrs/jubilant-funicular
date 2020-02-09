@@ -1,6 +1,7 @@
 package com.loneliness.service;
 
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.FactoryDAO;
 import com.loneliness.dao.sql_dao_impl.ProfileDAO;
 import com.loneliness.entity.Profile;
 import com.loneliness.service.game.GameData;
@@ -14,6 +15,14 @@ public class GameEndService implements Service<Integer, Boolean, GameData, GameD
 
     public GameEndService(ProfileDAO dao) {
         this.dao = dao;
+    }
+
+    public GameEndService() throws ServiceException {
+        try {
+            this.dao = FactoryDAO.getInstance().getProfileDAO();
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@
 
      <%@include file="/js/anime.min.js"%>
      <%@include file="/js/game.js"%>
+
     </script>
     <script>
 
@@ -28,8 +29,8 @@
        isWon(${requestScope.win});
       var animateLeftb = anime({
         targets: '.forehead',
-       left: '50%',
-         top: '40%',
+       left: '55%',
+         top: '20%',
         autoplay: true,
         delay: function(target, index, targetCount) {
           return (targetCount - index) * 2000;
@@ -42,8 +43,8 @@
       });
       var animateLeftr = anime({
         targets: '.sonic',
-        left: '30%',
-          top: '40%',
+        left: '40%',
+          top: '20%',
         autoplay: true,
         delay: function(target, index, targetCount) {
           return (targetCount - index) * 2000;
@@ -59,6 +60,7 @@
       }
       </script>
       <%@include file="../user/admin.jsp"%>
+       <hr />
 </head>
 <body >
     <form onsubmit="check(this)" action="MainServlet" method="post">

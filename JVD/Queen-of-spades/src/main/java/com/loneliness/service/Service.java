@@ -5,4 +5,5 @@ public interface Service<E, R, T, P> {
 
     E undo(P note) throws ServiceException;
 
+
 }

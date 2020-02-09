@@ -28,17 +28,19 @@ public class FactoryDAO {
     }
 
     public static FactoryDAO getInstance() throws DAOException {
-        try {
+
             if (instance == null) {
-                lock.lock();
-                if (instance == null) {
-                    instance = new FactoryDAO();
+                try {
+                    lock.lock();
+                    if (instance == null) {
+                        instance = new FactoryDAO();
+                    }
+                } finally {
+                    lock.unlock();
                 }
             }
-            return instance;
-        } finally {
-            lock.unlock();
-        }
+        return instance;
+
     }
 
     public AccountDAO getAccountDAO() {
@@ -71,5 +73,57 @@ public class FactoryDAO {
 
     public UserDAO getUserDAO() {
         return userDAO;
+    }
+
+    public <T> DAO<T> getDao(Class<T> tClass) throws DAOException {
+        try {
+            switch (tClass.getName()) {
+                case "com.loneliness.entity.Account":
+                    return (DAO<T>) getAccountDAO();
+                case "com.loneliness.entity.Card":
+                    return (DAO<T>) getCardDAO();
+                case "com.loneliness.entity.Message":
+                    return (DAO<T>) getMessageDAO();
+                case "com.loneliness.entity.News":
+                    return (DAO<T>) getNewsDAO();
+                case "com.loneliness.entity.Picture":
+                    return (DAO<T>) getPictureDAO();
+                case "com.loneliness.entity.PicturesInNews ":
+                    return (DAO<T>) getPicturesInNewsDAO();
+                case "com.loneliness.entity.Profile":
+                    return (DAO<T>) getProfileDAO();
+                case "com.loneliness.entity.User":
+                    return (DAO<T>) getUserDAO();
+            }
+        } catch (ClassCastException e) {
+            throw new DAOException(e.getMessage(), e.getCause());
+        }
+        return null;
+    }
+
+    public <T> DAO<T> getDao(String ob) throws DAOException {
+        try {
+            switch (ob) {
+                case "Account":
+                    return (DAO<T>) getAccountDAO();
+                case "Card":
+                    return (DAO<T>) getCardDAO();
+                case "Message":
+                    return (DAO<T>) getMessageDAO();
+                case "News":
+                    return (DAO<T>) getNewsDAO();
+                case "Picture":
+                    return (DAO<T>) getPictureDAO();
+                case "PicturesInNews":
+                    return (DAO<T>) getPicturesInNewsDAO();
+                case "Profile":
+                    return (DAO<T>) getProfileDAO();
+                case "User":
+                    return (DAO<T>) getUserDAO();
+            }
+        } catch (ClassCastException e) {
+            throw new DAOException(e.getMessage(), e.getCause());
+        }
+        return null;
     }
 }

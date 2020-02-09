@@ -2,29 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
-<head>
-    <title>ADMIN</title>
-</head>
+
 <body>
-<script>
-function startChat() {
-
-
-let formData=new FormData();
-
-formData.append('command', 'startChat');
-console.log(formData.getAll('command'));
-let xhr = new XMLHttpRequest();
-xhr.open("POST", '/', true);
-
-
-
-xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-xhr.send(formData);
-console.log(xhr.response);
-}
-</script>
-<h1>Hello ADMIN!</h1>
+<h1>"nav bar"</h1>
 
 
 <form method="post" action="MagicServlet">
@@ -39,8 +19,11 @@ console.log(xhr.response);
                     <input type="text" hidden name="command" value="startChat" />
                     <input type="submit" name="chat" value="сообщения"/>
                 </form>
+<form method="post" action="../game/game.jsp">
+                    <input type="text" hidden name="command" value="startGame" />
+                    <input type="submit" name="game" value="play"/>
+                </form>
 
-<a href="<c:url value="../game/game.jsp"/>">play</a>
  <form method="post" action="MagicServlet">
                     <input type="text" hidden name="command" value="logout" />
                     <input type="submit" name="logout" value="logout"/>
