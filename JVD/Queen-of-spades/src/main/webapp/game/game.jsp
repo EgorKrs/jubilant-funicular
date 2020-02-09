@@ -28,8 +28,8 @@
        isWon(${requestScope.win});
       var animateLeftb = anime({
         targets: '.forehead',
-        left: 400,
-        top: 400,
+       left: '50%',
+         top: '40%',
         autoplay: true,
         delay: function(target, index, targetCount) {
           return (targetCount - index) * 2000;
@@ -42,8 +42,8 @@
       });
       var animateLeftr = anime({
         targets: '.sonic',
-        left: 600,
-        top: 400,
+        left: '30%',
+          top: '40%',
         autoplay: true,
         delay: function(target, index, targetCount) {
           return (targetCount - index) * 2000;
@@ -58,6 +58,7 @@
 
       }
       </script>
+      <%@include file="../user/admin.jsp"%>
 </head>
 <body >
     <form onsubmit="check(this)" action="MainServlet" method="post">

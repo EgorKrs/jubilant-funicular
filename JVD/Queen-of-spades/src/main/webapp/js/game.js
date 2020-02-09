@@ -31,6 +31,7 @@ function endGame() {
             } else {
                 alert("loose");
             }
+            finishGame();
         }
     }
 }
@@ -108,3 +109,25 @@ function check(form) {
     }
     return false;
 }
+
+function finishGame(){
+var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+ console.log(this.responseText);
+
+    }
+    else
+            {
+            console.log(xhttp.readyState);
+              console.log(xhttp.status);
+                console.log('Something is wrong !!');
+            }
+  };
+
+  xhttp.open("POST", "http://localhost:9080/MainServlet", true);
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhttp.send({command :"finishGame"});
+
+
+  }

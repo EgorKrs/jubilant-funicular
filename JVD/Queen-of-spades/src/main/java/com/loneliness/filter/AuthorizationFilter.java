@@ -35,7 +35,6 @@ public class AuthorizationFilter implements Filter {
 
         final HttpSession session = req.getSession();
 
-        //Logged user.
         if (isNull(session.getAttribute("userId"))) {
             try {
                 final String login = req.getParameter("login");
@@ -50,13 +49,16 @@ public class AuthorizationFilter implements Filter {
                     moveToMenu(req, res, user.getType());
 
                 } else {
-
                     moveToMenu(req, res, User.Type.UNKNOWN);
                 }
+
             } catch (CommandException e) {
                 logger.catching(e);
             }
+        } else {
+            filterChain.doFilter(request, response);
         }
+
     }
 
     /**

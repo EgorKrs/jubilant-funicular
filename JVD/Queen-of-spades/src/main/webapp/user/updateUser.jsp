@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Title</title>
-
+<%@include file="../user/admin.jsp"%>
 </head>
 <body>
 

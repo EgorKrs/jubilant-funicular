@@ -1,7 +1,5 @@
 package com.loneliness.dao;
 
-import com.loneliness.entity.Entity;
-
 import java.util.Collection;
 
 public interface  DAO<T  > {
@@ -20,7 +18,6 @@ public interface  DAO<T  > {
     T receive(Integer id) throws DAOException;
     T receive(T note) throws DAOException;
     Collection<T> receiveAll() throws DAOException;
-
     Collection<T> receiveAll(Integer[] bound) throws DAOException;
 
 }

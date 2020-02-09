@@ -5,7 +5,6 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -257,13 +256,13 @@ public class Profile implements Entity {
         }
 
         public Builder minusScore(int delta) {
-            BigDecimal deltaScore = new BigDecimal(String.valueOf(delta));
-            this.score = this.score.min(deltaScore);
+            BigDecimal deltaScore = new BigDecimal(String.valueOf(delta)).multiply(new BigDecimal("-1"));
+            this.score = this.score.add(deltaScore);
             return this;
         }
 
         public Builder minusScore(BigDecimal delta) {
-            this.score = this.score.min(delta);
+            this.score = this.score.add(delta.multiply(new BigDecimal("-1")));
             return this;
         }
 
@@ -285,12 +284,14 @@ public class Profile implements Entity {
             return score;
         }
 
-        public void setScore(BigDecimal score) {
-            this.score = score;
-        }
 
         public Builder setScore(int score) {
             this.score = new BigDecimal(String.valueOf(score));
+            return this;
+        }
+
+        public Builder setScore(BigDecimal score) {
+            this.score = score;
             return this;
         }
 

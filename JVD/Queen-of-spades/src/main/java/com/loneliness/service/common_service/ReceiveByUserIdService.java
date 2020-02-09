@@ -1,28 +1,26 @@
 package com.loneliness.service.common_service;
 
-import com.loneliness.dao.DAO;
+
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.WorkWithUserDAO;
 import com.loneliness.entity.Entity;
 import com.loneliness.service.Service;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-public class ReceiveAllService<T extends Entity> implements Service<Collection<T>, Collection<T>, T, T> {
-    private final DAO<T> dao;
+public class ReceiveByUserIdService<T extends Entity> implements Service<T, T, Integer, T> {
+    private final WorkWithUserDAO<T> dao;
     private Logger logger = LogManager.getLogger();
 
-    public ReceiveAllService(DAO<T> dao) {
+    public ReceiveByUserIdService(WorkWithUserDAO<T> dao) {
         this.dao = dao;
     }
 
     @Override
-    public Collection<T> execute(T data) throws ServiceException {
+    public T execute(Integer data) throws ServiceException {
         try {
-            return dao.receiveAll();
+            return dao.receiveByUserId(data);
         } catch (DAOException e) {
             logger.catching(e);
             throw new ServiceException(e.getMessage(), e.getCause());
@@ -30,7 +28,7 @@ public class ReceiveAllService<T extends Entity> implements Service<Collection<T
     }
 
     @Override
-    public Collection<T> undo(T note) {
-        return new ConcurrentLinkedQueue<>();
+    public T undo(T note) {
+        return null;
     }
 }

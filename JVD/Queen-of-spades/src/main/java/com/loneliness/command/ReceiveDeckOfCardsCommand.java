@@ -3,8 +3,6 @@ package com.loneliness.command;
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.CardDAO;
 import com.loneliness.entity.Card;
-import com.loneliness.command.Command;
-import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,19 +18,19 @@ public class ReceiveDeckOfCardsCommand implements Command<Integer,Map<Integer, C
     }
 
     @Override
-    public Map<Integer, Card> execute(Integer note) throws ServiceException {
+    public Map<Integer, Card> execute(Integer note) throws CommandException {
         this.id=note;
         try {
             return dao.receiveDeckOfCards(note);
         } catch (DAOException e) {
             logger.catching(e);
-            throw new ServiceException(e.getMessage(),e.getCause());
+            throw new CommandException(e.getMessage(), e.getCause());
         }
 
     }
 
     @Override
-    public Integer undo() throws ServiceException {
+    public Integer undo() {
         return id;
     }
 }

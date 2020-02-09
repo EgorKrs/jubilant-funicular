@@ -1,30 +1,16 @@
 package com.loneliness.dao.sql_dao_impl;
 
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.WorkWithUserDAO;
 import com.loneliness.entity.Account;
 
-import java.sql.Connection;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class AccountDAO extends SQLDAO<Account> {
+public class AccountDAO extends SQLDAO<Account> implements WorkWithUserDAO<Account> {
 
-    protected enum Command{
-        CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
-
-        Command(){}
-
-        private String command;
-
-        public void setCommand(String command) {
-            this.command = command;
-        }
-
-        public String getCommand(){
-            return command;
-        }
-    }
     public AccountDAO() throws DAOException {
         super();
 
@@ -61,6 +47,33 @@ public class AccountDAO extends SQLDAO<Account> {
         command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
+
+        command = new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id=?;");
+        Command.GET_BY_USER_ID.setCommand(command.toString());
+
+        command.append("UPDATE ").append(tableName).append(" SET sum_of_money =? ").
+                append("WHERE user_id = ? ;");
+        Command.UPDATE_SUM_OF_MONEY_BY_USER_ID.setCommand(command.toString());
+
+        command = new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id = ? ;");
+        Command.RECEIVE_BY_USER_ID.setCommand(command.toString());
+    }
+
+    public Account getByUserId(Integer id) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.GET_BY_USER_ID.getCommand());
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE_BY_USER_ID", e.getCause());
+        }
+        return new Account.Builder().build();
     }
 
     @Override
@@ -183,6 +196,54 @@ public class AccountDAO extends SQLDAO<Account> {
         } catch (SQLException e) {
             logger.catching(e);
             throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
+        }
+    }
+
+    public Integer updateSunOfMoney(Integer userId, BigDecimal sumOfMoney) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.UPDATE_SUM_OF_MONEY_BY_USER_ID.getCommand());
+            statement.setBigDecimal(1, sumOfMoney);
+            statement.setInt(2, userId);
+            if (statement.executeUpdate() == 1) {
+                return 1;
+            } else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_UPDATE_SUM_OF_MONEY", e.getCause());
+        }
+    }
+
+    @Override
+    public Account receiveByUserId(Integer id) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE_BY_USER_ID", e.getCause());
+        }
+        return new Account.Builder().build();
+    }
+
+    protected enum Command {
+        CREATE, UPDATE, GET_BY_ID, DELETE, GET_ALL, GET_ALL_IN_LIMIT, GET_LAST_INSERTED_ID, GET_BY_USER_ID,
+        UPDATE_SUM_OF_MONEY_BY_USER_ID, RECEIVE_BY_USER_ID;
+
+        Command() {
+        }
+
+        private String command;
+
+        public void setCommand(String command) {
+            this.command = command;
+        }
+
+        public String getCommand() {
+            return command;
         }
     }
 

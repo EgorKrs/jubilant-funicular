@@ -3,7 +3,6 @@ package com.loneliness.dao.sql_dao_impl;
 import com.loneliness.dao.DAOException;
 import com.loneliness.entity.News;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -39,7 +38,7 @@ public class NewsDAO extends SQLDAO<News>{
         command=new StringBuffer();
 
         command.append("UPDATE ").append(tableName).append(" SET text= ? ").
-                append("WHERE ").append(idField).append("= ? ;");
+                append(" WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
         command=new StringBuffer();

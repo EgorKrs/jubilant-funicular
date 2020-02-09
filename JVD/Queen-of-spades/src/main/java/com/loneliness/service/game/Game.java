@@ -38,7 +38,7 @@ public class Game {
         try {
             this.cardDeck = new ReceiveDeckOfCardsCommand(new <Card>CardDAO()).execute(decksOfCardsID);
 
-        } catch (DAOException e) {
+        } catch (DAOException | CommandException e) {
             logger.catching(e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }

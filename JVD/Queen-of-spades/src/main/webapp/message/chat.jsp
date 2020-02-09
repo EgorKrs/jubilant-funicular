@@ -1,9 +1,12 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 
 <html>
 <head>
+
     <meta charset="UTF-8">
     <title>Chat - Websockets</title>
+    <%@include file="../user/admin.jsp"%>
     <style>
     <%@include file="/css/chatStyle.css"%>
     </style>
@@ -14,7 +17,7 @@
 </head>
 <body >
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 
 
 <div id="main" class="main" style="display: none">

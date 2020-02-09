@@ -1,12 +1,12 @@
 package com.loneliness.service.chat;
 
 import com.loneliness.command.Command;
+import com.loneliness.command.CommandException;
 import com.loneliness.command.common_comand.Create;
-import com.loneliness.dao.DAO;
 import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.MessageDAO;
 import com.loneliness.entity.Message;
-import com.loneliness.service.ServiceException;
+import com.loneliness.service.common_service.CreateService;
 
 import javax.websocket.CloseReason;
 import javax.websocket.CloseReason.CloseCodes;
@@ -24,7 +24,7 @@ final class ChatSessionManager {
 
     static {
         try {
-            command = new Create<>(new MessageDAO());
+            command = new Create<Message>(new CreateService<>(new MessageDAO()));
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -44,7 +44,7 @@ final class ChatSessionManager {
             try {
                 command.execute(message);
                 session.getBasicRemote().sendObject(message);
-            } catch (IOException | EncodeException | ServiceException e) {
+            } catch (IOException | EncodeException | CommandException e) {
                 e.printStackTrace();
             }
         });

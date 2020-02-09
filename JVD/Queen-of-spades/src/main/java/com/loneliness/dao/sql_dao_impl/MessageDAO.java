@@ -1,14 +1,14 @@
 package com.loneliness.dao.sql_dao_impl;
 
 import com.loneliness.dao.DAOException;
+import com.loneliness.dao.WorkWithUserDAO;
 import com.loneliness.entity.Message;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class MessageDAO extends SQLDAO<Message> {
+public class MessageDAO extends SQLDAO<Message> implements WorkWithUserDAO<Message> {
     protected enum Command{
         CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
         Command(String command){
@@ -61,6 +61,10 @@ public class MessageDAO extends SQLDAO<Message> {
         command=new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
+
+        command = new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id = ? ;");
+        AccountDAO.Command.RECEIVE_BY_USER_ID.setCommand(command.toString());
     }
 
 
@@ -183,6 +187,22 @@ public class MessageDAO extends SQLDAO<Message> {
             logger.catching(e);
             throw new DAOException("ERROR_IN_RECEIVE_ALL_IN_LIMIT",e.getCause());
         }
+    }
+
+    @Override
+    public Message receiveByUserId(Integer id) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement.setInt(1, id);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return receiveDataFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_RECEIVE_BY_USER_ID", e.getCause());
+        }
+        return new Message.Builder().build();
     }
 
     @Override
