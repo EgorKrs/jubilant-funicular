@@ -6,12 +6,26 @@
 
 </head>
 <body>
+<h1>"nav bar"</h1>
 
-<h1>Hello USER!</h1>
-<a href="<c:url value="/logout"/>">read news</a>
-<a href="<c:url value="/logout"/>">пополнить счёт</a>
-<a href="<c:url value="/logout"/>">сообщения</a>
-<a href="<c:url value="/logout"/>">play</a>
-<a href="<c:url value="/logout"/>">Logout</a>
+
+
+                <form method="post" action="MagicServlet">
+                                    <input type="text" hidden name="command" value="newsRead" />
+                                    <input type="submit" name="newsRead" value="news Read"/>
+                                </form>
+ <form method="post" action="MagicServlet">
+                    <input type="text" hidden name="command" value="startChat" />
+                    <input type="submit" name="chat" value="сообщения"/>
+                </form>
+<form method="post" action="../game/game.jsp">
+                    <input type="text" hidden name="command" value="startGame" />
+                    <input type="submit" name="game" value="play"/>
+                </form>
+
+ <form method="post" action="MagicServlet">
+                    <input type="text" hidden name="command" value="logout" />
+                    <input type="submit" name="logout" value="logout"/>
+                </form>
 </body>
 </html>

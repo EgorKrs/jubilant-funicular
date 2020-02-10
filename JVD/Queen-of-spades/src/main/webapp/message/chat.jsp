@@ -6,7 +6,12 @@
 
     <meta charset="UTF-8">
     <title>Chat - Websockets</title>
-    <%@include file="../user/admin.jsp"%>
+   <c:if test = "${sessionScope.type ==  'ADMIN'}">
+                  <%@include file="../user/admin.jsp"%>
+               </c:if>
+                <c:if test = "${sessionScope.type == 'USER'}">
+                              <%@include file="../user/user.jsp"%>
+                           </c:if>
     <style>
     <%@include file="/css/chatStyle.css"%>
     </style>

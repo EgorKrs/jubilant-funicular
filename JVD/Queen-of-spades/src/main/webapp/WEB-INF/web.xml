@@ -16,6 +16,7 @@
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 
+
   <filter>
     <filter-name>AuthorizationFilter</filter-name>
     <filter-class>com.loneliness.filter.AuthorizationFilter</filter-class>

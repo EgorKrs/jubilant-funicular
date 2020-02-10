@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
 
 public class MagicServlet extends HttpServlet {
     Logger logger = LogManager.getLogger();
@@ -84,7 +83,7 @@ public class MagicServlet extends HttpServlet {
                     request.getRequestDispatcher("user/userCRUD.jsp").forward(request, response);
                     break;
                 case "deleteCurrentUser":
-                    response.sendRedirect(request.getContextPath() + "/userCRUD");
+                    // response.sendRedirect(request.getContextPath() + "/userCRUD");
                     command = commandProvider.delete(User.class);
                     command.execute(userBuilder.setId(Integer.parseInt(request.getParameter("id"))).build());
                     command = commandProvider.receiveAll(User.class);
@@ -132,7 +131,7 @@ public class MagicServlet extends HttpServlet {
                             request.setAttribute("win", mapper.writeValueAsString(game.getGameData().isGamerWon()));
 
                         }
-                        request.getRequestDispatcher("../game/game.jsp").forward(request, response);
+                        request.getRequestDispatcher("/game/game.jsp").forward(request, response);
                     } catch (Throwable e) {
                         logger.catching(e);
                     }
@@ -193,19 +192,23 @@ public class MagicServlet extends HttpServlet {
                     command = commandProvider.addScoreCommand();
                     request.setAttribute("status", command.execute(Integer.parseInt(request.getParameter("sumOfMoney"))));
                     break;
-
-
+                case "newsRead":
+                    command = commandProvider.receiveAll(News.class);
+                    request.setAttribute("news", command.execute(new News.Builder().build()));
+                    request.getRequestDispatcher("news/readNews.jsp").forward(request, response);
+                    break;
             }
         } else {
-            Enumeration names = request.getParameterNames();
-            String name, value;
-            while (names.hasMoreElements()) {
-                name = (String) names.nextElement();
-                value = request.getParameterValues(name)[0];
-                System.out.println("name " + name + "   value " + value);
-                GameHandler.getInstance().finishGame(session.getId());
-                request.getRequestDispatcher("../game/game.jsp").forward(request, response);
-            }
+//            Enumeration names = request.getParameterNames();
+//            String name, value;
+//            while (names.hasMoreElements()) {
+//                name = (String) names.nextElement();
+//                value = request.getParameterValues(name)[0];
+//                System.out.println("name " + name + "   value " + value);
+//                GameHandler.getInstance().finishGame(session.getId());
+//                request.getRequestDispatcher("../game/game.jsp").forward(request, response);
+//            }
+
         }
     }
     private User.Type convert(String type){

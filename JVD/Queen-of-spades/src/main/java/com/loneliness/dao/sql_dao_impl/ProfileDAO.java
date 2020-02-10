@@ -56,7 +56,7 @@ public class ProfileDAO extends SQLDAO<Profile> implements WorkWithUserDAO<Profi
         command = new StringBuffer();
         command.append("UPDATE ").append(tableName).append(" SET score =?").
                 append("WHERE user_id= ? ;");
-        Command.UPDATE.setCommand(command.toString());
+        Command.UPDATE_SCORE.setCommand(command.toString());
 
         command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id = ? ;");

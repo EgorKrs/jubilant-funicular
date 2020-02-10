@@ -1,8 +1,8 @@
 package com.loneliness.filter;
 
-import com.loneliness.command.Authorization;
 import com.loneliness.command.Command;
 import com.loneliness.command.CommandException;
+import com.loneliness.command.CommandProvider;
 import com.loneliness.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +39,9 @@ public class AuthorizationFilter implements Filter {
             try {
                 final String login = req.getParameter("login");
                 final String password = req.getParameter("password");
-                Command<User,User,User> userCommand= new Authorization();
+                CommandProvider commandProvider = CommandProvider.getInstance();
+                //Command<User,User,User> userCommand= new Authorization();
+                Command<User, User, User> userCommand = commandProvider.authorization();
                 User user=userCommand.execute(new User.Builder().setLogin(login).setPassword(password).build());
                 if (user.getId()>0) {
                     req.getSession().setAttribute("userId", user.getId());

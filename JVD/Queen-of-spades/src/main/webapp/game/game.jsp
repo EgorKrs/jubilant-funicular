@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <meta charset="UTF-8" />
     <title>Gameplay</title>
@@ -59,11 +59,18 @@
 
       }
       </script>
-      <%@include file="../user/admin.jsp"%>
+      <c:if test = "${sessionScope.type ==  'ADMIN'}">
+               <%@include file="../user/admin.jsp"%>
+            </c:if>
+             <c:if test = "${sessionScope.type == 'USER'}">
+                           <%@include file="../user/user.jsp"%>
+                        </c:if>
+
+
        <hr />
 </head>
 <body >
-    <form onsubmit="check(this)" action="MainServlet" method="post">
+    <form onsubmit="check(this)" action="../MainServlet" method="post">
         <input type="text" hidden name="command" value="startGame" />
         <input type="text" hidden name="card" id="cardInput" />
         <input required type="number"name="jackpot">

@@ -39,7 +39,7 @@ public class CommandProvider {
 
     public <T extends Entity> Command<Integer, Integer, T> receiveAll(Class<T> tClass) throws CommandException {
         try {
-            return new <T>Delete(creator.getReceiveAllService(tClass));
+            return new <T>ReceiveAll(creator.getReceiveAllService(tClass));
         } catch (ServiceException e) {
             throw new CommandException(e.getMessage(), e.getCause());
         }

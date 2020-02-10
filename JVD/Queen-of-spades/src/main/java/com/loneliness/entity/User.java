@@ -100,7 +100,7 @@ public class User implements Entity {
         private int id=0;
         private String login="";
         private String password="";
-        private Type type= Type.USER;
+        private Type type = Type.UNKNOWN;
         private LocalDate lastUpdate=LocalDate.now();
         private LocalDate createDate=LocalDate.now();
         private int avatarId=0;
