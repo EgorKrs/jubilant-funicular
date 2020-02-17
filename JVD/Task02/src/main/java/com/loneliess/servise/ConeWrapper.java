@@ -13,7 +13,7 @@ public class ConeWrapper {
     private SubmissionPublisher<Cone> publisher = new SubmissionPublisher<>();
     private ConeRegistrar<Cone> subscriber=new ConeRegistrar<>();
     private Cone cone=new Cone();
-    private RepositoryConeRegistrar repository=RepositoryFactory.getInstance().getRepositoryConeRegistrar();
+    private RepositoryConeRegistrar repository=RepositoryFactory.getInstance().getRepository();
     public ConeWrapper(int id,
                        @NotNull(message = "Обязательно должна быть задана длина образующей конуса")
                        @Positive(message = "Длина образующей конуса должна быть положительна. ") double l,

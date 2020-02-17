@@ -9,7 +9,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
-
+/**
+ * общий класс для получения данных @see com.loneliness.Entity в числовом диапазоне с поддержкой транзакций
+ * @author Egor Krasouski
+ *
+ */
 public class ReceiveInLimit<E extends Entity> implements Command<E, Collection<E>, Integer[]> {
     private Logger logger = LogManager.getLogger();
     private final Service<E, Collection<E>, Integer[], E> service;

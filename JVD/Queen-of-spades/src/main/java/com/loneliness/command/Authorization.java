@@ -6,7 +6,11 @@ import com.loneliness.service.Service;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * класс для авторизации с поддержкой транзакций
+ * @author Egor Krasouski
+ *
+ */
 public class Authorization implements Command<User,User,User> {
     private User user;
     private Logger logger = LogManager.getLogger();

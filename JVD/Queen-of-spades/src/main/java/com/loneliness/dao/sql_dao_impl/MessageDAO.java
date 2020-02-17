@@ -7,7 +7,11 @@ import com.loneliness.entity.Message;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-
+/**
+ * класс для получения данных @see com.loneliness.Message из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class MessageDAO extends SQLDAO<Message> implements WorkWithUserDAO<Message> {
     protected enum Command{
         CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;

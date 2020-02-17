@@ -10,7 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+/**
+ * общий класс для получения всех данных @see com.loneliness.Entity  с поддержкой транзакций
+ * @author Egor Krasouski
+ *
+ */
 public class ReceiveAll <T extends Entity> implements Command<Collection<T>, Collection<T>,T> {
     private Logger logger = LogManager.getLogger();
     private final Service<Collection<T>, Collection<T>, T, T> service;

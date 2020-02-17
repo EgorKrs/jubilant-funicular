@@ -8,6 +8,7 @@ ul.baraja-container {
 }
 
 ul.baraja-container li {
+opacity: .99;
 	width: 100%;
 	height: 100%;
 	margin: 0;

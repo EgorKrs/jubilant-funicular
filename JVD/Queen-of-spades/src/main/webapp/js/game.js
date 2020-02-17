@@ -1,11 +1,22 @@
 let card = null;
 let end = 0;
 let won;
+
+function reverse(){
+card=null;
+end = 0;
+won=undefined;
+apportionment();
+  $('.sonic').remove();
+  $('.forehead').remove();
+}
+
 function apportionment() {
-    let $el = $('#baraja-el'),
-        baraja = $el.baraja();
+
 
     if (card === null) {
+    let $el = $('#baraja-el'),
+                                baraja = $el.baraja();
         baraja.fan({
             speed: 500,
             easing: 'ease-out',
@@ -18,7 +29,16 @@ function apportionment() {
             center: true,
 
         });
+
     }
+
+
+
+}
+
+function refreshMainCard(){
+if(card!==null)
+ $(".baraja-container").append(`<li style="z-index: 2000"><a href="#" class="` + card['lear'] + ` ` + card['par'] + `"></li>`);
 }
 
 
@@ -40,11 +60,24 @@ function getCard() {
     console.log(card);
     return card;
 }
-
+let zOne=100;
+let zTwo=100;
+function getZOne(){
+zOne-=1;
+return zOne
+}
+function getZTwo(){
+zTwo-=1;
+return zTwo
+}
 function setForehead(forehead) {
     if (forehead !== undefined) {
+    forehead.reverse()
+ console.log("forehead")
+
         forehead.forEach(function (item) {
-            className = `<div class="forehead" ><a href="#" class="` + item['lear'] + ` ` + item['par'] + `"</div>`;
+        console.log(item)
+            className = `<div class="forehead" style="z-index: `+getZOne()+`"><a href="#" class="` + item['lear'] + ` ` + item['par'] + `" ></div>`;
             $(".deck").append(className);
         });
     }
@@ -52,8 +85,11 @@ function setForehead(forehead) {
 
 function setSonic(sonic) {
     if (sonic !== undefined) {
+    sonic.reverse();
+    console.log("sonic")
         sonic.forEach(function (item) {
-            className = `<div class="sonic" ><a href="#" class="` + item['lear'] + ` ` + item['par'] + `"</div>`;
+        console.log(item)
+            className = `<div class="sonic" style="z-index: `+getZTwo()+`"><a href="#" class="` + item['lear'] + ` ` + item['par'] + `"</div>`;
             $(".deck").append(className);
         });
 
@@ -64,6 +100,7 @@ function setCard(mainCard) {
     if (mainCard !== undefined) {
         console.log(mainCard);
         card = mainCard;
+        $(".baraja-container").append(`<li style="z-index: 2000"><a href="#" class="` + mainCard['lear'] + ` ` + mainCard['par'] + `"></li>`);
     }
 }
 
@@ -115,7 +152,7 @@ var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
  console.log(this.responseText);
-
+reverse();
     }
     else
             {
@@ -125,9 +162,42 @@ var xhttp = new XMLHttpRequest();
             }
   };
 
-  xhttp.open("POST", "http://localhost:9080/MainServlet", true);
+  xhttp.open("POST", "http://localhost:9080/MagicServlet", true);
   xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhttp.send({command :"finishGame"});
 
+
+  }
+  function init(){
+
+        var animateLeftb = anime({
+          targets: '.forehead',
+         left: '55%',
+         top: '20%',
+          autoplay: true,
+          delay: function(target, index, targetCount) {
+            return (targetCount - index) * 2000;
+          },
+          easing: 'easeInOutSine',
+           complete: function(){
+                   endGame();
+                          }
+
+        });
+        var animateLeftr = anime({
+          targets: '.sonic',
+          left: '40%',
+            top: '20%',
+          autoplay: true,
+          delay: function(target, index, targetCount) {
+            return (targetCount - index) * 2000;
+          },
+          easing: 'easeInOutSine',
+           complete: function(){
+           endGame();
+                  }
+        });
+        animateLeftb.restart;
+        animateLeftr.restart;
 
   }

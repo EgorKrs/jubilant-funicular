@@ -6,7 +6,11 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
-
+/**
+ * прокси класс соединения к базе данных
+ * @author Egor Krasouski
+ *
+ */
 public class SQLConnection implements Connection {
 
     private Connection connection;

@@ -13,7 +13,11 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * класс для получения создания и управления подключениями к базе данных
+ * @author Egor Krasouski
+ *
+ */
 class ConnectionPool {
     private static final ReentrantLock locker=new ReentrantLock();
     private static final String url="jdbc:mysql://localhost/queen_of_spades?allowPublicKeyRetrieval=TRUE&serverTimezone=Europe/Moscow&useSSL=false&useUnicode=true&characterEncoding=UTF-8";

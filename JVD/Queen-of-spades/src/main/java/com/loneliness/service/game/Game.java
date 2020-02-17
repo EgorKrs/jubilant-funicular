@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game {
     private final Logger logger = LogManager.getLogger();
@@ -23,8 +25,8 @@ public class Game {
     private final String gameID;
     private Map<Integer, Card> cardDeck;
     private Card mainCard;
-    private Set<Card> forehead;//лоб карты ии
-    private Set<Card> sonic;// соник карты игрока
+    private Deque<Card> forehead;//лоб карты ии
+    private Deque<Card> sonic;// соник карты игрока
     private Stage stage;
 
     public Game(String gameID, int decksOfCardsID, int gamerId, BigDecimal jackpot, Card mainCard) throws ServiceException {
@@ -33,29 +35,31 @@ public class Game {
         this.mainCard = mainCard;
         this.gameData = new GameData(gamerId, jackpot);
         this.random = new Random();
-        forehead = new HashSet<>();
-        sonic = new HashSet<>();
+        forehead = new ConcurrentLinkedDeque<>();
+        sonic = new ConcurrentLinkedDeque<>();
         try {
             this.cardDeck = new ReceiveDeckOfCardsCommand(new ReceiveDeckOfCardsService()).execute(decksOfCardsID);
-
         } catch (CommandException e) {
             logger.catching(e);
             throw new ServiceException(e.getMessage(), e.getCause());
         }
     }
 
-    public Set<Card> getForehead() {
+    public Queue<Card> getForehead() {
+
         return forehead;
     }
 
-    public Set<Card> getSonic() {
+    public Queue<Card> getSonic() {
+
         return sonic;
     }
 
-    public Set[] playGame() throws CommandException {
+
+    public Deque[] playGame() throws CommandException {
         stage = Stage.GAME;
         distributeCard();
-        return new Set[]{forehead, sonic};
+        return new Deque[]{forehead, sonic};
     }
 
 
@@ -130,7 +134,6 @@ public class Game {
     }
 
 
-
     public Card getMainCard() {
         return mainCard;
     }
@@ -141,6 +144,10 @@ public class Game {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     public String getGameId() {

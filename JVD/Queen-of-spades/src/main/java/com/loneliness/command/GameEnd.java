@@ -5,7 +5,11 @@ import com.loneliness.service.ServiceException;
 import com.loneliness.service.game.GameData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * класс для завершения игр
+ * @author Egor Krasouski
+ *
+ */
 public class GameEnd implements Command<Integer, Boolean, GameData> {
     private Logger logger = LogManager.getLogger();
     private final Service<Integer, Boolean, GameData, GameData> service;

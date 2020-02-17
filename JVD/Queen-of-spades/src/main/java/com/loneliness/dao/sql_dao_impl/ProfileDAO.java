@@ -9,9 +9,13 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-
+/**
+ * класс для получения данных @see com.loneliness.Profile из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class ProfileDAO extends SQLDAO<Profile> implements WorkWithUserDAO<Profile> {
-    public ProfileDAO() throws DAOException {
+    public ProfileDAO()  {
         super();
 
         StringBuffer command=new StringBuffer();

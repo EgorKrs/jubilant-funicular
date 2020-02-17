@@ -1,7 +1,11 @@
 package com.loneliness.dao;
 
 import java.util.Collection;
-
+/**
+ * общий DAO
+ * @author Egor Krasouski
+ *
+ */
 public interface  DAO<T  > {
     /*
     return :

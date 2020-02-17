@@ -8,7 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import javax.validation.ConstraintViolation;
 import java.util.Set;
-
+/**
+ * общий класс для валидации данных @see com.loneliness.Entity по ID с поддержкой транзакций
+ * @author Egor Krasouski
+ *
+ */
 public class Validation<T extends Entity> implements Command<T, Set<ConstraintViolation<T>>,T> {
     private final Logger logger = LogManager.getLogger();
     private ValidationService<T> service;

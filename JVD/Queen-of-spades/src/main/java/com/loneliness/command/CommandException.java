@@ -1,5 +1,9 @@
 package com.loneliness.command;
-
+/**
+ * класс исключений на слое command
+ * @author Egor Krasouski
+ *
+ */
 public class CommandException extends Throwable {
     public CommandException(String message) {
         super(message);

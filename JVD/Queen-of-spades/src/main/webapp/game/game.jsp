@@ -1,62 +1,40 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<c:if test = "${sessionScope.language ==  'ru'}">
+               <fmt:setLocale value="ru"/>
+</c:if>
+<c:if test = "${sessionScope.language ==  'en'}">
+               <fmt:setLocale value="en"/>
+</c:if>
+
+<fmt:setBundle basename="bundles.bundle" />
 <head>
     <meta charset="UTF-8" />
     <title>Gameplay</title>
-
-  <style>
-    <%@include file="/css/baraja.css"%>
-    <%@include file="/css/demo.css"%>
-    <%@include file="/css/custom.css"%>
-    <%@include file="/css/style.css"%>
-    </style>
-    <script>
-     <%@include file="/js/jquery-1.11.2.min.js"%>
-     <%@include file="/js/modernizr.custom.79639.js"%>
-     <%@include file="/js/jquery.min.js"%>
-     <%@include file="/js/jquery.baraja.js"%>
-
-     <%@include file="/js/anime.min.js"%>
-     <%@include file="/js/game.js"%>
-
-    </script>
-    <script>
-
+<!DOCTYPE html>
+<link href="<c:url value='../css/baraja.css' />" rel="stylesheet" >
+<link href="<c:url value='../css/demo.css' />" rel="stylesheet" >
+<link href="<c:url value='../css/custom.css' />" rel="stylesheet" >
+<link href="<c:url value='../css/style.css' />" rel="stylesheet" >
+<script src="<c:url value='../js/jquery-1.11.2.min.js' />"></script>
+<script src="<c:url value='../js/modernizr.custom.79639.js' />"></script>
+<script src="<c:url value='../js/jquery.min.js' />"></script>
+<script src="<c:url value='../js/jquery.baraja.js' />"></script>
+<script src="<c:url value='../js/anime.min.js' />"></script>
+<script src="<c:url value='../js/game.js' />"></script>
+<script>
       window.onload=function(){
-      setCard(${requestScope.mainCard});
-      setForehead(${requestScope.forehead});
-      setSonic(${requestScope.sonic});
-      apportionment();
-       isWon(${requestScope.win});
-      var animateLeftb = anime({
-        targets: '.forehead',
-       left: '55%',
-         top: '20%',
-        autoplay: true,
-        delay: function(target, index, targetCount) {
-          return (targetCount - index) * 2000;
-        },
-        easing: 'easeInOutSine',
-         complete: function(){
-                 endGame();
-                        }
-
-      });
-      var animateLeftr = anime({
-        targets: '.sonic',
-        left: '40%',
-          top: '20%',
-        autoplay: true,
-        delay: function(target, index, targetCount) {
-          return (targetCount - index) * 2000;
-        },
-        easing: 'easeInOutSine',
-         complete: function(){
-         endGame();
-                }
-      });
-      animateLeftb.restart;
-      animateLeftr.restart;
-
+      <c:if test = "${requestScope.error == 'NOT_ENOUGH_MONEY'}">
+                                 alert("<fmt:message key="NOT_ENOUGH_MONEY"/>");
+      </c:if>
+              setCard(${requestScope.mainCard});
+              setForehead(${requestScope.forehead});
+              setSonic(${requestScope.sonic});
+              apportionment();
+              isWon(${requestScope.win});
+     init();
       }
       </script>
       <c:if test = "${sessionScope.type ==  'ADMIN'}">
@@ -70,7 +48,7 @@
        <hr />
 </head>
 <body >
-    <form onsubmit="check(this)" action="../MainServlet" method="post">
+    <form onsubmit="check(this)" action="../MagicServlet" method="post">
         <input type="text" hidden name="command" value="startGame" />
         <input type="text" hidden name="card" id="cardInput" />
         <input required type="number"name="jackpot">

@@ -16,7 +16,11 @@ import java.util.Collection;
    -4-db error
 
    */
-
+/**
+ * класс для получения данных @see com.loneliness.User из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 
 public class UserDAO extends SQLDAO<User> {
     protected enum Command{

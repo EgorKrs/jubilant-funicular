@@ -7,7 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+/**
+ * класс для получения данных @see com.loneliness.News из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class NewsDAO extends SQLDAO<News>{
     private String tableName = "news";
     private String idField = "id_news";

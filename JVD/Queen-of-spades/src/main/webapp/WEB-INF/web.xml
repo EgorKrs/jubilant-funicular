@@ -13,8 +13,9 @@
 
   <servlet-mapping>
     <servlet-name>MagicServlet</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/MagicServlet/*</url-pattern>
   </servlet-mapping>
+
 
 
   <filter>
@@ -25,8 +26,13 @@
 
   <filter-mapping>
     <filter-name>AuthorizationFilter</filter-name>
-      <url-pattern>/*</url-pattern>
+      <url-pattern>/MagicServlet/*</url-pattern>
   </filter-mapping>
+
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/error.jsp</location>
+  </error-page>
 
   <display-name>Archetype Created Web Application</display-name>
 </web-app>

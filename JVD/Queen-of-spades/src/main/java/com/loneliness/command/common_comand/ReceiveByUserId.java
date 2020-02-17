@@ -7,7 +7,11 @@ import com.loneliness.service.Service;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * общий класс для получения данных @see com.loneliness.Entity по ID пользователя с поддержкой транзакций
+ * @author Egor Krasouski
+ *
+ */
 public class ReceiveByUserId<T extends Entity> implements Command<T, T, T> {
     private final Service<T, T, T, T> service;
     private T data;

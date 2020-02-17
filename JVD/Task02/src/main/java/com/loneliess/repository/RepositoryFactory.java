@@ -15,7 +15,7 @@ public class RepositoryFactory {
 
     }
 
-    public RepositoryConeRegistrar getRepositoryConeRegistrar() {
+    public RepositoryConeRegistrar getRepository() {
         return repositoryConeRegistrar;
     }
 

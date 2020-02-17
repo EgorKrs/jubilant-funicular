@@ -12,7 +12,11 @@ import javax.validation.ConstraintViolation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
+/**
+ * класс для получения комманд
+ * @author Egor Krasouski
+ *
+ */
 public class CommandProvider {
     private static final CommandProvider instance = new CommandProvider();
     private FactoryServiceCreator creator = FactoryServiceCreator.getInstance();
@@ -108,6 +112,13 @@ public class CommandProvider {
     public <T extends Entity> Command<Integer, Map<Integer, Card>, Integer> receiveDeckOfCardsCommand() throws CommandException {
         try {
             return new <T>ReceiveDeckOfCardsCommand(creator.getReceiveDeckOfCardsService());
+        } catch (ServiceException e) {
+            throw new CommandException(e.getMessage(), e.getCause());
+        }
+    }
+    public Command<Object[],Boolean,Object[]> checkJackpot() throws CommandException {
+        try {
+            return new CheckJackpot(creator.getCheckJackpotService());
         } catch (ServiceException e) {
             throw new CommandException(e.getMessage(), e.getCause());
         }

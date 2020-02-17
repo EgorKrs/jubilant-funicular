@@ -7,7 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
-
+/**
+ * класс получения колоды карт
+ * @author Egor Krasouski
+ *
+ */
 public class ReceiveDeckOfCardsCommand implements Command<Integer,Map<Integer, Card>,Integer> {
     private Integer id;
     private Logger logger = LogManager.getLogger();

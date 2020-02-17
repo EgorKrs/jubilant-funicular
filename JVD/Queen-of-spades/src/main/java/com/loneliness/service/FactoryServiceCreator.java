@@ -70,4 +70,7 @@ public class FactoryServiceCreator {
     public <T extends Entity> ReceiveDeckOfCardsService getReceiveDeckOfCardsService() throws ServiceException {
         return new ReceiveDeckOfCardsService();
     }
+    public <T extends Entity> CheckJackpotService getCheckJackpotService() throws ServiceException {
+        return new CheckJackpotService();
+    }
 }

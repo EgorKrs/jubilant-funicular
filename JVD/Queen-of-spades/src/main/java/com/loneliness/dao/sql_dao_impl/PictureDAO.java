@@ -10,7 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+/**
+ * класс для получения данных @see com.loneliness.Picture из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class PictureDAO extends SQLDAO<Picture>{
     private String tableName = "pictures";
     private String idField = "id_pictures";

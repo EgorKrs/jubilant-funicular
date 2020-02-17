@@ -8,7 +8,11 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-
+/**
+ * класс для получения данных @see com.loneliness.Account из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class AccountDAO extends SQLDAO<Account> implements WorkWithUserDAO<Account> {
 
     public AccountDAO() throws DAOException {

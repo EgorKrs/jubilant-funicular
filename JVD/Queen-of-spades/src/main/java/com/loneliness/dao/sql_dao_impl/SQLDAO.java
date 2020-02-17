@@ -11,7 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
+/**
+ * класс общих методов работы с sql базеыданных
+ * @author Egor Krasouski
+ *
+ */
 public abstract class SQLDAO<T extends Entity> implements DAO<T> {
 
     Logger logger = LogManager.getLogger();

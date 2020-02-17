@@ -14,9 +14,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-
+/**
+ * фильтр который не пускает не авторизованных пользоветелей дальше
+ * @author Egor Krasouski
+ */
 public class AuthorizationFilter implements Filter {
     private Logger logger = LogManager.getLogger();
+
     @Override
     public void init(FilterConfig filterConfig) {
     }
@@ -35,15 +39,19 @@ public class AuthorizationFilter implements Filter {
 
         final HttpSession session = req.getSession();
 
-        if (isNull(session.getAttribute("userId"))) {
+        if (request.getParameter("command") != null && (request.getParameter("command").
+                equals("setLanguage_RU") || request.getParameter("command").
+                equals("setLanguage_EN"))) {
+            filterChain.doFilter(request, response);
+        } else if (isNull(session.getAttribute("userId"))) {
             try {
                 final String login = req.getParameter("login");
                 final String password = req.getParameter("password");
                 CommandProvider commandProvider = CommandProvider.getInstance();
                 //Command<User,User,User> userCommand= new Authorization();
                 Command<User, User, User> userCommand = commandProvider.authorization();
-                User user=userCommand.execute(new User.Builder().setLogin(login).setPassword(password).build());
-                if (user.getId()>0) {
+                User user = userCommand.execute(new User.Builder().setLogin(login).setPassword(password).build());
+                if (user.getId() > 0) {
                     req.getSession().setAttribute("userId", user.getId());
                     req.getSession().setAttribute("login", user.getLogin());
                     req.getSession().setAttribute("type", user.getType());
@@ -83,7 +91,7 @@ public class AuthorizationFilter implements Filter {
 
         } else {
 
-            req.getRequestDispatcher("login.jsp").forward(req, res);
+            req.getRequestDispatcher("index.jsp").forward(req, res);
         }
     }
 

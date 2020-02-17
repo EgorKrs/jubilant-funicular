@@ -8,7 +8,11 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * класс для получения данных @see com.loneliness.Card из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class CardDAO extends SQLDAO<Card>{
 
     protected enum Command{

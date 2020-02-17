@@ -1,4 +1,5 @@
 a {
+opacity: .99;
     background-image: url(../images/card.png);
     background-repeat: no-repeat;
     height: 130px;
@@ -81,7 +82,7 @@ a {
 
 
 .forehead {
-
+opacity: .99;
                position: absolute;
                width: 91px;
                	height: 130px;
@@ -94,7 +95,7 @@ a {
 
 }
 .sonic {
-
+opacity: .99;
   position: absolute;
  width: 91px;
  	height: 130px;

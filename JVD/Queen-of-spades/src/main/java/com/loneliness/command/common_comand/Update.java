@@ -7,7 +7,11 @@ import com.loneliness.service.Service;
 import com.loneliness.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * общий класс для обновления данных @see com.loneliness.Entity с поддержкой транзакций
+ * @author Egor Krasouski
+ *
+ */
 public class Update<T extends Entity> implements Command<Integer,Integer, T> {
     private T data;
     private final Logger logger = LogManager.getLogger();

@@ -7,7 +7,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-
+/**
+ * класс для получения данных @see com.loneliness.PicturesInNews из sql базы данных
+ * @author Egor Krasouski
+ *
+ */
 public class PicturesInNewsDAO extends SQLDAO<PicturesInNews>{
 
 
