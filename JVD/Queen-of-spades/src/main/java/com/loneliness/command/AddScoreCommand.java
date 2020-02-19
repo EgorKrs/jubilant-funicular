@@ -18,6 +18,12 @@ public class AddScoreCommand implements Command<Integer, Integer, Object[]> {
         this.service = service;
     }
 
+    /**
+     * @param note данные по которым происходит изменение счета [0] id пользователя [1] сумма данег
+     * @return @return
+     * 1-ok
+     * -3-invalid note
+     */
     @Override
     public Integer execute(Object[] note) throws CommandException {
         this.note = note;
@@ -29,6 +35,11 @@ public class AddScoreCommand implements Command<Integer, Integer, Object[]> {
         }
     }
 
+    /**
+     * @return @return
+     * 1-ok
+     * -3-invalid note
+     */
     @Override
     public Integer undo() throws CommandException {
         try {

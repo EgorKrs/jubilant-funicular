@@ -4,7 +4,6 @@ import com.loneliness.command.Command;
 import com.loneliness.command.CommandException;
 import com.loneliness.command.GameEnd;
 import com.loneliness.command.ReceiveDeckOfCardsCommand;
-import com.loneliness.dao.DAOException;
 import com.loneliness.dao.sql_dao_impl.ProfileDAO;
 import com.loneliness.entity.Card;
 import com.loneliness.service.GameEndService;
@@ -16,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game {
     private final Logger logger = LogManager.getLogger();
@@ -119,12 +117,7 @@ public class Game {
             gameData.setGamerWon(false);
         }
         Command command = null;
-        try {
-            command = new GameEnd(new GameEndService(new ProfileDAO()));
-        } catch (DAOException e) {
-            logger.catching(e);
-            throw new CommandException(e.getMessage(), e.getCause());
-        }
+        command = new GameEnd(new GameEndService(new ProfileDAO()));
         command.execute(gameData);
     }
 

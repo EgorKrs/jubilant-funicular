@@ -26,6 +26,11 @@ public class Update<T extends Entity> implements Command<Integer,Integer, T> {
         return this;
     }
 
+    /**
+     * @param data данные для обновления
+     * @return 1-ok
+     * -3-invalid note
+     */
     @Override
     public Integer execute(T data) throws CommandException {
         try {
@@ -36,6 +41,9 @@ public class Update<T extends Entity> implements Command<Integer,Integer, T> {
         }
     }
 
+    /**
+     * return данные до изменения
+     */
     @Override
     public Integer undo() throws CommandException {
         try {

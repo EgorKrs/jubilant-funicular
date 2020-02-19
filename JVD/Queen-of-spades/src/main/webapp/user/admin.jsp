@@ -38,4 +38,5 @@
                     <input type="submit" name="logout" value='<fmt:message key="logout"/>'/>
                 </form>
 </body>
+
 </html>

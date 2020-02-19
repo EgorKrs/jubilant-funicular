@@ -3,16 +3,16 @@ let websocket = null;
 
 function init(login) {
 	if ("WebSocket" in window) {
-		userName=login;
-        console.log("User is set.");
+		userName = login;
+		console.log("User is set.");
 
-		websocket = new WebSocket('ws://localhost:9080/' + userName);
-		websocket.onopen = function(data) {
+		websocket = new WebSocket('ws://localhost:8085/' + userName);
+		websocket.onopen = function (data) {
 			document.getElementById("main").style.display = "block";
 			console.log("open");
 		};
 
-		websocket.onmessage = function(data) {
+		websocket.onmessage = function (data) {
 			setMessage(JSON.parse(data.data));
 			console.log("message");
 		};
@@ -63,19 +63,19 @@ function buildMessage(userName, message) {
 }
 
 function setMessage(msg) {
-       console.log(msg);
+	console.log(msg);
 	let currentHTML = document.getElementById('scrolling-messages').innerHTML;
 	let newElem;
 
 	if (msg.username === userName) {
 		newElem = '<p style="background: #ebebe0;"><span>' + msg.username
-				+ ' : ' + msg.message + '</span></p>';
+			+ ' : ' + msg.message + '</span></p>';
 	} else {
 		newElem = '<p><span>' + msg.username + ' : ' + msg.message
-				+ '</span></p>';
+			+ '</span></p>';
 	}
 
 	document.getElementById('scrolling-messages').innerHTML = currentHTML
-			+ newElem;
+		+ newElem;
 
 }

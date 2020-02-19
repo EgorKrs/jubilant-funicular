@@ -13,7 +13,6 @@ public interface  DAO<T  > {
     -2-error
     -3-invalid note
     -4-db error
-    -5 file error
     */
     int create(T note) throws DAOException;
     int update(T note) throws DAOException;

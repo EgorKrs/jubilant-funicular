@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
 /**
  * класс для обработки команд от клиента
  * @author Egor Krasouski
@@ -79,17 +78,18 @@ public class ServletDispatcher {
                     request.setAttribute("login", session.getAttribute("login"));
                     command = commandProvider.receiveInLimit(Message.class);
                     request.setAttribute("messages", command.execute(new Integer[]{0, 50}));
+                    //response.sendRedirect("message/chat.jsp");
                     request.getRequestDispatcher("message/chat.jsp").forward(request, response);
                     break;
                 case "prepareGame":
-                    response.sendRedirect("game/game.jsp");
-                    //request.getRequestDispatcher("game/game.jsp").forward(request, response);
+                    //response.sendRedirect("game/game.jsp");
+                    request.getRequestDispatcher("game/game.jsp").forward(request, response);
                     break;
                 case "startGame":
                     try {
                         Game game = GameHandler.getInstance().getGame(session.getId());
                         if (game != null && game.getMainCard() != null) {
-                            if(game.getStage()!= Stage.NOT_ENOUGH_MONEY) {
+                            if (game.getStage() != Stage.NOT_ENOUGH_MONEY) {
                                 request.setAttribute("mainCard", mapper.writeValueAsString(game.getMainCard()));
                                 request.setAttribute("forehead", mapper.writeValueAsString(game.getForehead()));
                                 request.setAttribute("sonic", mapper.writeValueAsString(game.getSonic()));
@@ -133,7 +133,7 @@ public class ServletDispatcher {
                     break;
                 case "finishGame":
                     GameHandler.getInstance().finishGame(session.getId());
-                    request.getRequestDispatcher("/game/game.jsp").forward(request, response);
+                    //request.getRequestDispatcher("/game/game.jsp").forward(request, response);
                     break;
                 case "newsCRUD":
                     command = commandProvider.receiveAll(News.class);
@@ -191,13 +191,7 @@ public class ServletDispatcher {
                     break;
             }
         } else {
-            Enumeration names = request.getParameterNames();
-            if (names.hasMoreElements()) {
-                GameHandler.getInstance().finishGame(session.getId());
-            }
-            else{
                 response.sendRedirect("index.jsp");
-            }
 
         }
     }

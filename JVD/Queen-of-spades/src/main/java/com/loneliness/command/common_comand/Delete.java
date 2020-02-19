@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
  * @author Egor Krasouski
  *
  */
-public class Delete<T> implements Command<Integer,Integer,  T> {
+public class Delete<T> implements Command<Integer, Integer, T> {
     private T data;
     private Logger logger = LogManager.getLogger();
     private final Service<Integer, Integer, T, T> service;
@@ -20,10 +20,17 @@ public class Delete<T> implements Command<Integer,Integer,  T> {
         this.service = service;
     }
 
+    /**
+     * @param data данные для удаления
+     * @return 1-ok
+     * -2-error
+     * -3-invalid note
+     * -4-db error
+     */
     @Override
     public Integer execute(T data) throws CommandException {
         try {
-            this.data =data;
+            this.data = data;
             return service.execute(data);
         } catch (ServiceException e) {
             logger.catching(e);
@@ -31,6 +38,9 @@ public class Delete<T> implements Command<Integer,Integer,  T> {
         }
     }
 
+    /**
+     * @return id новых данных
+     */
     @Override
     public Integer undo() throws CommandException {
         try {

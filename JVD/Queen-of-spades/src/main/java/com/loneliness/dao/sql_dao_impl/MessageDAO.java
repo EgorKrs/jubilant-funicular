@@ -13,23 +13,6 @@ import java.util.Collection;
  *
  */
 public class MessageDAO extends SQLDAO<Message> implements WorkWithUserDAO<Message> {
-    protected enum Command{
-        CREATE,UPDATE,GET_BY_ID,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
-        Command(String command){
-            this.command=command;
-        }
-        Command(){}
-
-        private String command;
-
-        public void setCommand(String command) {
-            this.command = command;
-        }
-
-        public String getCommand(){
-            return command;
-        }
-    }
     public MessageDAO() throws DAOException {
         super();
         StringBuffer command=new StringBuffer();
@@ -58,27 +41,48 @@ public class MessageDAO extends SQLDAO<Message> implements WorkWithUserDAO<Messa
         command.append("SELECT * FROM ").append(tableName).append(" ;");
         Command.GET_ALL.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" ORDER BY ").append(tableName).append(".data asc LIMIT ?, ? ;");
         Command.GET_ALL_IN_LIMIT.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
 
         command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id = ? ;");
-        AccountDAO.Command.RECEIVE_BY_USER_ID.setCommand(command.toString());
+        Command.RECEIVE_BY_USER_ID.setCommand(command.toString());
+    }
+
+    protected enum Command {
+        CREATE, UPDATE, GET_BY_ID, DELETE, GET_ALL, GET_ALL_IN_LIMIT, GET_LAST_INSERTED_ID, RECEIVE_BY_USER_ID;
+
+        Command(String command) {
+            this.command = command;
+        }
+
+        Command() {
+        }
+
+        private String command;
+
+        public void setCommand(String command) {
+            this.command = command;
+        }
+
+        public String getCommand() {
+            return command;
+        }
     }
 
 
     @Override
     public int create(Message note) throws DAOException {
-        try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(Command.CREATE.getCommand());
-            statement.setString(1,note.getUserName());
-            statement.setString(2,note.getMessage());
-            if(statement.executeUpdate()==1){
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.CREATE.getCommand());
+            statement.setString(1, note.getUserName());
+            statement.setString(2, note.getMessage());
+            if (statement.executeUpdate() == 1) {
                 statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
                 resultSet=statement.executeQuery();
                 if(resultSet.next())

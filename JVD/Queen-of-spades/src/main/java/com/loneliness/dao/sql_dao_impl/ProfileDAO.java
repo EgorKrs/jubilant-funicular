@@ -64,7 +64,7 @@ public class ProfileDAO extends SQLDAO<Profile> implements WorkWithUserDAO<Profi
 
         command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id = ? ;");
-        AccountDAO.Command.RECEIVE_BY_USER_ID.setCommand(command.toString());
+        Command.RECEIVE_BY_USER_ID.setCommand(command.toString());
 
     }
 
@@ -233,7 +233,7 @@ public class ProfileDAO extends SQLDAO<Profile> implements WorkWithUserDAO<Profi
     @Override
     public Profile receiveByUserId(Integer id) throws DAOException {
         try (SQLConnection connection = new SQLConnection()) {
-            statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
+            statement = connection.prepareStatement(Command.RECEIVE_BY_USER_ID.getCommand());
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {

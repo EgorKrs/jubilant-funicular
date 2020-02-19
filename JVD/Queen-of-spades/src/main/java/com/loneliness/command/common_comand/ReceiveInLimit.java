@@ -11,17 +11,22 @@ import org.apache.logging.log4j.Logger;
 import java.util.Collection;
 /**
  * общий класс для получения данных @see com.loneliness.Entity в числовом диапазоне с поддержкой транзакций
- * @author Egor Krasouski
  *
+ * @author Egor Krasouski
  */
-public class ReceiveInLimit<E extends Entity> implements Command<E, Collection<E>, Integer[]> {
+public class ReceiveInLimit<E extends Entity> implements Command<Integer[], Collection<E>, Integer[]> {
     private Logger logger = LogManager.getLogger();
     private final Service<E, Collection<E>, Integer[], E> service;
+    private Integer[] data;
 
     public ReceiveInLimit(Service<E, Collection<E>, Integer[], E> service) {
         this.service = service;
     }
 
+    /**
+     * @param data массив из 2 элементов 1 начало 2 конец интервала для получения
+     * @return данные
+     */
     @Override
     public Collection<E> execute(Integer[] data) throws CommandException {
         try {
@@ -32,8 +37,11 @@ public class ReceiveInLimit<E extends Entity> implements Command<E, Collection<E
         }
     }
 
+    /**
+     * @return интервал в котором был осуществлен поиск
+     */
     @Override
-    public E undo() throws CommandException {
-        return null;
+    public Integer[] undo() throws CommandException {
+        return data;
     }
 }

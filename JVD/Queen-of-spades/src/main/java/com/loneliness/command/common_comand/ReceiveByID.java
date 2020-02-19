@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
  * @author Egor Krasouski
  *
  */
-public class ReceiveByID<T> implements Command<T,T,T> {
+public class ReceiveByID<T> implements Command<T, T, T> {
     private T data;
     private Logger logger = LogManager.getLogger();
     private final Service<T, T, T, T> service;
@@ -20,6 +20,10 @@ public class ReceiveByID<T> implements Command<T,T,T> {
         this.service = service;
     }
 
+    /**
+     * @param data тип данных для получения
+     * @return данные
+     */
     @Override
     public T execute(T data) throws CommandException {
         try {
@@ -31,6 +35,9 @@ public class ReceiveByID<T> implements Command<T,T,T> {
         }
     }
 
+    /**
+     * @return данные по которым был осуществлен поиск
+     */
     @Override
     public T undo() {
         return data;

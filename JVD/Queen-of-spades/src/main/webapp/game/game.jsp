@@ -45,23 +45,23 @@
                         </c:if>
 
 
-       <hr />
+    <hr/>
 </head>
-<body >
-    <form onsubmit="check(this)" action="../MagicServlet" method="post">
-        <input type="text" hidden name="command" value="startGame" />
-        <input type="text" hidden name="card" id="cardInput" />
-        <input required type="number"name="jackpot">
-        <input type="submit">
-        </form>
-        <div id="anime-demo" class="deck">
-        </div>
-    <div class="baraja-demo">
+<body>
+<form onsubmit="check(this)" action="../MagicServlet" method="post">
+    <input type="text" hidden name="command" value="startGame"/>
+    <input type="text" hidden name="card" id="cardInput"/>
+    <input required type="number" name="jackpot">
+    <input type="submit">
+</form>
+<div id="anime-demo" class="deck">
+</div>
+<div class="baraja-demo">
 
-        <ul id="baraja-el" class="baraja-container">
-            <li> <a href="#" class="spades two" onclick="setMainCard('spades','two')"></a></li>
-            <li> <a href="#" class="spades three" onclick="setMainCard('spades','three')"></a></li>
-            <li> <a href="#" class="spades four" onclick="setMainCard('spades','four')"></a></li>
+    <ul id="baraja-el" class="baraja-container">
+        <li><a href="#" class="spades two" onclick="setMainCard('spades','two')"></a></li>
+        <li><a href="#" class="spades three" onclick="setMainCard('spades','three')"></a></li>
+        <li><a href="#" class="spades four" onclick="setMainCard('spades','four')"></a></li>
             <li> <a href="#" class="spades five" onclick="setMainCard('spades','five')"></a></li>
             <li> <a href="#" class="spades six" onclick="setMainCard('spades','six')"> </a></li>
             <li> <a href="#" class="spades seven" onclick="setMainCard('spades','seven')"></a></li>

@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Egor Krasouski
  *
  */
-public class ReceiveDeckOfCardsCommand implements Command<Integer,Map<Integer, Card>,Integer> {
+public class ReceiveDeckOfCardsCommand implements Command<Integer, Map<Integer, Card>, Integer> {
     private Integer id;
     private Logger logger = LogManager.getLogger();
     private final Service<Integer, Map<Integer, Card>, Integer, Integer> service;
@@ -21,9 +21,13 @@ public class ReceiveDeckOfCardsCommand implements Command<Integer,Map<Integer, C
         this.service = service;
     }
 
+    /**
+     * @param note id данных для получения колоды карт
+     * @return коллекция из полученных данных
+     */
     @Override
     public Map<Integer, Card> execute(Integer note) throws CommandException {
-        this.id=note;
+        this.id = note;
         try {
             return service.execute(note);
         } catch (ServiceException e) {
@@ -33,6 +37,9 @@ public class ReceiveDeckOfCardsCommand implements Command<Integer,Map<Integer, C
 
     }
 
+    /**
+     * @return id данных
+     */
     @Override
     public Integer undo() {
         return id;

@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author Egor Krasouski
  *
  */
-public class ReceiveAll <T extends Entity> implements Command<Collection<T>, Collection<T>,T> {
+public class ReceiveAll<T extends Entity> implements Command<Collection<T>, Collection<T>, T> {
     private Logger logger = LogManager.getLogger();
     private final Service<Collection<T>, Collection<T>, T, T> service;
 
@@ -23,6 +23,10 @@ public class ReceiveAll <T extends Entity> implements Command<Collection<T>, Col
         this.service = service;
     }
 
+    /**
+     * @param data тип данных для получения
+     * @return коллекция из полученных данных
+     */
     @Override
     public Collection<T> execute(T data) throws CommandException {
         try {
@@ -33,8 +37,11 @@ public class ReceiveAll <T extends Entity> implements Command<Collection<T>, Col
         }
     }
 
+    /**
+     * @return новая пустая коллекция
+     */
     @Override
     public Collection<T> undo() {
-        return  new ConcurrentLinkedQueue<>();
+        return new ConcurrentLinkedQueue<>();
     }
 }

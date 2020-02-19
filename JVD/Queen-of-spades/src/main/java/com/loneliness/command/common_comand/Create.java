@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * общий класс для создания данных @see com.loneliness.Entity с поддержкой транзакций
  * @author Egor Krasouski
+
  *
  */
 public class Create<T extends Entity> implements Command<Integer,Integer,T> {
@@ -20,7 +21,10 @@ public class Create<T extends Entity> implements Command<Integer,Integer,T> {
     public Create(Service<Integer, Integer, T, Integer> service) {
         this.service = service;
     }
-
+/**
+ * @param data данные для создания
+ * @return id созданных данных
+ */
     @Override
     public Integer execute(T data) throws CommandException {
         int id;
@@ -35,6 +39,12 @@ public class Create<T extends Entity> implements Command<Integer,Integer,T> {
 
     }
 
+    /**
+     * @return 1-ok
+     * -2-error
+     * -3-invalid note
+     * -4-db error
+     */
     @Override
     public Integer undo() throws CommandException {
         try {

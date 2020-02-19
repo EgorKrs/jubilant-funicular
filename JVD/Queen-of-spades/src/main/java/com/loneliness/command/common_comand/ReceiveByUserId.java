@@ -21,6 +21,10 @@ public class ReceiveByUserId<T extends Entity> implements Command<T, T, T> {
         this.service = service;
     }
 
+    /**
+     * @param data тип данных для получения
+     * @return данные
+     */
     @Override
     public T execute(T data) throws CommandException {
         try {
@@ -32,6 +36,9 @@ public class ReceiveByUserId<T extends Entity> implements Command<T, T, T> {
         }
     }
 
+    /**
+     * @return данные по которым был осуществлен поиск
+     */
     @Override
     public T undo() {
         return data;

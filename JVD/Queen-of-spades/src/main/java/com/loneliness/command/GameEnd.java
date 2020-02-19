@@ -19,19 +19,28 @@ public class GameEnd implements Command<Integer, Boolean, GameData> {
         this.service = service;
     }
 
+    /**
+     * @param note данные игры необходимые для подведения итогов игры
+     * @return true в случае успеха
+     */
     @Override
     public Boolean execute(GameData note) throws CommandException {
         try {
             this.gameData = note;
             service.execute(note);
-
+            return Boolean.TRUE;
         } catch (ServiceException e) {
             logger.catching(e);
             throw new CommandException(e.getMessage(), e.getCause());
         }
-        return null;
+
     }
 
+    /**
+     * @return @return
+     * 1-ok
+     * -3-невозможно откатить изменения
+     */
     @Override
     public Integer undo() throws CommandException {
         try {
