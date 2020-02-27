@@ -117,9 +117,6 @@
 
         </ul>
     </div>
-    </section>
-
-    </div>
 
 
 </body>

@@ -85,9 +85,9 @@ public class CommandProvider {
         return new <T>Validation();
     }
 
-    public <T extends Entity> Command<Integer, Integer, Object[]> addScoreCommand() throws CommandException {
+    public Command<Integer, Integer, Object[]> addScoreCommand() throws CommandException {
         try {
-            return new <T>AddScoreCommand(creator.getAddScoreService());
+            return new AddScoreCommand(creator.getAddScoreService());
         } catch (ServiceException e) {
             throw new CommandException(e.getMessage(), e.getCause());
         }

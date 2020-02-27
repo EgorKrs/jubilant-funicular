@@ -36,8 +36,7 @@ public class AddScoreCommand implements Command<Integer, Integer, Object[]> {
     }
 
     /**
-     * @return @return
-     * 1-ok
+     * @return 1-ok
      * -3-invalid note
      */
     @Override

@@ -3,19 +3,15 @@ package com.loneliness.dao.sql_dao_impl;
 
 import com.loneliness.dao.DAOException;
 import com.loneliness.entity.User;
+import com.loneliness.service.PasswordService;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
 
-/*
-   return :
-   -2-error
-   -3-invalid note
-   -4-db error
-
-   */
 /**
  * класс для получения данных @see com.loneliness.User из sql базы данных
  * @author Egor Krasouski
@@ -23,25 +19,10 @@ import java.util.Collection;
  */
 
 public class UserDAO extends SQLDAO<User> {
-    protected enum Command{
-        CREATE,UPDATE,GET_BY_ID, GET_BY_LOGIN_AND_PASSWORD,DELETE, GET_ALL, GET_ALL_IN_LIMIT,GET_LAST_INSERTED_ID;
-        Command(String command){
-            this.command=command;
-        }
-        Command(){}
-
-        private String command;
-
-        public void setCommand(String command) {
-            this.command = command;
-        }
-
-        public String getCommand(){
-            return command;
-        }
-    }
+    PasswordService passwordService;
     public UserDAO() throws DAOException {
         super();
+        passwordService = new PasswordService();
         StringBuffer command=new StringBuffer();
         String tableName = "users";
         String idField = "id_users";
@@ -56,27 +37,27 @@ public class UserDAO extends SQLDAO<User> {
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("DELETE FROM ").append(tableName).append(" WHERE ").append(idField).append("= ? ;");
         Command.DELETE.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append(" = ? ;");
         Command.GET_BY_ID.setCommand(command.toString());
 
-        command=new StringBuffer();
-        command.append("SELECT * FROM ").append(tableName).append(" WHERE login").append(" = ? AND password= ? ;");
-        Command.GET_BY_LOGIN_AND_PASSWORD.setCommand(command.toString());
+        command = new StringBuffer();
+        command.append("SELECT * FROM ").append(tableName).append(" WHERE login").append(" = ?;");
+        Command.GET_BY_LOGIN.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" ;");
         Command.GET_ALL.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" LIMIT ?, ? ;");
         Command.GET_ALL_IN_LIMIT.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(idField).append("=LAST_INSERT_ID();");
         Command.GET_LAST_INSERTED_ID.setCommand(command.toString());
     }
@@ -84,22 +65,25 @@ public class UserDAO extends SQLDAO<User> {
     @Override
     public int create(User note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(Command.CREATE.getCommand());
-            statement.setString(1,note.getLogin());
-            statement.setString(2,note.getPassword());
-            statement.setString(3,note.getType().toString());
-            statement.setInt(4,note.getAvatarId());
-            if(statement.executeUpdate()==1){
-                statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
-                resultSet=statement.executeQuery();
-                if(resultSet.next())
+            statement = connection.prepareStatement(Command.CREATE.getCommand());
+            statement.setString(1, note.getLogin());
+
+            statement.setString(2, passwordService.createHash(note.getPassword()));
+            statement.setString(3, note.getType().toString());
+            statement.setInt(4, note.getAvatarId());
+            if (statement.executeUpdate() == 1) {
+                statement = connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
+                resultSet = statement.executeQuery();
+                if (resultSet.next())
                     return resultSet.getInt(1);
                 else return -2;
-            }
-            else return -3;
+            } else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            throw new DAOException("ERROR_IN_CREATE",e.getCause());
+            throw new DAOException("ERROR_IN_CREATE", e.getCause());
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_CREATE_SAFE_PASSWORD_HASH", e.getCause());
         }
     }
 
@@ -107,60 +91,31 @@ public class UserDAO extends SQLDAO<User> {
     public int update(User note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
             statement=connection.prepareStatement(Command.UPDATE.getCommand());
-            statement.setString(1,note.getLogin());
-            statement.setString(2,note.getPassword());
-            statement.setString(3,note.getType().toString());
-            statement.setInt(4,note.getAvatarId());
-            statement.setInt(5,note.getId());
-            if(statement.executeUpdate()==1){
+            statement.setString(1, note.getLogin());
+            statement.setString(2, passwordService.createHash(note.getPassword()));
+            statement.setString(3, note.getType().toString());
+            statement.setInt(4, note.getAvatarId());
+            statement.setInt(5, note.getId());
+            if (statement.executeUpdate() == 1) {
                 return note.getId();
-            }
-            else return -3;
+            } else return -3;
         } catch (SQLException e) {
             logger.catching(e);
-            throw new DAOException("ERROR_IN_UPDATE",e.getCause());
+            throw new DAOException("ERROR_IN_UPDATE", e.getCause());
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_CREATE_SAFE_PASSWORD_HASH", e.getCause());
         }
 
-    }
-
-    @Override
-    public int delete(User note) throws DAOException {
-        try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(Command.DELETE.getCommand());
-            statement.setInt(1,note.getId());
-            if(statement.execute()){
-                return 1;
-            }
-            else return -3;
-        } catch (SQLException e) {
-            logger.catching(e);
-            throw new DAOException("ERROR_IN_DELETE",e.getCause());
-        }
-    }
-    @Override
-    public int delete(int note) throws DAOException {
-        try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(Command.DELETE.getCommand());
-            statement.setInt(1,note);
-            if(statement.execute()){
-                return 1;
-            }
-            else return -3;
-        } catch (SQLException e) {
-            logger.catching(e);
-            throw new DAOException("ERROR_IN_DELETE",e.getCause());
-        }
     }
 
     @Override
     public User receive(User note) throws DAOException {
         try (SQLConnection connection = new SQLConnection()) {
-            if(note.getLogin()!=null&&note.getLogin().length()!=0) {
-                statement = connection.prepareStatement(Command.GET_BY_LOGIN_AND_PASSWORD.getCommand());
+            if (note.getLogin() != null && note.getLogin().length() != 0) {
+                statement = connection.prepareStatement(Command.GET_BY_LOGIN.getCommand());
                 statement.setString(1, note.getLogin());
-                statement.setString(2, note.getPassword());
-            }
-            else {
+            } else {
                 statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
                 statement.setInt(1, note.getId());
                 resultSet = statement.executeQuery();
@@ -176,8 +131,57 @@ public class UserDAO extends SQLDAO<User> {
         return new User.Builder().build();
     }
 
-    public  User receive(Integer id) throws DAOException {
-        try (SQLConnection connection= new SQLConnection()) {
+    @Override
+    public int delete(User note) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
+            statement = connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1, note.getId());
+            if (statement.execute()) {
+                return 1;
+            }
+            else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE",e.getCause());
+        }
+    }
+    @Override
+    public int delete(int note) throws DAOException {
+        try(SQLConnection connection= new SQLConnection()) {
+            statement=connection.prepareStatement(Command.DELETE.getCommand());
+            statement.setInt(1,note);
+            if (statement.execute()) {
+                return 1;
+            } else return -3;
+        } catch (SQLException e) {
+            logger.catching(e);
+            throw new DAOException("ERROR_IN_DELETE", e.getCause());
+        }
+    }
+
+    protected enum Command {
+        CREATE, UPDATE, GET_BY_ID, GET_BY_LOGIN, DELETE, GET_ALL, GET_ALL_IN_LIMIT, GET_LAST_INSERTED_ID;
+
+        Command(String command) {
+            this.command = command;
+        }
+
+        Command() {
+        }
+
+        private String command;
+
+        public void setCommand(String command) {
+            this.command = command;
+        }
+
+        public String getCommand() {
+            return command;
+        }
+    }
+
+    public User receive(Integer id) throws DAOException {
+        try (SQLConnection connection = new SQLConnection()) {
             statement = connection.prepareStatement(Command.GET_BY_ID.getCommand());
             statement.setInt(1, id);
             resultSet = statement.executeQuery();

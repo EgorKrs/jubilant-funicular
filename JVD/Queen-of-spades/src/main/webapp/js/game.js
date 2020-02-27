@@ -1,19 +1,19 @@
 let card = null;
 let end = 0;
 let won;
+let zOne = 100;
+let zTwo = 100;
 
-function reverse(){
-card=null;
-end = 0;
-won=undefined;
-apportionment();
-  $('.sonic').remove();
-  $('.forehead').remove();
+function reverse() {
+    card = null;
+    end = 0;
+    won = undefined;
+    apportionment();
+    $('.sonic').remove();
+    $('.forehead').remove();
 }
 
 function apportionment() {
-
-
     if (card === null) {
     let $el = $('#baraja-el'),
                                 baraja = $el.baraja();
@@ -31,8 +31,6 @@ function apportionment() {
         });
 
     }
-
-
 
 }
 
@@ -56,8 +54,7 @@ function endGame() {
     }
 }
 
-let zOne=100;
-let zTwo=100;
+
 function getZOne(){
 zOne-=1;
 return zOne

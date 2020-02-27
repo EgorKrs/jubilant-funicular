@@ -18,22 +18,22 @@ public class ProfileDAO extends SQLDAO<Profile> implements WorkWithUserDAO<Profi
     public ProfileDAO()  {
         super();
 
-        StringBuffer command=new StringBuffer();
+        StringBuffer command = new StringBuffer();
         String tableName = "profiles";
         String idField = "profile_id";
 
-        command.append("INSERT ").append(tableName).append(" (user_id, language, rating, about,score" +
-                "number_of_defeats,number_of_victories,number_of_game) ").
+        command.append("INSERT ").append(tableName).append(" (user_id, language, rating, about, score, " +
+                "number_of_defeats, number_of_victories, number_of_game) ").
                 append("VALUES(?,?,?,?,?,?,?,?);");
         Command.CREATE.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("UPDATE ").append(tableName).append(" SET user_id= ?, language =? , rating =?, score =?,about =?, " +
-                "number_of_defeats =?, number_of_victories =?,number_of_game =? ").
+                " number_of_defeats =?, number_of_victories =?,number_of_game =? ").
                 append("WHERE ").append(idField).append("= ? ;");
         Command.UPDATE.setCommand(command.toString());
 
-        command=new StringBuffer();
+        command = new StringBuffer();
         command.append("DELETE FROM ").append(tableName).append(" WHERE ").append(idField).append("= ? ;");
         Command.DELETE.setCommand(command.toString());
 
@@ -85,19 +85,19 @@ public class ProfileDAO extends SQLDAO<Profile> implements WorkWithUserDAO<Profi
     @Override
     public int create(Profile note) throws DAOException {
         try(SQLConnection connection= new SQLConnection()) {
-            statement=connection.prepareStatement(Command.CREATE.getCommand());
-            statement.setInt(1,note.getUserID());
-            statement.setString(2,note.getLanguage().toString());
-            statement.setInt(3,note.getRating());
-            statement.setInt(4, note.getScore().intValue());
-            statement.setString(5, note.getAbout());
+            statement = connection.prepareStatement(Command.CREATE.getCommand());
+            statement.setInt(1, note.getUserID());
+            statement.setString(2, note.getLanguage().toString());
+            statement.setInt(3, note.getRating());
+            statement.setBigDecimal(5, note.getScore());
+            statement.setString(4, note.getAbout());
             statement.setInt(6, note.getNumberOfDefeats().get());
             statement.setInt(7, note.getNumberOfVictories().get());
             statement.setInt(8, note.getNumberOfGame().get());
-            if(statement.executeUpdate()==1){
-                statement=connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
-                resultSet=statement.executeQuery();
-                if(resultSet.next())
+            if (statement.executeUpdate() == 1) {
+                statement = connection.prepareStatement(Command.GET_LAST_INSERTED_ID.getCommand());
+                resultSet = statement.executeQuery();
+                if (resultSet.next())
                     return resultSet.getInt(1);
                 else return -2;
             }

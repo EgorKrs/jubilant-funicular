@@ -140,7 +140,8 @@ public class Profile implements Entity {
             this.lastUpdate = profile.lastUpdate;
             this.numberOfDefeats=profile.numberOfDefeats;
             this.numberOfVictories=profile.numberOfVictories;
-            this.numberOfGame=profile.numberOfGame;
+            this.numberOfGame = profile.numberOfGame;
+            this.score = profile.score;
         }
 
         public Builder() {

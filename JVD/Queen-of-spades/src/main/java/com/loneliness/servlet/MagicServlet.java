@@ -41,7 +41,7 @@ public class MagicServlet extends HttpServlet {
     private void process(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, CommandException {
 
         HttpSession session = request.getSession();
-        String userCommand = request.getParameter("command").trim();
+        String userCommand = request.getParameter("command");
         ServletDispatcher dispatcher = new ServletDispatcher();
         dispatcher.dispatch(session,userCommand,request,response);
     }

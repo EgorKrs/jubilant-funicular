@@ -40,18 +40,29 @@
             <input type="submit" value="Редактированть"/>
         </form>
     </ul>
-    <hr />
+    <hr/>
 
 </c:forEach>
 
-<h2><fmt:message key="createNewUser"/></h2><br />
+<h2><fmt:message key="createNewUser"/></h2><br/>
 
 <form method="post" action="">
 
-    <input type="text" hidden name="command" value="create" />
-    <label><input type="text" name="login"></label><fmt:message key="login"/><br>
-    <label><input type="text" name="password"></label><fmt:message key="password"/><br>
-    <label><input type="text" name="type"></label><fmt:message key="type"/><br>
+    <input type="text" hidden name="command" value="create"/>
+    <label><input type="text" required name="login" placeholder=
+    <fmt:message key="login"/>></label><br>
+    <label><input type="text" required name="password" placeholder=<fmt:message key="password"/>></label><br>
+    <br>
+    <label><fmt:message key="type"/></label>
+    <input type="radio" id="typeChoice1"
+           name="type" value="ADMIN">
+    <label for="typeChoice1">ADMIN</label>
+
+    <input type="radio" id="typeChoice2"
+           name="type" value="USER">
+    <label for="typeChoice2">USER</label>
+    <br>
+
     <input type="submit" value="Ok" name="<fmt:message key="submit"/>"><br>
 </form>
 

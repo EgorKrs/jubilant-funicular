@@ -1,19 +1,29 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<fmt:setBundle basename="bundles.bundle" />
-<c:if test = "${sessionScope.language ==  'ru'}">
-               <fmt:setLocale value="ru"/>
+<fmt:setLocale value="en"/>
+<c:if test="${sessionScope.language ==  'ru'}">
+    <fmt:setLocale value="ru"/>
 </c:if>
-<c:if test = "${sessionScope.language ==  'en'}">
-               <fmt:setLocale value="en"/>
+<c:if test="${sessionScope.language ==  'en'}">
+    <fmt:setLocale value="en"/>
 </c:if>
+
+<fmt:setBundle basename="bundles.bundle"/>
 <html>
 <head>
     <title>USER</title>
 
 </head>
 <body>
+<form method="post" action="MagicServlet">
+    <input type="text" hidden name="command" value="setLanguage_RU"/>
+    <input class="button" type="submit" value="RU">
+</form>
+<form method="post" action="MagicServlet">
+    <input type="text" hidden name="command" value="setLanguage_EN"/>
+    <input class="button" type="submit" value="EN">
+</form>
 <h1><fmt:message key="menu"/></h1>
                 <form method="post" action="MagicServlet">
                                     <input type="text" hidden name="command" value="newsRead" />

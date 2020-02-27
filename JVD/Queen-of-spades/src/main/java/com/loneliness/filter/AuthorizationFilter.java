@@ -39,25 +39,27 @@ public class AuthorizationFilter implements Filter {
 
         final HttpSession session = req.getSession();
 
-        if (request.getParameter("command") != null && (request.getParameter("command").
-                equals("setLanguage_RU") || request.getParameter("command").
-                equals("setLanguage_EN"))) {
+        if (request.getParameter("command") != null) {
             filterChain.doFilter(request, response);
         } else if (isNull(session.getAttribute("userId"))) {
             try {
                 final String login = req.getParameter("login");
                 final String password = req.getParameter("password");
-                CommandProvider commandProvider = CommandProvider.getInstance();
-                //Command<User,User,User> userCommand= new Authorization();
-                Command<User, User, User> userCommand = commandProvider.authorization();
-                User user = userCommand.execute(new User.Builder().setLogin(login).setPassword(password).build());
-                if (user.getId() > 0) {
-                    req.getSession().setAttribute("userId", user.getId());
-                    req.getSession().setAttribute("login", user.getLogin());
-                    req.getSession().setAttribute("type", user.getType());
+                if (!isNull(password) && !isNull(login)) {
+                    CommandProvider commandProvider = CommandProvider.getInstance();
+                    //Command<User,User,User> userCommand= new Authorization();
+                    Command<User, User, User> userCommand = commandProvider.authorization();
+                    User user = userCommand.execute(new User.Builder().setLogin(login).setPassword(password).build());
+                    if (user.getId() > 0) {
+                        req.getSession().setAttribute("userId", user.getId());
+                        req.getSession().setAttribute("login", user.getLogin());
+                        req.getSession().setAttribute("type", user.getType());
 
-                    moveToMenu(req, res, user.getType());
+                        moveToMenu(req, res, user.getType());
 
+                    } else {
+                        moveToMenu(req, res, User.Type.UNKNOWN);
+                    }
                 } else {
                     moveToMenu(req, res, User.Type.UNKNOWN);
                 }

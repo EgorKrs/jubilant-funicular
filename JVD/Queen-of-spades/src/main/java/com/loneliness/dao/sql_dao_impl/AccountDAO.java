@@ -56,6 +56,7 @@ public class AccountDAO extends SQLDAO<Account> implements WorkWithUserDAO<Accou
         command.append("SELECT * FROM ").append(tableName).append(" WHERE user_id=?;");
         Command.GET_BY_USER_ID.setCommand(command.toString());
 
+        command = new StringBuffer();
         command.append("UPDATE ").append(tableName).append(" SET sum_of_money =? ").
                 append("WHERE user_id = ? ;");
         Command.UPDATE_SUM_OF_MONEY_BY_USER_ID.setCommand(command.toString());
